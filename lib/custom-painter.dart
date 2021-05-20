@@ -1,8 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
 class OpenPainter extends CustomPainter {
   OpenPainter({
+    required this.showYAxis,
+    required this.onlyPoints,
+    required this.showCoords,
     required List<Offset> paramPoints,
     required this.sliderX,
     required this.sliderY,
@@ -20,16 +24,21 @@ class OpenPainter extends CustomPainter {
       newPoints = points
           .map((x) => Offset(x.dx * sliderX / 10, x.dy * sliderY / 10))
           .toList();
+      newPoints = newPoints
+          .map((x) => Offset(x.dx - newPoints[0].dx + 5 - offsetX, -x.dy))
+          .toList();
       this.minY = getMinY(newPoints);
       newPoints = newPoints
-          .map((x) => Offset(
-              x.dx - newPoints[0].dx + 5 - offsetX, x.dy - minY + 10 - offsetY))
+          .map((x) => Offset(x.dx, x.dy - minY + 10 - offsetY))
           .toList();
       if (paramPoint != null) {
         convertPosition(paramPoint);
       }
     }
   }
+  final showYAxis;
+  final onlyPoints;
+  final showCoords;
   final double offsetX;
   final double offsetY;
   final double sliderX;
@@ -46,6 +55,7 @@ class OpenPainter extends CustomPainter {
   int minMax = 0;
   double dividerX = 0;
   double dividerY = 0;
+
   @override
   void paint(Canvas canvas, Size size) {
     var paint1 = Paint()
@@ -55,12 +65,20 @@ class OpenPainter extends CustomPainter {
       ..color = Color(0xffff0000)
       ..strokeWidth = 2;
     canvas.drawPoints(PointMode.lines, pointsToX(newPoints), paint1);
+    if (this.showYAxis) {
+      canvas.drawLine(Offset(0, -minY + 10 - offsetY),
+          Offset(size.width, -minY + 10 - offsetY), paint1);
+    }
+
     if (points.length > 1) {
       for (var i = 0; i < points.length - 1; i++) {
-        String text = createStringFromCoords(points[i]);
-        var allDotPainter = createNewText(size, text);
-        allDotPainter.paint(canvas, newPoints[i]);
-        canvas.drawLine(newPoints[i], newPoints[i + 1], paint1);
+        if (this.showCoords) {
+          String text = createStringFromCoords(points[i]);
+          createNewText(size, text)..paint(canvas, newPoints[i]);
+        }
+        if (!this.onlyPoints) {
+          canvas.drawLine(newPoints[i], newPoints[i + 1], paint1);
+        }
       }
       //Draw selected dot
       if (this.localPoint != null) {
@@ -68,6 +86,11 @@ class OpenPainter extends CustomPainter {
         createNewText(size, text)..paint(canvas, this.localPoint!);
         canvas.drawPoints(
             PointMode.lines, pointToX(this.localPoint!), paintRed);
+        if (this.showYAxis) {
+          var onYAxis = Offset(this.localPoint!.dx, -minY + 10 - offsetY);
+          canvas.drawPoints(PointMode.lines, pointToX(onYAxis), paintRed);
+          canvas.drawLine(this.localPoint!, onYAxis, paintRed);
+        }
       }
     }
   }
