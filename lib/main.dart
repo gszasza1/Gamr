@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/dot-list.dart';
+import 'package:gamr/point.dart';
 
 import 'custom-painter.dart';
 import 'test-data.dart';
@@ -23,14 +25,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Offset? localpositon;
-  double _sliderX = 10;
-  double _sliderY = 10;
+  Dot? localpositon;
+
   Offset? initMove;
-  Offset? movedMove;
-  double currentXOffset = 0;
-  double currentYOffset = 0;
-  List<Offset> allDots = testDots;
+
+  DotList dotList = DotList();
   TextEditingController xCoordRText = new TextEditingController(text: '');
   TextEditingController yCoordRText = new TextEditingController(text: '');
   bool showCoords = true;
@@ -38,6 +37,12 @@ class _MyHomePageState extends State<MyHomePage> {
   bool showYAxis = true;
   bool showMedian = true;
   bool showTotalDegree = true;
+
+  @override
+  void initState() {
+    super.initState();
+   // dotList.addMultipleDots(testDots);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +64,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text('Reset positions'),
                 onTap: () {
                   setState(() {
-                    _sliderX = 10;
-                    _sliderY = 10;
+                    this.dotList.reset();
+                    this.initMove = null;
                     localpositon = null;
-                    currentXOffset = 0;
-                    currentYOffset = 0;
+                    this.dotList.setNewFixOffset();
                   });
                   Navigator.pop(context);
                 },
@@ -72,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 title: Text('Clear canvas'),
                 onTap: () {
                   setState(() {
-                    allDots = [];
+                    dotList.clear();
                     xCoordRText.clear();
                     yCoordRText.clear();
                   });
@@ -136,178 +140,169 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: GestureDetector(
                   onTapUp: (x) => {
                     setState(() {
-                      localpositon = x.localPosition;
+                      localpositon = Dot.offsetToDot(x.localPosition);
                     })
                   },
                   onPanEnd: (x) => {
                     setState(() {
-                      currentXOffset = initMove != null && movedMove != null
-                          ? initMove!.dx - movedMove!.dx + currentXOffset
-                          : currentXOffset;
-                      currentYOffset = initMove != null && movedMove != null
-                          ? initMove!.dy - movedMove!.dy + currentYOffset
-                          : currentYOffset;
-
                       initMove = null;
+                      this.dotList.setNewFixOffset();
                     })
                   },
                   onPanStart: (x) => {
                     setState(() {
                       localpositon = null;
-                      if (initMove == null) {
-                        initMove = x.localPosition;
-                      }
+                      initMove = x.localPosition;
                     })
                   },
                   onPanUpdate: (x) => {
                     setState(() {
-                      movedMove = x.localPosition;
+                      if (initMove != null) {
+
+                        this.dotList.updateOffset(
+                            initMove!.dx -
+                                x.localPosition.dx,
+                            initMove!.dy -
+                                x.localPosition.dy);
+                      }
                     })
                   },
                   child: CustomPaint(
                     painter: OpenPainter(
-                      showTotalDegree: this.showTotalDegree,
-                      showMedian: this.showMedian,
-                      showYAxis: this.showYAxis,
-                      onlyPoints: this.onlyPoints,
-                      showCoords: this.showCoords,
-                      paramPoints: allDots,
-                      sliderX: this._sliderX,
-                      sliderY: this._sliderY,
-                      paramPoint: this.localpositon,
-                      offsetX: initMove != null && movedMove != null
-                          ? initMove!.dx - movedMove!.dx + currentXOffset
-                          : currentXOffset,
-                      offsetY: initMove != null && movedMove != null
-                          ? initMove!.dy - movedMove!.dy + currentYOffset
-                          : currentYOffset,
-                    ),
+                        showTotalDegree: this.showTotalDegree,
+                        showMedian: this.showMedian,
+                        showYAxis: this.showYAxis,
+                        onlyPoints: this.onlyPoints,
+                        showCoords: this.showCoords,
+                        dotList: dotList,
+                        paramPoint: this.localpositon),
                   ),
                 ),
               ),
             ),
             Container(
-                decoration: const BoxDecoration(color: Colors.white),
-                child: Column(
-                  children: [
-                    Slider(
-                      value: _sliderX,
-                      min: 1,
-                      max: 100,
-                      label: "X: $_sliderX",
-                      onChanged: (double value) {
-                        setState(() {
-                          _sliderX = value;
-                        });
-                      },
-                    ),
-                    Slider(
-                      value: _sliderY,
-                      min: 1,
-                      max: 100,
-                       label: "X: $_sliderY",
-                      onChanged: (double value) {
-                        setState(() {
-                          _sliderY = value;
-                        });
-                      },
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: allDots.map((e) {
-                                  return Row(
-                                    children: [
-                                      Container(
-                                        margin: const EdgeInsets.only(
-                                            bottom: 20,
-                                            left: 10,
-                                            right: 10,
-                                            top: 20),
-                                        decoration: const BoxDecoration(
-                                            border: Border(
-                                          bottom: BorderSide(
-                                              color: Color(0xfffff3f3f3)),
-                                        )),
-                                        child: Text(e.dx.toStringAsFixed(2)),
-                                      ),
-                                      Text(e.dy.toStringAsFixed(2)),
-                                      IconButton(
-                                        icon: const Icon(Icons.remove),
-                                        tooltip: 'Delete',
-                                        onPressed: () {
-                                          setState(() {
-                                            localpositon = null;
-                                            allDots.remove(e);
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                }).toList(),
-                              ),
+              decoration: const BoxDecoration(color: Colors.white),
+              child: Column(
+                children: [
+                  Slider(
+                    value: this.dotList.sliderX,
+                    min: 1,
+                    max: 100,
+                    label: "X: ${this.dotList.sliderX}",
+                    onChanged: (double value) {
+                      setState(() {
+                        this.dotList.updateSlider(sliderX: value);
+                      });
+                    },
+                  ),
+                  Slider(
+                    value: this.dotList.sliderY,
+                    min: 1,
+                    max: 100,
+                    label: "Y: ${this.dotList.sliderY}",
+                    onChanged: (double value) {
+                      setState(() {
+                        this.dotList.updateSlider(sliderY: value);
+                      });
+                    },
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.2,
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: dotList.allDots.map((e) {
+                                return Row(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(
+                                          bottom: 20,
+                                          left: 10,
+                                          right: 10,
+                                          top: 20),
+                                      decoration: const BoxDecoration(
+                                          border: Border(
+                                        bottom: BorderSide(
+                                            color: Color(0xfffff3f3f3)),
+                                      )),
+                                      child: Text(e.dx.toStringAsFixed(2)),
+                                    ),
+                                    Text(e.dy.toStringAsFixed(2)),
+                                    IconButton(
+                                      icon: const Icon(Icons.remove),
+                                      tooltip: 'Delete',
+                                      onPressed: () {
+                                        setState(() {
+                                          localpositon = null;
+                                          dotList.removeDot(e);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                );
+                              }).toList(),
                             ),
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(5),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: xCoordRText,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'X',
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: yCoordRText,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(), labelText: 'Y'),
+                          ),
+                        ),
+                        TextButton(
+                          child: Text("Add"),
+                          onPressed: () => {
+                            setState(() {
+                              var parsedX =
+                                  double.tryParse(xCoordRText.text) ?? 0;
+                              if (!dotList.allDots
+                                  .any((element) => element.dx == parsedX)) {
+                                dotList.allDots.add(Dot(parsedX,
+                                    double.tryParse(yCoordRText.text) ?? 0));
+                                dotList.allDots.sort((a, b) => a.dx == b.dx
+                                    ? 0
+                                    : a.dx > b.dx
+                                        ? 1
+                                        : -1);
+                                xCoordRText.clear();
+                                yCoordRText.clear();
+                              }
+                            })
+                          },
+                        )
                       ],
                     ),
-                    Container(
-                      margin: EdgeInsets.all(5),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: xCoordRText,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'X',
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              keyboardType: TextInputType.number,
-                              controller: yCoordRText,
-                              decoration: InputDecoration(
-                                  border: OutlineInputBorder(), labelText: 'Y'),
-                            ),
-                          ),
-                          TextButton(
-                            child: Text("Add"),
-                            onPressed: () => {
-                              setState(() {
-                                var parsedX =
-                                    double.tryParse(xCoordRText.text) ?? 0;
-                                if (!allDots
-                                    .any((element) => element.dx == parsedX)) {
-                                  allDots.add(Offset(parsedX,
-                                      double.tryParse(yCoordRText.text) ?? 0));
-                                  allDots.sort((a, b) => a.dx == b.dx
-                                      ? 0
-                                      : a.dx > b.dx
-                                          ? 1
-                                          : -1);
-                                  xCoordRText.clear();
-                                  yCoordRText.clear();
-                                }
-                              })
-                            },
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),),
+                  )
+                ],
+              ),
+            ),
           ],
         ),
       ),
