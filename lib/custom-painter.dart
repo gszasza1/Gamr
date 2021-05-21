@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class OpenPainter extends CustomPainter {
   OpenPainter({
     required this.showYAxis,
+    required this.showTotalDegree,
+    required this.showMedian,
     required this.onlyPoints,
     required this.showCoords,
     required List<Offset> paramPoints,
@@ -36,6 +38,8 @@ class OpenPainter extends CustomPainter {
       }
     }
   }
+  final showMedian;
+  final showTotalDegree;
   final showYAxis;
   final onlyPoints;
   final showCoords;
@@ -80,6 +84,30 @@ class OpenPainter extends CustomPainter {
           canvas.drawLine(newPoints[i], newPoints[i + 1], paint1);
         }
       }
+      if(this.showTotalDegree && this.newPoints.length>1){
+          var paintOrange = Paint()
+          ..color = Color(0xffff7512)
+          ..strokeWidth = 2;
+          
+          canvas.drawLine(this.newPoints[0],
+            this.newPoints[this.newPoints.length-1], paintOrange);
+      }
+      if (this.showMedian) {
+        var paintPurple = Paint()
+          ..color = Color(0xffff00dd)
+          ..strokeWidth = 2;
+        var averageY =
+            (this.points.map((m) => m.dy).reduce((a, b) => a + b) /
+                this.points.length);
+                var averageDrawY =   (this.newPoints.map((m) => m.dy).reduce((a, b) => a + b) /
+                this.points.length);
+        String text = createStringFromCoords(Offset(0, averageY));
+        createNewText(size, text)
+          ..paint(canvas, Offset(0, averageDrawY));
+        canvas.drawLine(Offset(0, averageDrawY),
+            Offset(size.width, averageDrawY), paintPurple);
+      }
+
       //Draw selected dot
       if (this.localPoint != null) {
         String text = createStringFromCoords(this.localShow!);

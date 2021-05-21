@@ -23,7 +23,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   Offset? localpositon;
   double _sliderX = 10;
   double _sliderY = 10;
@@ -37,6 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   bool showCoords = true;
   bool onlyPoints = false;
   bool showYAxis = true;
+  bool showMedian = true;
+  bool showTotalDegree = true;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               CheckboxListTile(
-                title:  const Text("Show coords"),
+                title: const Text("Show coords"),
                 value: showCoords,
                 onChanged: (bool? value) {
                   setState(() {
@@ -88,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               CheckboxListTile(
-                title:  const Text("Only points"),
+                title: const Text("Only points"),
                 value: onlyPoints,
                 onChanged: (bool? value) {
                   setState(() {
@@ -97,11 +98,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 },
               ),
               CheckboxListTile(
-                title:  const Text("Show Y Axis"),
+                title: const Text("Show Y Axis"),
                 value: showYAxis,
                 onChanged: (bool? value) {
                   setState(() {
                     showYAxis = !showYAxis;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Show median"),
+                value: showMedian,
+                onChanged: (bool? value) {
+                  setState(() {
+                    showMedian = !showMedian;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Show total degree"),
+                value: showTotalDegree,
+                onChanged: (bool? value) {
+                  setState(() {
+                    showTotalDegree = !showTotalDegree;
                   });
                 },
               ),
@@ -147,6 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                   child: CustomPaint(
                     painter: OpenPainter(
+                      showTotalDegree: this.showTotalDegree,
+                      showMedian: this.showMedian,
                       showYAxis: this.showYAxis,
                       onlyPoints: this.onlyPoints,
                       showCoords: this.showCoords,
@@ -165,117 +186,128 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Slider(
-              value: _sliderX,
-              min: 1,
-              max: 100,
-              label: _sliderX.toString(),
-              onChanged: (double value) {
-                setState(() {
-                  _sliderX = value;
-                });
-              },
-            ),
-            Slider(
-              value: _sliderY,
-              min: 1,
-              max: 100,
-              label: _sliderY.toString(),
-              onChanged: (double value) {
-                setState(() {
-                  _sliderY = value;
-                });
-              },
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: allDots.map((e) {
-                          return Row(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.only(
-                                    bottom: 20, left: 10, right: 10, top: 20),
-                                decoration: const BoxDecoration(
-                                    border: Border(
-                                  bottom:
-                                      BorderSide(color: Color(0xfffff3f3f3)),
-                                )),
-                                child: Text(e.dx.toStringAsFixed(2)),
-                              ),
-                              Text(e.dy.toStringAsFixed(2)),
-                              IconButton(
-                                icon: const Icon(Icons.remove),
-                                tooltip: 'Delete',
-                                onPressed: () {
-                                  setState(() {
-                                    localpositon = null;
-                                    allDots.remove(e);
-                                  });
-                                },
-                              ),
-                            ],
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
             Container(
-              margin: EdgeInsets.all(5),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: xCoordRText,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'X',
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Column(
+                  children: [
+                    Slider(
+                      value: _sliderX,
+                      min: 1,
+                      max: 100,
+                      label: "X: $_sliderX",
+                      onChanged: (double value) {
+                        setState(() {
+                          _sliderX = value;
+                        });
+                      },
+                    ),
+                    Slider(
+                      value: _sliderY,
+                      min: 1,
+                      max: 100,
+                       label: "X: $_sliderY",
+                      onChanged: (double value) {
+                        setState(() {
+                          _sliderY = value;
+                        });
+                      },
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: ListView(
+                                shrinkWrap: true,
+                                children: allDots.map((e) {
+                                  return Row(
+                                    children: [
+                                      Container(
+                                        margin: const EdgeInsets.only(
+                                            bottom: 20,
+                                            left: 10,
+                                            right: 10,
+                                            top: 20),
+                                        decoration: const BoxDecoration(
+                                            border: Border(
+                                          bottom: BorderSide(
+                                              color: Color(0xfffff3f3f3)),
+                                        )),
+                                        child: Text(e.dx.toStringAsFixed(2)),
+                                      ),
+                                      Text(e.dy.toStringAsFixed(2)),
+                                      IconButton(
+                                        icon: const Icon(Icons.remove),
+                                        tooltip: 'Delete',
+                                        onPressed: () {
+                                          setState(() {
+                                            localpositon = null;
+                                            allDots.remove(e);
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.all(5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: xCoordRText,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'X',
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              keyboardType: TextInputType.number,
+                              controller: yCoordRText,
+                              decoration: InputDecoration(
+                                  border: OutlineInputBorder(), labelText: 'Y'),
+                            ),
+                          ),
+                          TextButton(
+                            child: Text("Add"),
+                            onPressed: () => {
+                              setState(() {
+                                var parsedX =
+                                    double.tryParse(xCoordRText.text) ?? 0;
+                                if (!allDots
+                                    .any((element) => element.dx == parsedX)) {
+                                  allDots.add(Offset(parsedX,
+                                      double.tryParse(yCoordRText.text) ?? 0));
+                                  allDots.sort((a, b) => a.dx == b.dx
+                                      ? 0
+                                      : a.dx > b.dx
+                                          ? 1
+                                          : -1);
+                                  xCoordRText.clear();
+                                  yCoordRText.clear();
+                                }
+                              })
+                            },
+                          )
+                        ],
                       ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Expanded(
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      controller: yCoordRText,
-                      decoration: InputDecoration(
-                          border: OutlineInputBorder(), labelText: 'Y'),
-                    ),
-                  ),
-                  TextButton(
-                    child: Text("Add"),
-                    onPressed: () => {
-                      setState(() {
-                        var parsedX = double.tryParse(xCoordRText.text) ?? 0;
-                        if (!allDots.any((element) => element.dx == parsedX)) {
-                          allDots.add(Offset(
-                              parsedX, double.tryParse(yCoordRText.text) ?? 0));
-                          allDots.sort((a, b) => a.dx == b.dx
-                              ? 0
-                              : a.dx > b.dx
-                                  ? 1
-                                  : -1);
-                          xCoordRText.clear();
-                          yCoordRText.clear();
-                        }
-                      })
-                    },
-                  )
-                ],
-              ),
-            )
+                    )
+                  ],
+                ),),
           ],
         ),
       ),
