@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-   // dotList.addMultipleDots(testDots);
+    dotList.addMultipleDots(testDots);
   }
 
   @override
@@ -284,7 +284,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   double.tryParse(xCoordRText.text) ?? 0;
                               if (!dotList.allDots
                                   .any((element) => element.dx == parsedX)) {
-                                dotList.allDots.add(Dot(parsedX,
+                                dotList.addDot(Dot(parsedX,
                                     double.tryParse(yCoordRText.text) ?? 0));
                                 dotList.allDots.sort((a, b) => a.dx == b.dx
                                     ? 0

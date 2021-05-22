@@ -10,7 +10,6 @@ class DotList {
   double averageY = 0;
   double averageDrawY = 0;
   Paint graphPaint = Paint();
-  double minY = 0;
 
   double offsetX = 0;
   double offsetY = 0;
@@ -34,31 +33,42 @@ class DotList {
   double getYOffset() {
     return this.offsetY - this.movableOffsetY;
   }
-  void _sort(){
 
+  void _sort() {
     allDots.sort((a, b) => a.dx == b.dx
         ? 0
         : a.dx > b.dx
             ? 1
             : -1);
   }
+
   void addDot(Dot point) {
     allDots.add(point);
     this._sort();
+
     calculateAverageY();
     recalculateDrawable();
     calculateDegree();
+    if (drawAbleDots.length < 3 && drawAbleDots.length > 0) {
+      this.calculateInitialOffset();
+    }
+  }
+
+  void calculateInitialOffset() {
+    this.offsetY = (allDots[0].dy * sliderY / 10) + 50;
+    this.offsetX = -(allDots[0].dx * sliderX / 10) + 50;
+    recalculateDrawable();
   }
 
   void recalculateDrawable() {
-    drawAbleDots = allDots
-        .map((x) => Dot(x.dx * sliderX / 10, x.dy * sliderY / 10))
-        .toList();
-    this.minY = getMinY();
-    drawAbleDots = drawAbleDots
-        .map((x) => Dot(x.dx - drawAbleDots[0].dx + 5 + getXOffset(),
-            -x.dy - minY + 10 + getYOffset()))
-        .toList();
+    if (this.allDots.length > 0) {
+      drawAbleDots = allDots
+          .map((x) => Dot(x.dx * sliderX / 10, x.dy * sliderY / 10))
+          .toList();
+      drawAbleDots = drawAbleDots
+          .map((x) => Dot(x.dx + getXOffset(), -x.dy + getYOffset()))
+          .toList();
+    }
     calculateAverageDrawY();
   }
 
@@ -72,8 +82,10 @@ class DotList {
   void removeDot(Dot dot) {
     allDots.remove(dot);
     recalculateDrawable();
-    calculateAverageY();
-    calculateDegree();
+    if (allDots.length > 1) {
+      calculateAverageY();
+      calculateDegree();
+    }
   }
 
   void setPaintColor(Color color) {
@@ -107,30 +119,42 @@ class DotList {
     totalDegree = 0;
     averageY = 0;
     averageDrawY = 0;
-    minY = 0;
   }
 
   void reset() {
-    offsetX = 0;
-    offsetY = 0;
     sliderX = 10;
     sliderY = 10;
+
+    if (drawAbleDots.length < 3 && drawAbleDots.length > 0) {
+      this.calculateInitialOffset();
+    }
   }
 
   void calculateAverageY() {
-    averageY = (this.allDots.map((m) => m.dy).reduce((a, b) => a + b) /
-        this.allDots.length);
+    if (this.allDots.length > 0) {
+      averageY = this.allDots.map((m) => m.dy).reduce((a, b) => a + b) /
+          this.allDots.length;
+    } else {
+      averageY = 0;
+    }
   }
 
   void calculateAverageDrawY() {
-    averageDrawY = (this.drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
-        this.drawAbleDots.length);
+    if (this.drawAbleDots.length > 0) {
+      averageDrawY =
+          this.drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
+              this.drawAbleDots.length;
+    } else {
+      averageDrawY = 0;
+    }
   }
 
   void updateOffset(double offsetX, double offsetY) {
-    this.movableOffsetX = offsetX;
-    this.movableOffsetY = offsetY;
-    recalculateDrawable();
+    if (allDots.length > 1) {
+      this.movableOffsetX = offsetX;
+      this.movableOffsetY = offsetY;
+      recalculateDrawable();
+    }
     return;
   }
 
@@ -143,16 +167,6 @@ class DotList {
     }
 
     recalculateDrawable();
-  }
-
-  double getMinY() {
-    double currentMinY = drawAbleDots[0].dy;
-    drawAbleDots.forEach((element) {
-      if (element.dy < currentMinY) {
-        currentMinY = element.dy;
-      }
-    });
-    return currentMinY;
   }
 
   List<Dot> calculateOnDrawPointList(Dot point) {
@@ -176,8 +190,8 @@ class DotList {
       var result = Dot.getYProportion3Dots(min, relative: point, absolute: max);
       var pointToCanvas = Dot(point.dx, result);
       print(pointToCanvas);
-      var divider =
-          Dot.getVectorRelativeProportion(max, relative: pointToCanvas, absolute: min);
+      var divider = Dot.getVectorRelativeProportion(max,
+          relative: pointToCanvas, absolute: min);
       var pointToShow = pointOnLineBetweenDots(minIndex, divider);
       return [pointToCanvas, pointToShow];
     }

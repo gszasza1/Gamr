@@ -15,7 +15,7 @@ class OpenPainter extends CustomPainter {
     required this.dotList,
     required this.onlyPoints,
   }) {
-    if (this.dotList.allDots.length > 1 && paramPoint != null) {
+    if (this.dotList.drawAbleDots.length > 1 && paramPoint != null) {
       selectedPoint = this.dotList.calculateOnDrawPointList(paramPoint);
     } else {
       selectedPoint = [];
@@ -33,7 +33,6 @@ class OpenPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print("painter called");
     var paintGreen = Paint()
       ..color = Config.colorGreen
       ..strokeWidth = 1;
@@ -49,8 +48,8 @@ class OpenPainter extends CustomPainter {
     // Draw Y axis on Canvas
     if (this.showYAxis) {
       canvas.drawLine(
-          Dot(0, -this.dotList.minY + 10 + this.dotList.getYOffset()),
-          Dot(size.width, -this.dotList.minY + 10 + this.dotList.getYOffset()),
+          Dot(0, this.dotList.getYOffset()),
+          Dot(size.width, this.dotList.getYOffset()),
           paintGreen);
     }
 
@@ -103,7 +102,7 @@ class OpenPainter extends CustomPainter {
 
         if (this.showYAxis) {
           var onYAxis = Dot(this.selectedPoint[0].dx,
-              -this.dotList.minY + 10 + this.dotList.getYOffset());
+               this.dotList.getYOffset());
           canvas.drawPoints(PointMode.lines, onYAxis.createXDots(), paintRed);
           canvas.drawLine(this.selectedPoint[0], onYAxis, paintRed);
         }
