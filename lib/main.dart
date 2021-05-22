@@ -143,27 +143,25 @@ class _MyHomePageState extends State<MyHomePage> {
                       localpositon = Dot.offsetToDot(x.localPosition);
                     })
                   },
-                  onPanEnd: (x) => {
+                  onScaleEnd: (x) => {
                     setState(() {
                       initMove = null;
                       this.dotList.setNewFixOffset();
                     })
                   },
-                  onPanStart: (x) => {
+                  onScaleStart: (x) => {
                     setState(() {
                       localpositon = null;
-                      initMove = x.localPosition;
+                      initMove = x.localFocalPoint;
                     })
                   },
-                  onPanUpdate: (x) => {
+                  onScaleUpdate: (x) => {
                     setState(() {
                       if (initMove != null) {
-
                         this.dotList.updateOffset(
-                            initMove!.dx -
-                                x.localPosition.dx,
-                            initMove!.dy -
-                                x.localPosition.dy);
+                            initMove!.dx - x.localFocalPoint.dx,
+                            initMove!.dy - x.localFocalPoint.dy,
+                            x.scale);
                       }
                     })
                   },

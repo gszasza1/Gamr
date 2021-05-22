@@ -13,6 +13,10 @@ class DotList {
 
   double offsetX = 0;
   double offsetY = 0;
+
+  double movableScale = 0;
+  double scale = 1;
+
   double movableOffsetX = 0;
   double movableOffsetY = 0;
 
@@ -22,12 +26,17 @@ class DotList {
   void setNewFixOffset() {
     this.offsetX -= movableOffsetX;
     this.offsetY -= movableOffsetY;
+    this.scale += movableScale;
     this.movableOffsetX = 0;
     this.movableOffsetY = 0;
   }
 
   double getXOffset() {
     return this.offsetX - this.movableOffsetX;
+  }
+
+  double getScale() {
+    return this.scale + this.movableScale;
   }
 
   double getYOffset() {
@@ -55,15 +64,16 @@ class DotList {
   }
 
   void calculateInitialOffset() {
-    this.offsetY = (allDots[0].dy * sliderY / 10) + 50;
-    this.offsetX = -(allDots[0].dx * sliderX / 10) + 50;
+    this.offsetY = (allDots[0].dy * sliderY / 10 * getScale()) + 50;
+    this.offsetX = -(allDots[0].dx * sliderX / 10 * getScale()) + 50;
     recalculateDrawable();
   }
 
   void recalculateDrawable() {
     if (this.allDots.length > 0) {
       drawAbleDots = allDots
-          .map((x) => Dot(x.dx * sliderX / 10, x.dy * sliderY / 10))
+          .map((x) => Dot(x.dx * sliderX / 10 * getScale(),
+              x.dy * sliderY / 10 * getScale()))
           .toList();
       drawAbleDots = drawAbleDots
           .map((x) => Dot(x.dx + getXOffset(), -x.dy + getYOffset()))
@@ -124,6 +134,7 @@ class DotList {
   void reset() {
     sliderX = 10;
     sliderY = 10;
+    scale = 1;
 
     if (drawAbleDots.length < 3 && drawAbleDots.length > 0) {
       this.calculateInitialOffset();
@@ -149,8 +160,9 @@ class DotList {
     }
   }
 
-  void updateOffset(double offsetX, double offsetY) {
+  void updateOffset(double offsetX, double offsetY, double scale) {
     if (allDots.length > 1) {
+      this.movableScale = (scale - 1);
       this.movableOffsetX = offsetX;
       this.movableOffsetY = offsetY;
       recalculateDrawable();
