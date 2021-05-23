@@ -132,11 +132,11 @@ class DotList {
   }
 
   void reset() {
-    sliderX = 10;
-    sliderY = 10;
-    scale = 1;
+    this.sliderX = 10;
+    this.sliderY = 10;
+    this.scale = 1;
 
-    if (drawAbleDots.length < 3 && drawAbleDots.length > 0) {
+    if (this.drawAbleDots.length > 0) {
       this.calculateInitialOffset();
     }
   }

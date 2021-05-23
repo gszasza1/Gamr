@@ -3,17 +3,14 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:gamr/config.dart';
 import 'package:gamr/dot-list.dart';
+import 'package:gamr/options.dart';
 import 'package:gamr/point.dart';
 
 class OpenPainter extends CustomPainter {
   OpenPainter({
-    required this.showYAxis,
-    required this.showTotalDegree,
-    required this.showMedian,
+    required this.options,
     required Dot? paramPoint,
-    required this.showCoords,
     required this.dotList,
-    required this.onlyPoints,
   }) {
     if (this.dotList.drawAbleDots.length > 1 && paramPoint != null) {
       selectedPoint = this.dotList.calculateOnDrawPointList(paramPoint);
@@ -22,13 +19,9 @@ class OpenPainter extends CustomPainter {
     }
   }
 
-  final bool showMedian;
-  final bool showTotalDegree;
-  final bool showYAxis;
-  final bool onlyPoints;
+  final GamrOptions options;
 
   late List<Dot> selectedPoint;
-  final showCoords;
   final DotList dotList;
 
   @override
@@ -46,29 +39,29 @@ class OpenPainter extends CustomPainter {
         PointMode.lines, dotList.pointsToDrawX(), dotList.graphPaint);
 
     // Draw Y axis on Canvas
-    if (this.showYAxis) {
-      canvas.drawLine(
-          Dot(0, this.dotList.getYOffset()),
-          Dot(size.width, this.dotList.getYOffset()),
-          paintGreen);
+    if (this.options.showYAxis) {
+      canvas.drawLine(Dot(0, this.dotList.getYOffset()),
+          Dot(size.width, this.dotList.getYOffset()), paintGreen);
     }
 
     /// Create graph from all dots
     if (dotList.allDots.length > 1 && dotList.drawAbleDots.length > 1) {
       for (var i = 0; i < dotList.allDots.length; i++) {
-        if (this.showCoords) {
-          createNewText(size, dotList.allDots[i].coordsToString())
+        if (this.options.showCoords) {
+          createNewText(
+              size, dotList.allDots[i].coordsToString(showNumber: i + 1))
             ..paint(canvas, dotList.drawAbleDots[i]);
         }
 
-        if (!this.onlyPoints && dotList.drawAbleDots.length-1 > i) {
+        if (!this.options.onlyPoints && dotList.drawAbleDots.length - 1 > i) {
           canvas.drawLine(
               dotList.drawAbleDots[i], dotList.drawAbleDots[i + 1], paintGreen);
         }
       }
 
       /// Create line between first and last point
-      if (this.showTotalDegree && this.dotList.drawAbleDots.length > 1) {
+      if (this.options.showTotalDegree &&
+          this.dotList.drawAbleDots.length > 1) {
         var paintOrange = Paint()
           ..color = Config.colorOrange
           ..strokeWidth = 2;
@@ -80,7 +73,7 @@ class OpenPainter extends CustomPainter {
       }
 
       // Show average Y height on X axis
-      if (this.showMedian) {
+      if (this.options.showMedian) {
         var paintPurple = Paint()
           ..color = Config.colorPurple
           ..strokeWidth = 2;
@@ -95,14 +88,15 @@ class OpenPainter extends CustomPainter {
 
       //Draw selected dot
       if (this.selectedPoint.length > 1) {
-        createNewText(size, this.selectedPoint[1].coordsToString(), color: Config.colorRed)
+        createNewText(size, this.selectedPoint[1].coordsToString(),
+            color: Config.colorRed)
           ..paint(canvas, this.selectedPoint[0]);
         canvas.drawPoints(
             PointMode.lines, this.selectedPoint[0].createXDots(), paintRed);
 
-        if (this.showYAxis) {
-          var onYAxis = Dot(this.selectedPoint[0].dx,
-               this.dotList.getYOffset());
+        if (this.options.showYAxis) {
+          var onYAxis =
+              Dot(this.selectedPoint[0].dx, this.dotList.getYOffset());
           canvas.drawPoints(PointMode.lines, onYAxis.createXDots(), paintRed);
           canvas.drawLine(this.selectedPoint[0], onYAxis, paintRed);
         }
@@ -114,11 +108,10 @@ class OpenPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 
   TextPainter createNewText(Size size, String text, {Color? color}) {
-    
-  TextStyle textStyle = TextStyle(
-    color: color ?? Colors.black,
-    fontSize: 14,
-  );
+    TextStyle textStyle = TextStyle(
+      color: color ?? Colors.black,
+      fontSize: 14,
+    );
     final textSpan = TextSpan(
       text: text,
       style: textStyle,

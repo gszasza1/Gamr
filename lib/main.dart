@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/dot-list.dart';
+import 'package:gamr/options.dart';
 import 'package:gamr/point.dart';
 
 import 'custom-painter.dart';
@@ -32,11 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DotList dotList = DotList();
   TextEditingController xCoordRText = new TextEditingController(text: '');
   TextEditingController yCoordRText = new TextEditingController(text: '');
-  bool showCoords = true;
-  bool onlyPoints = false;
-  bool showYAxis = true;
-  bool showMedian = true;
-  bool showTotalDegree = true;
+  GamrOptions options = GamrOptions();
 
   @override
   void initState() {
@@ -85,46 +82,55 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               CheckboxListTile(
                 title: const Text("Show coords"),
-                value: showCoords,
+                value: options.showCoords,
                 onChanged: (bool? value) {
                   setState(() {
-                    showCoords = !showCoords;
+                    options.showCoords = !options.showCoords;
                   });
                 },
               ),
               CheckboxListTile(
                 title: const Text("Only points"),
-                value: onlyPoints,
+                value: options.onlyPoints,
                 onChanged: (bool? value) {
                   setState(() {
-                    onlyPoints = !onlyPoints;
+                    options.onlyPoints = !options.onlyPoints;
                   });
                 },
               ),
               CheckboxListTile(
                 title: const Text("Show Y Axis"),
-                value: showYAxis,
+                value: options.showYAxis,
                 onChanged: (bool? value) {
                   setState(() {
-                    showYAxis = !showYAxis;
+                    options.showYAxis = !options.showYAxis;
                   });
                 },
               ),
               CheckboxListTile(
                 title: const Text("Show median"),
-                value: showMedian,
+                value: options.showMedian,
                 onChanged: (bool? value) {
                   setState(() {
-                    showMedian = !showMedian;
+                    options.showMedian = !options.showMedian;
                   });
                 },
               ),
               CheckboxListTile(
                 title: const Text("Show total degree"),
-                value: showTotalDegree,
+                value: options.showTotalDegree,
                 onChanged: (bool? value) {
                   setState(() {
-                    showTotalDegree = !showTotalDegree;
+                    options.showTotalDegree = !options.showTotalDegree;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Show number"),
+                value: options.showNumber,
+                onChanged: (bool? value) {
+                  setState(() {
+                    options.showNumber = !options.showNumber;
                   });
                 },
               ),
@@ -167,11 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   },
                   child: CustomPaint(
                     painter: OpenPainter(
-                        showTotalDegree: this.showTotalDegree,
-                        showMedian: this.showMedian,
-                        showYAxis: this.showYAxis,
-                        onlyPoints: this.onlyPoints,
-                        showCoords: this.showCoords,
+                        options: options,
                         dotList: dotList,
                         paramPoint: this.localpositon),
                   ),
@@ -213,34 +215,63 @@ class _MyHomePageState extends State<MyHomePage> {
                             height: MediaQuery.of(context).size.height * 0.2,
                             child: ListView(
                               shrinkWrap: true,
-                              children: dotList.allDots.map((e) {
-                                return Row(
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.only(
-                                          bottom: 20,
-                                          left: 10,
+                              children:
+                                  dotList.allDots.asMap().entries.map((entry) {
+                                int idx = entry.key;
+                                var value = entry.value;
+                                return Container(
+                                  margin: const EdgeInsets.only(
+                                    left: 10,
+                                    right: 10,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    border: Border(
+                                      bottom: BorderSide(
+                                          color: Color(0xfffff3f3f3)),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          (idx + 1).toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        margin: const EdgeInsets.only(
                                           right: 10,
-                                          top: 20),
-                                      decoration: const BoxDecoration(
-                                          border: Border(
-                                        bottom: BorderSide(
-                                            color: Color(0xfffff3f3f3)),
-                                      )),
-                                      child: Text(e.dx.toStringAsFixed(2)),
-                                    ),
-                                    Text(e.dy.toStringAsFixed(2)),
-                                    IconButton(
-                                      icon: const Icon(Icons.remove),
-                                      tooltip: 'Delete',
-                                      onPressed: () {
-                                        setState(() {
-                                          localpositon = null;
-                                          dotList.removeDot(e);
-                                        });
-                                      },
-                                    ),
-                                  ],
+                                        ),
+                                      ),
+                                      Container(
+                                        child:
+                                            Text(value.dx.toStringAsFixed(2)),
+                                        margin: const EdgeInsets.only(
+                                          right: 10,
+                                        ),
+                                      ),
+                                      Text(value.dy.toStringAsFixed(2)),
+                                      Expanded(
+                                        flex: 1,
+                                        child: Flex(
+                                          direction: Axis.horizontal,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.remove),
+                                              tooltip: 'Delete',
+                                              onPressed: () {
+                                                setState(() {
+                                                  localpositon = null;
+                                                  dotList.removeDot(value);
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               }).toList(),
                             ),

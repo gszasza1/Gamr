@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:ui';
 
 class Dot extends Offset {
+  double dz = 0;
   Dot(double dx, double dy) : super(dx, dy);
+  Dot.dzParameter(double dx, double dy, this.dz) : super(dx, dy);
 
   double distanceFromDot(Dot dot) {
     return sqrt(distanceFromDotPow(dot));
@@ -14,16 +16,32 @@ class Dot extends Offset {
     return a * a + b * b;
   }
 
-  String coordsToString() {
+  String coordsToString({int? showNumber, bool showCoord = true}) {
+    if (showNumber != null && showCoord) {
+      return showNumber.toString() + " " + _createLocalCoords();
+    } else if (showCoord) {
+      return showNumber.toString();
+    } else {
+      return _createLocalCoords();
+    }
+  }
+
+  String _createLocalCoords() {
     return "(" +
         this.dx.toStringAsFixed(2) +
-        "," +
+        ", " +
         this.dy.toStringAsFixed(2) +
         ")";
   }
 
-  static coordsParamToString(double x, double y) {
-    return "(" + x.toStringAsFixed(2) + "," + y.toStringAsFixed(2) + ")";
+  static coordsParamToString(double x, double y,
+      {int? showNumber, bool showCoord = true}) {
+    var coord = "(" + x.toStringAsFixed(2) + ", " + y.toStringAsFixed(2) + ")";
+    return showNumber != null
+        ? showNumber.toString() + " " + coord
+        : showCoord
+            ? coord
+            : showNumber.toString();
   }
 
   List<Dot> createXDots() {
