@@ -47,9 +47,12 @@ class OpenPainter extends CustomPainter {
     /// Create graph from all dots
     if (dotList.allDots.length > 1 && dotList.drawAbleDots.length > 1) {
       for (var i = 0; i < dotList.allDots.length; i++) {
-        if (this.options.showCoords) {
+        if (this.options.showCoords || this.options.showNumber) {
           createNewText(
-              size, dotList.allDots[i].coordsToString(showNumber: i + 1))
+              size,
+              dotList.allDots[i].coordsToString(
+                  showNumber: options.showNumber ? i + 1 : null,
+                  showCoord: this.options.showCoords))
             ..paint(canvas, dotList.drawAbleDots[i]);
         }
 

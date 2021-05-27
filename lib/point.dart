@@ -19,10 +19,12 @@ class Dot extends Offset {
   String coordsToString({int? showNumber, bool showCoord = true}) {
     if (showNumber != null && showCoord) {
       return showNumber.toString() + " " + _createLocalCoords();
-    } else if (showCoord) {
+    } else if (showNumber != null) {
       return showNumber.toString();
-    } else {
+    } else if (showCoord) {
       return _createLocalCoords();
+    } else {
+      return "";
     }
   }
 

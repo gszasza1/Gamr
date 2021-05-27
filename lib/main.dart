@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/components/edit-popup.dart';
+import 'package:gamr/components/list-item.dart';
 import 'package:gamr/dot-list.dart';
 import 'package:gamr/options.dart';
 import 'package:gamr/point.dart';
@@ -31,8 +33,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Offset? initMove;
 
   DotList dotList = DotList();
-  TextEditingController xCoordRText = new TextEditingController(text: '');
-  TextEditingController yCoordRText = new TextEditingController(text: '');
+  TextEditingController xCoordRText = TextEditingController(text: '');
+  TextEditingController yCoordRText = TextEditingController(text: '');
+  TextEditingController zCoordRText = TextEditingController(text: '');
   GamrOptions options = GamrOptions();
 
   @override
@@ -76,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     dotList.clear();
                     xCoordRText.clear();
                     yCoordRText.clear();
+                    zCoordRText.clear();
                   });
                   Navigator.pop(context);
                 },
@@ -230,48 +234,35 @@ class _MyHomePageState extends State<MyHomePage> {
                                           color: Color(0xfffff3f3f3)),
                                     ),
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        child: Text(
-                                          (idx + 1).toString(),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        margin: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                      ),
-                                      Container(
-                                        child:
-                                            Text(value.dx.toStringAsFixed(2)),
-                                        margin: const EdgeInsets.only(
-                                          right: 10,
-                                        ),
-                                      ),
-                                      Text(value.dy.toStringAsFixed(2)),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Flex(
-                                          direction: Axis.horizontal,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.remove),
-                                              tooltip: 'Delete',
-                                              onPressed: () {
-                                                setState(() {
-                                                  localpositon = null;
-                                                  dotList.removeDot(value);
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  child: InkWell(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return EditPopup(
+                                                dot: value,
+                                                save: (x) => {
+                                                  setState(() {
+                                                    this
+                                                        .dotList
+                                                        .removeDot(value);
+                                                    this.dotList.addDot(x);
+                                                  })
+                                                },
+                                              );
+                                            });
+                                      },
+                                      child: DotListItem(
+                                        callback: () {
+                                          setState(() {
+                                            localpositon = null;
+                                            dotList.removeDot(value);
+                                          });
+                                        },
+                                        index: idx,
+                                        value: value,
+                                        key: Key(idx.toString()),
+                                      )),
                                 );
                               }).toList(),
                             ),
@@ -305,6 +296,17 @@ class _MyHomePageState extends State<MyHomePage> {
                                 border: OutlineInputBorder(), labelText: 'Y'),
                           ),
                         ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            controller: zCoordRText,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(), labelText: 'Z'),
+                          ),
+                        ),
                         TextButton(
                           child: Text("Add"),
                           onPressed: () => {
@@ -313,8 +315,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                   double.tryParse(xCoordRText.text) ?? 0;
                               if (!dotList.allDots
                                   .any((element) => element.dx == parsedX)) {
-                                dotList.addDot(Dot(parsedX,
-                                    double.tryParse(yCoordRText.text) ?? 0));
+                                dotList.addDot(Dot.dzParameter(
+                                    parsedX,
+                                    double.tryParse(yCoordRText.text) ?? 0,
+                                    double.tryParse(zCoordRText.text) ?? 0));
                                 dotList.allDots.sort((a, b) => a.dx == b.dx
                                     ? 0
                                     : a.dx > b.dx
