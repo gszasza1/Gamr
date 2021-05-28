@@ -215,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     painter: OpenPainter(
                         options: options,
                         dotList: dotList,
+                        axis: currentAxis,
                         paramPoint: this.localpositon),
                   ),
                 ),

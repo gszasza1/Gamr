@@ -225,18 +225,6 @@ class DotList {
   Dot pointOnLineBetweenDots(int minMax, Dot divider) {
     var min = allDots[minMax];
     var max = allDots[minMax + 1];
-    print("min");
-    print(min.x);
-    print(min.y);
-    print(min.z);
-    print("max");
-    print(max.x);
-    print(max.y);
-    print(max.z);
-    print("divider");
-    print(divider.x);
-    print(divider.y);
-    print(divider.z);
 
     //Get coordinates aligned by drawing
     var coordXAxisOnCanvas = -(((max.dx - min.dx) /

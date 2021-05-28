@@ -11,6 +11,7 @@ class OpenPainter extends CustomPainter {
     required this.options,
     required Dot? paramPoint,
     required this.dotList,
+    required this.axis,
   }) {
     if (this.dotList.drawAbleDots.length > 1 && paramPoint != null) {
       selectedPoint = this.dotList.calculateOnDrawPointList(paramPoint);
@@ -20,7 +21,7 @@ class OpenPainter extends CustomPainter {
   }
 
   final GamrOptions options;
-
+  final String axis;
   late List<Dot> selectedPoint;
   final DotList dotList;
 
@@ -33,6 +34,31 @@ class OpenPainter extends CustomPainter {
     var paintRed = Paint()
       ..color = Config.colorRed
       ..strokeWidth = 2;
+
+    var paintBlack = Paint()
+      ..color = Config.colorBlack
+      ..strokeWidth = 1;
+
+    /// Axis show
+    canvas.drawLine(Dot(0, size.height - 15), Dot(size.width, size.height - 15),
+        paintBlack);
+    canvas.drawLine(Dot(15, 0), Dot(15, size.height), paintBlack);
+    late String textX;
+    late String textY;
+    if (this.axis == "XY") {
+      textX = "X";
+      textY = "Y";
+    }
+    if (this.axis == "XZ") {
+      textX = "X";
+      textY = "Z";
+    }
+    if (this.axis == "YZ") {
+      textX = "Y";
+      textY = "Z";
+    }
+    createNewText(size, textX)..paint(canvas, Offset(35, size.height - 15));
+    createNewText(size, textY)..paint(canvas, Offset(3, size.height - 45));
 
     // For all points draw X on Canvas
     canvas.drawPoints(
@@ -91,7 +117,8 @@ class OpenPainter extends CustomPainter {
 
       //Draw selected dot
       if (this.selectedPoint.length > 1) {
-        createNewText(size, this.selectedPoint[1].coordsToString(threeCoord: true),
+        createNewText(
+            size, this.selectedPoint[1].coordsToString(threeCoord: true),
             color: Config.colorRed)
           ..paint(canvas, this.selectedPoint[0]);
         canvas.drawPoints(
