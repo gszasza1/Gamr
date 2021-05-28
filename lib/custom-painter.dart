@@ -91,7 +91,7 @@ class OpenPainter extends CustomPainter {
 
       //Draw selected dot
       if (this.selectedPoint.length > 1) {
-        createNewText(size, this.selectedPoint[1].coordsToString(),
+        createNewText(size, this.selectedPoint[1].coordsToString(threeCoord: true),
             color: Config.colorRed)
           ..paint(canvas, this.selectedPoint[0]);
         canvas.drawPoints(

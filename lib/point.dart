@@ -2,12 +2,44 @@ import 'dart:math';
 import 'dart:ui';
 
 class Dot extends Offset {
-  double dz = 0;
-  Dot(double dx, double dy) : super(dx, dy);
-  Dot.dzParameter(double dx, double dy, this.dz) : super(dx, dy);
+  double z = 0;
+  double x = 0;
+  double y = 0;
+  String axis = "XY";
+
+  Dot(double dx, double dy) : super(dx, dy) {
+    x = dx;
+    y = dy;
+  }
+  Dot.dzParameter(double dx, double dy, this.z) : super(dx, dy) {
+    x = dx;
+    y = dy;
+  }
 
   double distanceFromDot(Dot dot) {
     return sqrt(distanceFromDotPow(dot));
+  }
+
+  @override
+  double get dx {
+    if (axis == "XY") {
+      return this.x;
+    } else if (axis == "XZ") {
+      return this.x;
+    } else {
+      return this.y;
+    }
+  }
+
+  @override
+  double get dy {
+    if (axis == "XY") {
+      return this.y;
+    } else if (axis == "XZ") {
+      return this.z;
+    } else {
+      return this.z;
+    }
   }
 
   double distanceFromDotPow(Dot dot) {
@@ -16,24 +48,40 @@ class Dot extends Offset {
     return a * a + b * b;
   }
 
-  String coordsToString({int? showNumber, bool showCoord = true}) {
+  static double distanceBetweenDots(Dot dot1, Dot dot2) {
+    var a = dot1.dx - dot2.dx;
+    var b = dot1.dy - dot2.dy;
+    return sqrt(a * a + b * b);
+  }
+
+  String coordsToString(
+      {int? showNumber, bool showCoord = true, bool threeCoord = false}) {
     if (showNumber != null && showCoord) {
-      return showNumber.toString() + " " + _createLocalCoords();
+      return showNumber.toString() + " " + _createLocalCoords(threeCoord);
     } else if (showNumber != null) {
       return showNumber.toString();
     } else if (showCoord) {
-      return _createLocalCoords();
+      return _createLocalCoords(threeCoord);
     } else {
       return "";
     }
   }
 
-  String _createLocalCoords() {
-    return "(" +
-        this.dx.toStringAsFixed(2) +
-        ", " +
-        this.dy.toStringAsFixed(2) +
-        ")";
+  String _createLocalCoords(bool threeCoord) {
+    if (threeCoord) {
+      return " X: " +
+          this.x.toStringAsFixed(2) +
+          "\n Y:" +
+          this.y.toStringAsFixed(2) +
+          "\n Z:" +
+          this.z.toStringAsFixed(2);
+    } else {
+      return "(" +
+          this.x.toStringAsFixed(2) +
+          ", " +
+          this.y.toStringAsFixed(2) +
+          ")";
+    }
   }
 
   static coordsParamToString(double x, double y,
@@ -61,9 +109,21 @@ class Dot extends Offset {
 
   static Dot getVectorRelativeProportion(Dot common,
       {required Dot relative, required Dot absolute}) {
-    var dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
-    var dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
-    return Dot(dividerX, dividerY);
+    double dividerX = 1;
+    double dividerY = 1;
+    double dividerZ = 1;
+    if (common.axis == "XY") {
+      dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
+      dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
+      dividerZ = (common.z - absolute.z) / (absolute.z - relative.z);
+    }
+    if (common.axis == "XY") {
+      dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
+      dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
+      dividerZ = (common.z - absolute.z) / (absolute.z - relative.z);
+    }
+
+    return Dot.dzParameter(dividerX, dividerY, dividerZ);
   }
 
   static getYProportion3Dots(Dot common,

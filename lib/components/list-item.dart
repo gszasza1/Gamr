@@ -25,18 +25,18 @@ class DotListItem extends StatelessWidget {
           ),
         ),
         Container(
-          child: Text(value.dx.toStringAsFixed(2)),
+          child: Text(value.x.toStringAsFixed(2)),
           margin: const EdgeInsets.only(
             right: 10,
           ),
         ),
         Container(
-          child: Text(value.dy.toStringAsFixed(2)),
+          child: Text(value.y.toStringAsFixed(2)),
           margin: const EdgeInsets.only(
             right: 10,
           ),
         ),
-        if (value.dz != null) Text(value.dz.toStringAsFixed(2)),
+        Text(value.z.toStringAsFixed(2)),
         Expanded(
           flex: 1,
           child: Flex(

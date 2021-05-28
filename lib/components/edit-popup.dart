@@ -34,7 +34,7 @@ class EditPopupState extends State<EditPopup> {
               margin: const EdgeInsets.only(bottom: 10),
               child: TextFormField(
                 keyboardType: TextInputType.number,
-                controller: xCoordRText..text = widget.dot.dx.toString(),
+                controller: xCoordRText..text = widget.dot.x.toString(),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'X',
@@ -44,7 +44,7 @@ class EditPopupState extends State<EditPopup> {
               margin: const EdgeInsets.only(bottom: 10),
               child: TextFormField(
                 keyboardType: TextInputType.number,
-                controller: yCoordRText..text = widget.dot.dy.toString(),
+                controller: yCoordRText..text = widget.dot.y.toString(),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Y',
@@ -52,7 +52,7 @@ class EditPopupState extends State<EditPopup> {
               )),
           TextFormField(
             keyboardType: TextInputType.number,
-            controller: zCoordRText..text = widget.dot.dz.toString(),
+            controller: zCoordRText..text = widget.dot.z.toString(),
             decoration: InputDecoration(
               border: OutlineInputBorder(),
               labelText: 'Z',
@@ -71,9 +71,9 @@ class EditPopupState extends State<EditPopup> {
           onPressed: () {
             widget.save(
               Dot.dzParameter(
-                double.tryParse(xCoordRText.text) ?? widget.dot.dx,
-                double.tryParse(yCoordRText.text) ?? widget.dot.dy,
-                double.tryParse(zCoordRText.text) ?? widget.dot.dz,
+                double.tryParse(xCoordRText.text) ?? widget.dot.x,
+                double.tryParse(yCoordRText.text) ?? widget.dot.y,
+                double.tryParse(zCoordRText.text) ?? widget.dot.z,
               ),
             );
             Navigator.of(context).pop();

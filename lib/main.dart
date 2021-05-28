@@ -31,6 +31,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Dot? localpositon;
 
   Offset? initMove;
+  String currentAxis = "XY";
 
   DotList dotList = DotList();
   TextEditingController xCoordRText = TextEditingController(text: '');
@@ -138,6 +139,41 @@ class _MyHomePageState extends State<MyHomePage> {
                   });
                 },
               ),
+              const Divider(),
+              RadioListTile(
+                title: const Text('XZ'),
+                value: "XZ",
+                groupValue: currentAxis,
+                onChanged: (String? value) {
+                  setState(() {
+                    currentAxis = value ?? "XZ";
+                    this.dotList.updateMainAxis(currentAxis);
+                  });
+                },
+              ),
+              RadioListTile(
+                title: const Text('YZ'),
+                value: "YZ",
+                groupValue: currentAxis,
+                onChanged: (String? value) {
+                  setState(() {
+                    currentAxis = value ?? "YZ";
+                    this.dotList.updateMainAxis(currentAxis);
+                  });
+                },
+              ),
+              RadioListTile(
+                title: const Text('XY'),
+                value: "XY",
+                groupValue: currentAxis,
+                onChanged: (String? value) {
+                  setState(() {
+                    currentAxis = value ?? "XY";
+                    this.dotList.updateMainAxis(currentAxis);
+                  });
+                },
+              ),
+              const Divider(),
             ],
           ),
         ),

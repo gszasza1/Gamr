@@ -54,7 +54,10 @@ class DotList {
   void addDot(Dot point) {
     allDots.add(point);
     this._sort();
+    calculateMetadata();
+  }
 
+  void calculateMetadata() {
     calculateAverageY();
     recalculateDrawable();
     calculateDegree();
@@ -181,12 +184,22 @@ class DotList {
     recalculateDrawable();
   }
 
+  void updateMainAxis(String value) {
+    this.allDots.forEach((element) {
+      element.axis = value;
+    });
+    this.drawAbleDots.forEach((element) {
+      element.axis = value;
+    });
+    calculateMetadata();
+  }
+
   List<Dot> calculateOnDrawPointList(Dot point) {
     Dot min = this.drawAbleDots[0];
     Dot max = this.drawAbleDots[this.drawAbleDots.length - 1];
     if (this.drawAbleDots.length > 1 &&
         point.dx >= min.dx &&
-        point.dx <= max.dx) {
+        point.dx <= max.x) {
       int minIndex = 0;
 
       /// Get points what the dot betwwen
@@ -200,8 +213,7 @@ class DotList {
       });
 
       var result = Dot.getYProportion3Dots(min, relative: point, absolute: max);
-      var pointToCanvas = Dot(point.dx, result);
-      print(pointToCanvas);
+      var pointToCanvas = Dot(point.x, result);
       var divider = Dot.getVectorRelativeProportion(max,
           relative: pointToCanvas, absolute: min);
       var pointToShow = pointOnLineBetweenDots(minIndex, divider);
@@ -213,13 +225,29 @@ class DotList {
   Dot pointOnLineBetweenDots(int minMax, Dot divider) {
     var min = allDots[minMax];
     var max = allDots[minMax + 1];
-    var coordX = -(((max.dx - min.dx) /
-            (divider.dx.isNaN || divider.dx == 0 ? 1 : divider.dx)) -
-        min.dx);
-    var coordY = -(((max.dy - min.dy) /
-            (divider.dy.isNaN || divider.dy == 0 ? 1 : divider.dy)) -
-        min.dy);
-    return Dot(coordX, coordY);
+    print("min");
+    print(min.x);
+    print(min.y);
+    print(min.z);
+    print("max");
+    print(max.x);
+    print(max.y);
+    print(max.z);
+    print("divider");
+    print(divider.x);
+    print(divider.y);
+    print(divider.z);
+
+    var coordX = -(((max.x - min.x) /
+            (divider.x.isNaN || divider.x == 0 ? 1 : divider.x)) -
+        min.x);
+    var coordY = -(((max.y - min.y) /
+            (divider.y.isNaN || divider.y == 0 ? 1 : divider.y)) -
+        min.y);
+    var coordZ = -(((max.z - min.z) /
+            (divider.z.isNaN || divider.z == 0 ? 1 : divider.z)) -
+        min.z);
+    return Dot.dzParameter(coordX, coordY, coordZ);
   }
 
   List<Dot> pointsToDrawX() {
