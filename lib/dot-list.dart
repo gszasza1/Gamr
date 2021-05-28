@@ -238,16 +238,29 @@ class DotList {
     print(divider.y);
     print(divider.z);
 
-    var coordX = -(((max.x - min.x) /
+    //Get coordinates aligned by drawing
+    var coordXAxisOnCanvas = -(((max.dx - min.dx) /
             (divider.x.isNaN || divider.x == 0 ? 1 : divider.x)) -
-        min.x);
-    var coordY = -(((max.y - min.y) /
+        min.dx);
+    var coordYAxisOnCanvas = -(((max.dy - min.dy) /
             (divider.y.isNaN || divider.y == 0 ? 1 : divider.y)) -
-        min.y);
-    var coordZ = -(((max.z - min.z) /
-            (divider.z.isNaN || divider.z == 0 ? 1 : divider.z)) -
-        min.z);
-    return Dot.dzParameter(coordX, coordY, coordZ);
+        min.dy);
+
+    /// Calculate remaining coordinate using percentage of others
+    var total = Dot.distanceBetweenDots(min, max);
+    var rel = Dot.distanceBetweenDots(
+        min, Dot(coordXAxisOnCanvas, coordYAxisOnCanvas));
+    var div = rel / total;
+    if (max.axis == "XZ") {
+      var yd = min.y + (max.y - min.y) * div;
+      return Dot.dzParameter(coordXAxisOnCanvas, yd, coordYAxisOnCanvas);
+    } else if (max.axis == "XY") {
+      var zd = min.z + (max.z - min.z) * div;
+      return Dot.dzParameter(coordXAxisOnCanvas, coordYAxisOnCanvas, zd);
+    } else {
+      var xd = min.x + (max.x - min.x) * div;
+      return Dot.dzParameter(xd,coordXAxisOnCanvas, coordYAxisOnCanvas);
+    }
   }
 
   List<Dot> pointsToDrawX() {

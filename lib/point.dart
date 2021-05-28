@@ -71,15 +71,15 @@ class Dot extends Offset {
     if (threeCoord) {
       return " X: " +
           this.x.toStringAsFixed(2) +
-          "\n Y:" +
+          "\n Y: " +
           this.y.toStringAsFixed(2) +
-          "\n Z:" +
+          "\n Z: " +
           this.z.toStringAsFixed(2);
     } else {
       return "(" +
-          this.x.toStringAsFixed(2) +
+          this.dx.toStringAsFixed(2) +
           ", " +
-          this.y.toStringAsFixed(2) +
+          this.dy.toStringAsFixed(2) +
           ")";
     }
   }
@@ -111,19 +111,11 @@ class Dot extends Offset {
       {required Dot relative, required Dot absolute}) {
     double dividerX = 1;
     double dividerY = 1;
-    double dividerZ = 1;
-    if (common.axis == "XY") {
       dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
       dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
-      dividerZ = (common.z - absolute.z) / (absolute.z - relative.z);
-    }
-    if (common.axis == "XY") {
-      dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
-      dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
-      dividerZ = (common.z - absolute.z) / (absolute.z - relative.z);
-    }
 
-    return Dot.dzParameter(dividerX, dividerY, dividerZ);
+    return Dot
+    (dividerX, dividerY);
   }
 
   static getYProportion3Dots(Dot common,
