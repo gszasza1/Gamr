@@ -110,12 +110,12 @@ class DotList {
       var first = allDots[0];
       var last = allDots[allDots.length - 1];
       var degree90 = Dot(last.dx, first.dy);
-      totalDegree = acos(-(first.distanceFromDotPow(last) /
-              (first.distanceFromDotPow(degree90) +
-                  last.distanceFromDotPow(degree90))) /
-          (2 *
-              last.distanceFromDot(degree90) *
-              first.distanceFromDot(degree90)));
+      var a2plusB2 =
+          first.distanceFromDotPow(degree90) + first.distanceFromDotPow(last);
+      var c2 = degree90.distanceFromDotPow(last);
+      var ab2x =
+          2 * first.distanceFromDot(last) * first.distanceFromDot(degree90);
+      totalDegree = acos((a2plusB2 - c2) / ab2x) * 180 / pi;
     }
   }
 
@@ -247,7 +247,7 @@ class DotList {
       return Dot.dzParameter(coordXAxisOnCanvas, coordYAxisOnCanvas, zd);
     } else {
       var xd = min.x + (max.x - min.x) * div;
-      return Dot.dzParameter(xd,coordXAxisOnCanvas, coordYAxisOnCanvas);
+      return Dot.dzParameter(xd, coordXAxisOnCanvas, coordYAxisOnCanvas);
     }
   }
 

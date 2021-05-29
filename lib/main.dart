@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/edit-popup.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/dot-list.dart';
@@ -242,28 +243,58 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: const BoxDecoration(color: Colors.white),
               child: Column(
                 children: [
-                  Slider(
-                    value: this.dotList.sliderX,
-                    min: 1,
-                    max: 100,
-                    label: "X: ${this.dotList.sliderX}",
-                    onChanged: (double value) {
-                      setState(() {
-                        this.dotList.updateSlider(sliderX: value);
-                      });
-                    },
-                  ),
-                  Slider(
-                    value: this.dotList.sliderY,
-                    min: 1,
-                    max: 100,
-                    label: "Y: ${this.dotList.sliderY}",
-                    onChanged: (double value) {
-                      setState(() {
-                        this.dotList.updateSlider(sliderY: value);
-                      });
-                    },
-                  ),
+                  Row(children: [
+                    Expanded(
+                        child: Column(
+                      children: [
+                        Slider(
+                          value: this.dotList.sliderX,
+                          min: 1,
+                          max: 100,
+                          label: "X: ${this.dotList.sliderX}",
+                          onChanged: (double value) {
+                            setState(() {
+                              this.dotList.updateSlider(sliderX: value);
+                            });
+                          },
+                        ),
+                        Slider(
+                          value: this.dotList.sliderY,
+                          min: 1,
+                          max: 100,
+                          label: "Y: ${this.dotList.sliderY}",
+                          onChanged: (double value) {
+                            setState(() {
+                              this.dotList.updateSlider(sliderY: value);
+                            });
+                          },
+                        )
+                      ],
+                    )),
+                    Ink(
+                      decoration: const ShapeDecoration(
+                        color: Colors.black,
+                        shape: CircleBorder(),
+                      ),
+                      child: IconButton(
+                        tooltip: 'Details',
+                        icon: const Icon(Icons.toc),
+                        color: Colors.black,
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return DetailsPopup(
+                                  details: Details(
+                                      this.dotList.averageY,
+                                      this.dotList.allDots.length,
+                                      this.dotList.totalDegree),
+                                );
+                              });
+                        },
+                      ),
+                    ),
+                  ]),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
