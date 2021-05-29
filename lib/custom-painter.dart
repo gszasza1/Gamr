@@ -27,6 +27,7 @@ class OpenPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    /// Colors init
     var paintGreen = Paint()
       ..color = Config.colorGreen
       ..strokeWidth = 1;
@@ -40,9 +41,24 @@ class OpenPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     /// Axis show
+    /// X
+    /// Line
     canvas.drawLine(Dot(0, size.height - 15), Dot(size.width, size.height - 15),
         paintBlack);
+
+    /// Nyíl
+    canvas.drawLine(Dot(size.width - 5, size.height - 20),
+        Dot(size.width, size.height - 15), paintBlack);
+    canvas.drawLine(Dot(size.width - 5, size.height - 10),
+        Dot(size.width, size.height - 15), paintBlack);
+
+    /// Y
+    /// Line
     canvas.drawLine(Dot(15, 0), Dot(15, size.height), paintBlack);
+
+    ///Nyíl
+    canvas.drawLine(Dot(10, 5), Dot(15, 0), paintBlack);
+    canvas.drawLine(Dot(20, 5), Dot(15, 0), paintBlack);
     late String textX;
     late String textY;
     if (this.axis == "XY") {

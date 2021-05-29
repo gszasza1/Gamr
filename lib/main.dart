@@ -4,7 +4,7 @@ import 'package:gamr/components/list-item.dart';
 import 'package:gamr/dot-list.dart';
 import 'package:gamr/options.dart';
 import 'package:gamr/point.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'custom-painter.dart';
 import 'test-data.dart';
 
@@ -32,17 +32,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Offset? initMove;
   String currentAxis = "XY";
-
+  late SharedPreferences prefs;
   DotList dotList = DotList();
   TextEditingController xCoordRText = TextEditingController(text: '');
   TextEditingController yCoordRText = TextEditingController(text: '');
   TextEditingController zCoordRText = TextEditingController(text: '');
   GamrOptions options = GamrOptions();
 
+  Future getInitialPref() async {
+    prefs = await SharedPreferences.getInstance();
+    options.showCoords = prefs.getBool("showCoords") ?? true;
+    options.onlyPoints = prefs.getBool("onlyPoints") ?? false;
+    options.showYAxis = prefs.getBool("showYAxis") ?? true;
+    options.showMedian = prefs.getBool("showMedian") ?? true;
+    options.showTotalDegree = prefs.getBool("showTotalDegree") ?? true;
+    options.showNumber = prefs.getBool("showNumber") ?? true;
+  }
+
   @override
   void initState() {
     super.initState();
     dotList.addMultipleDots(testDots);
+    this.getInitialPref();
   }
 
   @override
@@ -90,6 +101,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.showCoords,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("showCoords", !options.showCoords);
                     options.showCoords = !options.showCoords;
                   });
                 },
@@ -99,6 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.onlyPoints,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("onlyPoints", !options.onlyPoints);
                     options.onlyPoints = !options.onlyPoints;
                   });
                 },
@@ -108,6 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.showYAxis,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("showYAxis", !options.showYAxis);
                     options.showYAxis = !options.showYAxis;
                   });
                 },
@@ -117,6 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.showMedian,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("showMedian", !options.showMedian);
                     options.showMedian = !options.showMedian;
                   });
                 },
@@ -126,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.showTotalDegree,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("showTotalDegree", !options.showTotalDegree);
                     options.showTotalDegree = !options.showTotalDegree;
                   });
                 },
@@ -135,6 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 value: options.showNumber,
                 onChanged: (bool? value) {
                   setState(() {
+                    prefs.setBool("showNumber", !options.showNumber);
                     options.showNumber = !options.showNumber;
                   });
                 },
