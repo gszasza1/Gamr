@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/edit-popup.dart';
 import 'package:gamr/components/list-item.dart';
+import 'package:gamr/constant/popup-menu.dart';
 import 'package:gamr/dot-list.dart';
 import 'package:gamr/options.dart';
 import 'package:gamr/point.dart';
@@ -195,230 +196,281 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-        body: Column(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                child: GestureDetector(
-                  onTapUp: (x) => {
-                    setState(() {
-                      localpositon = Dot.offsetToDot(x.localPosition);
-                    })
-                  },
-                  onScaleEnd: (x) => {
-                    setState(() {
-                      initMove = null;
-                      this.dotList.setNewFixOffset();
-                    })
-                  },
-                  onScaleStart: (x) => {
-                    setState(() {
-                      localpositon = null;
-                      initMove = x.localFocalPoint;
-                    })
-                  },
-                  onScaleUpdate: (x) => {
-                    setState(() {
-                      if (initMove != null) {
-                        this.dotList.updateOffset(
-                            initMove!.dx - x.localFocalPoint.dx,
-                            initMove!.dy - x.localFocalPoint.dy,
-                            x.scale);
-                      }
-                    })
-                  },
-                  child: CustomPaint(
-                    painter: OpenPainter(
-                        options: options,
-                        dotList: dotList,
-                        axis: currentAxis,
-                        paramPoint: this.localpositon),
+        body: Stack(
+          children: <Widget>[
+            Column(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    child: GestureDetector(
+                      onTapUp: (x) => {
+                        setState(() {
+                          localpositon = Dot.offsetToDot(x.localPosition);
+                        })
+                      },
+                      onScaleEnd: (x) => {
+                        setState(() {
+                          initMove = null;
+                          this.dotList.setNewFixOffset();
+                        })
+                      },
+                      onScaleStart: (x) => {
+                        setState(() {
+                          localpositon = null;
+                          initMove = x.localFocalPoint;
+                        })
+                      },
+                      onScaleUpdate: (x) => {
+                        setState(() {
+                          if (initMove != null) {
+                            this.dotList.updateOffset(
+                                initMove!.dx - x.localFocalPoint.dx,
+                                initMove!.dy - x.localFocalPoint.dy,
+                                x.scale);
+                          }
+                        })
+                      },
+                      child: CustomPaint(
+                        painter: OpenPainter(
+                            options: options,
+                            dotList: dotList,
+                            axis: currentAxis,
+                            paramPoint: this.localpositon),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            Container(
-              decoration: const BoxDecoration(color: Colors.white),
-              child: Column(
-                children: [
-                  Row(children: [
-                    Expanded(
-                        child: Column(
-                      children: [
-                        Slider(
-                          value: this.dotList.sliderX,
-                          min: 1,
-                          max: 100,
-                          label: "X: ${this.dotList.sliderX}",
-                          onChanged: (double value) {
-                            setState(() {
-                              this.dotList.updateSlider(sliderX: value);
-                            });
-                          },
-                        ),
-                        Slider(
-                          value: this.dotList.sliderY,
-                          min: 1,
-                          max: 100,
-                          label: "Y: ${this.dotList.sliderY}",
-                          onChanged: (double value) {
-                            setState(() {
-                              this.dotList.updateSlider(sliderY: value);
-                            });
-                          },
-                        )
-                      ],
-                    )),
-                    Ink(
-                      decoration: const ShapeDecoration(
-                        color: Colors.black,
-                        shape: CircleBorder(),
-                      ),
-                      child: IconButton(
-                        tooltip: 'Details',
-                        icon: const Icon(Icons.toc),
-                        color: Colors.black,
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return DetailsPopup(
-                                  details: Details(
-                                      this.dotList.averageY,
-                                      this.dotList.allDots.length,
-                                      this.dotList.totalDegree),
-                                );
-                              });
-                        },
-                      ),
-                    ),
-                  ]),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                Container(
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: Column(
                     children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.2,
-                            child: ListView(
-                              shrinkWrap: true,
-                              children:
-                                  dotList.allDots.asMap().entries.map((entry) {
-                                int idx = entry.key;
-                                var value = entry.value;
-                                return Container(
-                                  margin: const EdgeInsets.only(
-                                    left: 10,
-                                    right: 10,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                          color: Color(0xfffff3f3f3)),
-                                    ),
-                                  ),
-                                  child: InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return EditPopup(
-                                                dot: value,
-                                                save: (x) => {
-                                                  setState(() {
-                                                    this
-                                                        .dotList
-                                                        .removeDot(value);
-                                                    this.dotList.addDot(x);
-                                                  })
-                                                },
-                                              );
-                                            });
-                                      },
-                                      child: DotListItem(
-                                        callback: () {
-                                          setState(() {
-                                            localpositon = null;
-                                            dotList.removeDot(value);
-                                          });
-                                        },
-                                        index: idx,
-                                        value: value,
-                                        key: Key(idx.toString()),
-                                      )),
-                                );
-                              }).toList(),
+                      Row(children: [
+                        Expanded(
+                            child: Column(
+                          children: [
+                            Slider(
+                              value: this.dotList.sliderX,
+                              min: 1,
+                              divisions: 99,
+                              max: 100,
+                              label:
+                                  "X: ${(this.dotList.sliderX / 10).toStringAsFixed(1)}",
+                              onChanged: (double value) {
+                                setState(() {
+                                  this.dotList.updateSlider(sliderX: value);
+                                });
+                              },
                             ),
+                            Slider(
+                              value: this.dotList.sliderY,
+                              min: 1,
+                              divisions: 99,
+                              max: 100,
+                              label:
+                                  "Y: ${(this.dotList.sliderY / 10).toStringAsFixed(1)}",
+                              onChanged: (double value) {
+                                setState(() {
+                                  this.dotList.updateSlider(sliderY: value);
+                                });
+                              },
+                            )
+                          ],
+                        )),
+                        Ink(
+                          decoration: const ShapeDecoration(
+                            color: Colors.black,
+                            shape: CircleBorder(),
+                          ),
+                          child: IconButton(
+                            tooltip: 'Details',
+                            icon: const Icon(Icons.toc),
+                            color: Colors.black,
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return DetailsPopup(
+                                      details: Details(
+                                          this.dotList.averageY,
+                                          this.dotList.allDots.length,
+                                          this.dotList.totalDegree),
+                                    );
+                                  });
+                            },
                           ),
                         ),
+                      ]),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.2,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  children: dotList.allDots
+                                      .asMap()
+                                      .entries
+                                      .map((entry) {
+                                    int idx = entry.key;
+                                    var value = entry.value;
+                                    return Container(
+                                      margin: const EdgeInsets.only(
+                                        left: 10,
+                                        right: 10,
+                                      ),
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                              color: Color(0xfffff3f3f3)),
+                                        ),
+                                      ),
+                                      child: InkWell(
+                                          onTap: () {
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return EditPopup(
+                                                    dot: value,
+                                                    save: (x) => {
+                                                      setState(() {
+                                                        this
+                                                            .dotList
+                                                            .removeDot(value);
+                                                        this.dotList.addDot(x);
+                                                      })
+                                                    },
+                                                  );
+                                                });
+                                          },
+                                          child: DotListItem(
+                                            callback: () {
+                                              setState(() {
+                                                localpositon = null;
+                                                dotList.removeDot(value);
+                                              });
+                                            },
+                                            index: idx,
+                                            value: value,
+                                            key: Key(idx.toString()),
+                                          )),
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                      Container(
+                        margin: EdgeInsets.all(5),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: xCoordRText,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'X',
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: yCoordRText,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Y'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                keyboardType: TextInputType.number,
+                                controller: zCoordRText,
+                                decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Z'),
+                              ),
+                            ),
+                            TextButton(
+                              child: Text("Add"),
+                              onPressed: () => {
+                                setState(() {
+                                  var parsedX =
+                                      double.tryParse(xCoordRText.text) ?? 0;
+                                  if (!dotList.allDots.any(
+                                      (element) => element.dx == parsedX)) {
+                                    dotList.addDot(Dot.dzParameter(
+                                        parsedX,
+                                        double.tryParse(yCoordRText.text) ?? 0,
+                                        double.tryParse(zCoordRText.text) ??
+                                            0));
+                                    dotList.allDots.sort((a, b) => a.dx == b.dx
+                                        ? 0
+                                        : a.dx > b.dx
+                                            ? 1
+                                            : -1);
+                                    xCoordRText.clear();
+                                    yCoordRText.clear();
+                                  }
+                                })
+                              },
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                  Container(
-                    margin: EdgeInsets.all(5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: xCoordRText,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: 'X',
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: yCoordRText,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(), labelText: 'Y'),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Expanded(
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            controller: zCoordRText,
-                            decoration: InputDecoration(
-                                border: OutlineInputBorder(), labelText: 'Z'),
-                          ),
-                        ),
-                        TextButton(
-                          child: Text("Add"),
-                          onPressed: () => {
-                            setState(() {
-                              var parsedX =
-                                  double.tryParse(xCoordRText.text) ?? 0;
-                              if (!dotList.allDots
-                                  .any((element) => element.dx == parsedX)) {
-                                dotList.addDot(Dot.dzParameter(
-                                    parsedX,
-                                    double.tryParse(yCoordRText.text) ?? 0,
-                                    double.tryParse(zCoordRText.text) ?? 0));
-                                dotList.allDots.sort((a, b) => a.dx == b.dx
-                                    ? 0
-                                    : a.dx > b.dx
-                                        ? 1
-                                        : -1);
-                                xCoordRText.clear();
-                                yCoordRText.clear();
-                              }
-                            })
-                          },
-                        )
-                      ],
+                ),
+              ],
+            ),
+            Positioned.fill(
+              top: 10,
+              right: 10,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: PopupMenuButton(
+                  onSelected: (PopupMenu value) {
+                    print(value);
+                  },
+                  child: Ink(
+                    height: 35,
+                    width: 35,
+                    decoration: const ShapeDecoration(
+                      color: Colors.lightBlue,
+                      shape: CircleBorder(),
                     ),
-                  )
-                ],
+                    child: const Icon(
+                      Icons.menu,
+                      color: Colors.white,
+                    ),
+                  ),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem(
+                        value: PopupMenu.send_email,
+                        child: Text('Send in e-mail'),
+                      ),
+                      PopupMenuItem(
+                        value: PopupMenu.save_file,
+                        child: Text('Save file'),
+                      ),
+                    ];
+                  },
+                ),
               ),
             ),
           ],
