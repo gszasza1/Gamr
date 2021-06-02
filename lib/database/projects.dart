@@ -1,17 +1,15 @@
 import 'package:gamr/database/points.dart';
-import 'package:hive/hive.dart';
-part 'projects.g.dart';
+import 'package:objectbox/objectbox.dart';
 
-@HiveType(typeId: 2)
+@Entity()
 class Project {
-  @HiveField(0)
+  int id = 0;
   String name = '';
 
-  @HiveField(1)
   DateTime creation = DateTime.now();
-
-  @HiveField(2)
-  List<DBPoint> points=[];
+  
+  @Backlink()
+  final points = ToMany<DBPoint>();
 
   Project(this.name);
 

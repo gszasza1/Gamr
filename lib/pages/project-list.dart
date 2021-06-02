@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/components/add-new-project.dart';
 import 'package:gamr/components/project-list-item.dart';
 import 'package:gamr/database/projects.dart';
 import 'package:gamr/method/project-method.dart';
@@ -12,11 +13,18 @@ class ProjectList extends StatefulWidget {
 
 class _ProjectListState extends State<ProjectList> {
   Map<dynamic, Project> listProjects = Map();
-  Future<void> getProjectList() async {
-    final box = await DB().getAllProject();
-    setState(() {
-      listProjects = box;
-    });
+
+  Future<void> getProjectList()  async {
+    // // final box = await DB.getAllProject();
+    // // setState(() {
+    // //   listProjects = box;
+    // // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getProjectList();
   }
 
   @override
@@ -31,17 +39,34 @@ class _ProjectListState extends State<ProjectList> {
           child: IconButton(
             icon: const Icon(Icons.add),
             color: Colors.white,
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AddNewProjectPopup(
+                        refreshList: () => {getProjectList()});
+                  });
+            },
           ),
         ),
+        // floatingActionButton: IconButton(
+        //   icon: Icon(Icons.ac_unit),
+        //   onPressed: () => {getProjectList()},
+        // ),
         appBar: AppBar(title: Text("Projekt lista")),
-        body: SingleChildScrollView(
-          child: ListView(
-            shrinkWrap: true,
-            children: listProjects.entries
-                .map((e) => ProjectListItem(project: e.value, projectId: e.key))
-                .toList(),
-          ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height - 50,
+          child: Column(children: [
+            SingleChildScrollView(
+              child: ListView(
+                shrinkWrap: true,
+                children: listProjects.entries
+                    .map((e) =>
+                        ProjectListItem(project: e.value, projectId: e.key))
+                    .toList(),
+              ),
+            ),
+          ]),
         ),
       ),
     );

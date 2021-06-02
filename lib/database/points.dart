@@ -1,15 +1,12 @@
-import 'package:hive/hive.dart';
-part 'points.g.dart';
+import 'package:objectbox/objectbox.dart';
 
-@HiveType(typeId: 1)
+@Entity()
 class DBPoint {
-  @HiveField(0)
+  int id = 0;
   double x = 0;
 
-  @HiveField(1)
   double y = 0;
 
-  @HiveField(2)
   double z = 0;
   DBPoint({required this.x, required this.y, required this.z});
 }
