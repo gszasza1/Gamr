@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:gamr/config.dart';
+import 'package:gamr/config/config.dart';
 import 'package:gamr/dot-list.dart';
-import 'package:gamr/options.dart';
+import 'package:gamr/config/options.dart';
 import 'package:gamr/point.dart';
 
 class OpenPainter extends CustomPainter {
@@ -94,7 +94,7 @@ class OpenPainter extends CustomPainter {
               size,
               dotList.allDots[i].coordsToString(
                   showNumber: options.showNumber ? i + 1 : null,
-                  showCoord: this.options.showCoords))
+                  showCoord: this.options.showCoords,threeCoord: true))
             ..paint(canvas, dotList.drawAbleDots[i]);
         }
 

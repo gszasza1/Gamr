@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:gamr/database/points.dart';
 import 'package:gamr/point.dart';
 
 class DotList {
@@ -33,6 +34,10 @@ class DotList {
 
   double getXOffset() {
     return this.offsetX - this.movableOffsetX;
+  }
+
+  List<DBPoint> dotsToDBPoint() {
+    return this.allDots.map((e) => DBPoint(x: e.x, y: e.y, z: e.z)).toList();
   }
 
   double getScale() {
