@@ -12,13 +12,13 @@ class ProjectList extends StatefulWidget {
 }
 
 class _ProjectListState extends State<ProjectList> {
-  Map<dynamic, Project> listProjects = Map();
+  List<Project> listProjects = [];
 
-  Future<void> getProjectList()  async {
-    // // final box = await DB.getAllProject();
-    // // setState(() {
-    // //   listProjects = box;
-    // // });
+  Future<void> getProjectList() async {
+    final box = DB().getAllProject();
+    setState(() {
+      listProjects = box;
+    });
   }
 
   @override
@@ -60,9 +60,8 @@ class _ProjectListState extends State<ProjectList> {
             SingleChildScrollView(
               child: ListView(
                 shrinkWrap: true,
-                children: listProjects.entries
-                    .map((e) =>
-                        ProjectListItem(project: e.value, projectId: e.key))
+                children: listProjects
+                    .map((e) => ProjectListItem(project: e))
                     .toList(),
               ),
             ),

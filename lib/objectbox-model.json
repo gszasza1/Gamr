@@ -1,0 +1,79 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:4136957437846576549",
+      "lastPropertyId": "5:3278607172607892396",
+      "name": "DBPoint",
+      "properties": [
+        {
+          "id": "1:1067544788414303802",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:3363874536346283117",
+          "name": "x",
+          "type": 8
+        },
+        {
+          "id": "3:3949985196985255128",
+          "name": "y",
+          "type": 8
+        },
+        {
+          "id": "4:1719482328191721788",
+          "name": "z",
+          "type": 8
+        },
+        {
+          "id": "5:3278607172607892396",
+          "name": "projectId",
+          "type": 11,
+          "flags": 520,
+          "indexId": "1:1419993489597941641",
+          "relationTarget": "Project"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "2:4241614082196419649",
+      "lastPropertyId": "3:1230589630562623126",
+      "name": "Project",
+      "properties": [
+        {
+          "id": "1:2599455200409677421",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:8914761188223913680",
+          "name": "name",
+          "type": 9
+        },
+        {
+          "id": "3:1230589630562623126",
+          "name": "creation",
+          "type": 10
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "2:4241614082196419649",
+  "lastIndexId": "1:1419993489597941641",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}

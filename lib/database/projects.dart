@@ -6,8 +6,9 @@ class Project {
   int id = 0;
   String name = '';
 
+  @Property(type: PropertyType.date)
   DateTime creation = DateTime.now();
-  
+
   @Backlink()
   final points = ToMany<DBPoint>();
 

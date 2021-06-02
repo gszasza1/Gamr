@@ -1,15 +1,12 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gamr/pages/project-list.dart';
-import 'package:objectbox/objectbox.dart';
-import 'package:path_provider/path_provider.dart';
-import 'objectbox.g.dart';
+import 'method/project-method.dart';
+
 Future<void> main() async {
-  Store _store;
   WidgetsFlutterBinding.ensureInitialized();
-  Directory? appDocDir = await getApplicationDocumentsDirectory();
-  _store = Store(getObjectBoxModel(), directory: appDocDir.path);
+  await DB().init();
+
   runApp(MyApp());
 }
 
