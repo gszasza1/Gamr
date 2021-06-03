@@ -1,19 +1,39 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:gamr/database/points.dart';
+
 class Dot extends Offset {
+  /// Only for data points. Not for draw points
+  int id = 0;
+
   double z = 0;
   double x = 0;
   double y = 0;
   String axis = "XY";
 
-  Dot(double dx, double dy) : super(dx, dy) {
+  Dot(double dx, double dy, {int? id}) : super(dx, dy) {
     x = dx;
     y = dy;
+    if (id != null) {
+      this.id = id;
+    }
   }
-  Dot.dzParameter(double dx, double dy, this.z) : super(dx, dy) {
+  Dot.dzParameter(double dx, double dy, this.z, {int? id}) : super(dx, dy) {
     x = dx;
     y = dy;
+    if (id != null) {
+      this.id = id;
+    }
+  }
+  DBPoint toDbPoint() {
+    return DBPoint(x: x, y: y, z: z, id: id);
+  }
+
+  updateCoord(Dot dot) {
+    x = dot.x;
+    y = dot.y;
+    z = dot.z;
   }
 
   double distanceFromDot(Dot dot) {
@@ -111,11 +131,10 @@ class Dot extends Offset {
       {required Dot relative, required Dot absolute}) {
     double dividerX = 1;
     double dividerY = 1;
-      dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
-      dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
+    dividerX = (common.dx - absolute.dx) / (absolute.dx - relative.dx);
+    dividerY = (common.dy - absolute.dy) / (absolute.dy - relative.dy);
 
-    return Dot
-    (dividerX, dividerY);
+    return Dot(dividerX, dividerY);
   }
 
   static getYProportion3Dots(Dot common,

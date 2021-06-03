@@ -106,6 +106,16 @@ class DotList {
     }
   }
 
+  void updateDot(Dot dot) {
+    final sameDot = allDots.firstWhere((element) => element.id == dot.id);
+    sameDot.updateCoord(dot);
+    recalculateDrawable();
+    if (allDots.length > 1) {
+      calculateAverageY();
+      calculateDegree();
+    }
+  }
+
   void setPaintColor(Color color) {
     graphPaint.color = color;
   }

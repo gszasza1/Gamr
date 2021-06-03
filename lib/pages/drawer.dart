@@ -1,17 +1,20 @@
-
 import 'package:flutter/material.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/edit-popup.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/constant/popup-menu.dart';
 import 'package:gamr/custom-painter.dart';
+import 'package:gamr/database/points.dart';
 import 'package:gamr/dot-list.dart';
 import 'package:gamr/config/options.dart';
+import 'package:gamr/method/project-method.dart';
 import 'package:gamr/point.dart';
 import 'package:gamr/test-data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerPage extends StatefulWidget {
+  int projectId;
+  DrawerPage({required this.projectId});
   @override
   _DrawerPageState createState() => _DrawerPageState();
 }
@@ -41,8 +44,42 @@ class _DrawerPageState extends State<DrawerPage> {
   @override
   void initState() {
     super.initState();
-    dotList.addMultipleDots(testDots);
+    //  dotList.addMultipleDots(testDots);
+    this.initializeDots();
     this.getInitialPref();
+  }
+
+  Future<void> initializeDots() async {
+    final dbDotList = await DB().getProjectDots(widget.projectId);
+    final transformedDots =
+        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id)).toList();
+    dotList.addMultipleDots(transformedDots);
+  }
+
+  Future<void> addPoint() async {
+    var parsedX = double.tryParse(xCoordRText.text) ?? 0;
+    var parsedY = double.tryParse(yCoordRText.text) ?? 0;
+    var parsedZ = double.tryParse(zCoordRText.text) ?? 0;
+    if (!dotList.allDots.any((element) =>
+        element.x == parsedX && element.y == parsedY && element.z == parsedZ)) {
+      var newId = await DB().addDot(
+          widget.projectId, DBPoint(x: parsedX, y: parsedY, z: parsedZ));
+      dotList.addDot(Dot.dzParameter(parsedX, parsedY, parsedZ, id: newId));
+      xCoordRText.clear();
+      yCoordRText.clear();
+      zCoordRText.clear();
+    }
+  }
+
+  Future<void> updateDot(Dot value) async {
+    DB().updateDot(value);
+    this.dotList.updateDot(value);
+  }
+
+  Future<void> deleteDot(Dot value) async {
+    localpositon = null;
+    dotList.removeDot(value);
+    await DB().deleteDot(widget.projectId, value.id);
   }
 
   @override
@@ -326,10 +363,7 @@ class _DrawerPageState extends State<DrawerPage> {
                                                     dot: value,
                                                     save: (x) => {
                                                       setState(() {
-                                                        this
-                                                            .dotList
-                                                            .removeDot(value);
-                                                        this.dotList.addDot(x);
+                                                        this.updateDot(x);
                                                       })
                                                     },
                                                   );
@@ -338,8 +372,7 @@ class _DrawerPageState extends State<DrawerPage> {
                                           child: DotListItem(
                                             callback: () {
                                               setState(() {
-                                                localpositon = null;
-                                                dotList.removeDot(value);
+                                                this.deleteDot(value);
                                               });
                                             },
                                             index: idx,
@@ -396,23 +429,7 @@ class _DrawerPageState extends State<DrawerPage> {
                               child: Text("Add"),
                               onPressed: () => {
                                 setState(() {
-                                  var parsedX =
-                                      double.tryParse(xCoordRText.text) ?? 0;
-                                  if (!dotList.allDots.any(
-                                      (element) => element.dx == parsedX)) {
-                                    dotList.addDot(Dot.dzParameter(
-                                        parsedX,
-                                        double.tryParse(yCoordRText.text) ?? 0,
-                                        double.tryParse(zCoordRText.text) ??
-                                            0));
-                                    dotList.allDots.sort((a, b) => a.dx == b.dx
-                                        ? 0
-                                        : a.dx > b.dx
-                                            ? 1
-                                            : -1);
-                                    xCoordRText.clear();
-                                    yCoordRText.clear();
-                                  }
+                                  this.addPoint();
                                 })
                               },
                             )

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:gamr/database/points.dart';
 import 'package:gamr/database/projects.dart';
 import 'package:gamr/objectbox.g.dart';
+import 'package:gamr/point.dart';
 import 'package:path_provider/path_provider.dart';
 //import 'package:gamr/database/projects.dart';
 
@@ -43,9 +44,15 @@ class DB {
     box.put(pr);
   }
 
-  updateDot(int dotKey, DBPoint point) async {
+  updateDot(Dot point) async {
     var box = store.box<DBPoint>();
-    box.put(point);
+    var dbPoint = box.get(point.id);
+    if (dbPoint != null) {
+      dbPoint.x = point.x;
+      dbPoint.y = point.y;
+      dbPoint.z = point.z;
+      box.put(dbPoint);
+    }
   }
 
   deleteDot(int projectId, int dotKey) async {
@@ -59,14 +66,26 @@ class DB {
     }
   }
 
-  addDot(int projectId, DBPoint point) async {
+  Future<int> addDot(int projectId, DBPoint point) async {
     var box = store.box<DBPoint>();
-    box.put(point);
+
+    var newId = box.put(point);
     var projects = store.box<Project>();
     var project = projects.get(projectId);
     if (project != null) {
       project.points.add(point);
       projects.put(project);
+    }
+    return newId;
+  }
+
+  Future<List<DBPoint>> getProjectDots(int projectId) async {
+    var projects = store.box<Project>();
+    var project = projects.get(projectId);
+    if (project != null) {
+      return project.points.toList();
+    } else {
+      return [];
     }
   }
 }

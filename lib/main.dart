@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:gamr/pages/drawer.dart';
 import 'package:gamr/pages/project-list.dart';
 import 'method/project-method.dart';
 
@@ -23,14 +23,14 @@ class MyApp extends StatelessWidget {
               builder: (context) => ProjectList());
         }
 
-        // Handle '/details/:id'
+        // Handle '/project/:id'
         final uri = Uri.parse(settings.name!);
         if (uri.pathSegments.length == 2 &&
             uri.pathSegments.first == 'project') {
           final id = int.parse(uri.pathSegments[1]);
           return MaterialPageRoute(
-              settings: RouteSettings(name: "/movie/$id"),
-              builder: (context) => Drawer());
+              settings: RouteSettings(name: "/project/$id"),
+              builder: (context) => DrawerPage(projectId: id));
         }
 
         return MaterialPageRoute(builder: (context) => ProjectList());

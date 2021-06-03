@@ -74,6 +74,7 @@ class EditPopupState extends State<EditPopup> {
                 double.tryParse(xCoordRText.text) ?? widget.dot.x,
                 double.tryParse(yCoordRText.text) ?? widget.dot.y,
                 double.tryParse(zCoordRText.text) ?? widget.dot.z,
+                id:widget.dot.id,
               ),
             );
             Navigator.of(context).pop();

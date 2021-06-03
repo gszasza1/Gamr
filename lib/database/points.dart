@@ -11,6 +11,10 @@ class DBPoint {
   double z = 0;
 
   final project = ToOne<Project>();
-  
-  DBPoint({required this.x, required this.y, required this.z});
+
+  DBPoint({required this.x, required this.y, required this.z, int? id}) {
+    if (id != null) {
+      this.id = id;
+    }
+  }
 }
