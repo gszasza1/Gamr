@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/pages/drawer.dart';
 import 'package:gamr/pages/project-list.dart';
-import 'method/project-method.dart';
+import 'services/database-service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DB().init();
+  await DBService().init();
 
   runApp(MyApp());
 }

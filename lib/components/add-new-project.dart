@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/method/project-method.dart';
+import 'package:gamr/services/database-service.dart';
 
 Widget buildPopupDialog(BuildContext context, Function refreshList) {
   return AddNewProjectPopup(
@@ -39,7 +39,7 @@ class AddNewProjectPopupState extends State<AddNewProjectPopup> {
         ),
         TextButton(
           onPressed: () async {
-             DB().addProject(nameController.text);
+             DBService().addProject(nameController.text);
             widget.refreshList();
             Navigator.of(context).pop();
           },

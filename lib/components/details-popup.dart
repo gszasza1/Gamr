@@ -20,21 +20,21 @@ class DetailsPopup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Details'),
+      title: const Text('Részletek'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Expanded(child: Text("Total dots: ")),
+            Expanded(child: Text("Összes pont: ")),
             Text(details.totalDots.toString())
           ]),
           Row(children: [
-            Expanded(child: Text("Average Y: ")),
+            Expanded(child: Text("Átlagos magasság: ")),
             Text(details.averageY.toStringAsFixed(5))
           ]),
           Row(children: [
-            Expanded(child: Text("Average angle: ")),
+            Expanded(child: Text("Teljes meredekség: ")),
             Text(details.averageAngle.toStringAsFixed(3) + " °")
           ]),
         ],
@@ -44,7 +44,7 @@ class DetailsPopup extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Close'),
+          child: const Text('Bezárás'),
         ),
       ],
     );

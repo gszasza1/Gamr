@@ -4,12 +4,12 @@
 
 import 'dart:typed_data';
 
+import 'package:gamr/models/database/points.dart';
+import 'package:gamr/models/database/projects.dart';
 import 'package:objectbox/flatbuffers/flat_buffers.dart' as fb;
 import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart';
 
-import 'database/points.dart';
-import 'database/projects.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 

@@ -1,20 +1,20 @@
 import 'dart:io';
 
-import 'package:gamr/database/points.dart';
-import 'package:gamr/database/projects.dart';
+import 'package:gamr/models/database/points.dart';
+import 'package:gamr/models/database/projects.dart';
+import 'package:gamr/models/drawer/point.dart';
 import 'package:gamr/objectbox.g.dart';
-import 'package:gamr/point.dart';
 import 'package:path_provider/path_provider.dart';
 //import 'package:gamr/database/projects.dart';
 
-class DB {
-  static final DB _singleton = DB._internal();
+class DBService {
+  static final DBService _singleton = DBService._internal();
   late final Store store;
-  factory DB() {
+  factory DBService() {
     return _singleton;
   }
 
-  DB._internal();
+  DBService._internal();
   init() async {
     Directory dir = await getApplicationDocumentsDirectory();
     store = Store(getObjectBoxModel(), directory: dir.path + '/objectbox');

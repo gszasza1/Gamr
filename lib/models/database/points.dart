@@ -1,4 +1,4 @@
-import 'package:gamr/database/projects.dart';
+import 'package:gamr/models/database/projects.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()

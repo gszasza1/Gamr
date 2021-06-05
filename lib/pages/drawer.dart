@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/edit-popup.dart';
+import 'package:gamr/components/email-options-popup.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/constant/popup-menu.dart';
 import 'package:gamr/custom-painter.dart';
-import 'package:gamr/database/points.dart';
-import 'package:gamr/dot-list.dart';
 import 'package:gamr/config/options.dart';
-import 'package:gamr/method/project-method.dart';
-import 'package:gamr/point.dart';
-import 'package:gamr/test-data.dart';
+import 'package:gamr/models/database/points.dart';
+import 'package:gamr/models/drawer/dot-list.dart';
+import 'package:gamr/models/drawer/point.dart';
+import 'package:gamr/services/database-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerPage extends StatefulWidget {
-  int projectId;
+  final int projectId;
   DrawerPage({required this.projectId});
   @override
   _DrawerPageState createState() => _DrawerPageState();
@@ -49,11 +49,19 @@ class _DrawerPageState extends State<DrawerPage> {
     this.getInitialPref();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    this.dotList.clear();
+  }
+
   Future<void> initializeDots() async {
-    final dbDotList = await DB().getProjectDots(widget.projectId);
+    final dbDotList = await DBService().getProjectDots(widget.projectId);
     final transformedDots =
         dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id)).toList();
-    dotList.addMultipleDots(transformedDots);
+    setState(() {
+      dotList.addMultipleDots(transformedDots);
+    });
   }
 
   Future<void> addPoint() async {
@@ -62,7 +70,7 @@ class _DrawerPageState extends State<DrawerPage> {
     var parsedZ = double.tryParse(zCoordRText.text) ?? 0;
     if (!dotList.allDots.any((element) =>
         element.x == parsedX && element.y == parsedY && element.z == parsedZ)) {
-      var newId = await DB().addDot(
+      var newId = await DBService().addDot(
           widget.projectId, DBPoint(x: parsedX, y: parsedY, z: parsedZ));
       dotList.addDot(Dot.dzParameter(parsedX, parsedY, parsedZ, id: newId));
       xCoordRText.clear();
@@ -72,14 +80,14 @@ class _DrawerPageState extends State<DrawerPage> {
   }
 
   Future<void> updateDot(Dot value) async {
-    DB().updateDot(value);
+    DBService().updateDot(value);
     this.dotList.updateDot(value);
   }
 
   Future<void> deleteDot(Dot value) async {
     localpositon = null;
     dotList.removeDot(value);
-    await DB().deleteDot(widget.projectId, value.id);
+    await DBService().deleteDot(widget.projectId, value.id);
   }
 
   @override
@@ -99,7 +107,7 @@ class _DrawerPageState extends State<DrawerPage> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               ListTile(
-                title: Text('Reset positions'),
+                title: Text('Pozíciók visszaállítása'),
                 onTap: () {
                   setState(() {
                     this.dotList.reset();
@@ -110,20 +118,8 @@ class _DrawerPageState extends State<DrawerPage> {
                   Navigator.pop(context);
                 },
               ),
-              ListTile(
-                title: Text('Clear canvas'),
-                onTap: () {
-                  setState(() {
-                    dotList.clear();
-                    xCoordRText.clear();
-                    yCoordRText.clear();
-                    zCoordRText.clear();
-                  });
-                  Navigator.pop(context);
-                },
-              ),
               CheckboxListTile(
-                title: const Text("Show coords"),
+                title: const Text("Koordináták mutatása"),
                 value: options.showCoords,
                 onChanged: (bool? value) {
                   setState(() {
@@ -133,7 +129,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 },
               ),
               CheckboxListTile(
-                title: const Text("Only points"),
+                title: const Text("Csak pontok"),
                 value: options.onlyPoints,
                 onChanged: (bool? value) {
                   setState(() {
@@ -143,7 +139,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 },
               ),
               CheckboxListTile(
-                title: const Text("Show Y Axis"),
+                title: const Text("Tengerszint mutatása"),
                 value: options.showYAxis,
                 onChanged: (bool? value) {
                   setState(() {
@@ -153,7 +149,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 },
               ),
               CheckboxListTile(
-                title: const Text("Show median"),
+                title: const Text("Átlagos magasság"),
                 value: options.showMedian,
                 onChanged: (bool? value) {
                   setState(() {
@@ -163,7 +159,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 },
               ),
               CheckboxListTile(
-                title: const Text("Show total degree"),
+                title: const Text("Átlagos meredekség"),
                 value: options.showTotalDegree,
                 onChanged: (bool? value) {
                   setState(() {
@@ -173,7 +169,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 },
               ),
               CheckboxListTile(
-                title: const Text("Show number"),
+                title: const Text("Sorszám mutatása"),
                 value: options.showNumber,
                 onChanged: (bool? value) {
                   setState(() {
@@ -308,7 +304,7 @@ class _DrawerPageState extends State<DrawerPage> {
                             shape: CircleBorder(),
                           ),
                           child: IconButton(
-                            tooltip: 'Details',
+                            tooltip: 'Részletek',
                             icon: const Icon(Icons.toc),
                             color: Colors.black,
                             onPressed: () {
@@ -426,7 +422,7 @@ class _DrawerPageState extends State<DrawerPage> {
                               ),
                             ),
                             TextButton(
-                              child: Text("Add"),
+                              child: Text("Új"),
                               onPressed: () => {
                                 setState(() {
                                   this.addPoint();
@@ -448,7 +444,16 @@ class _DrawerPageState extends State<DrawerPage> {
                 alignment: Alignment.topRight,
                 child: PopupMenuButton(
                   onSelected: (PopupMenu value) {
-                    print(value);
+                    if (value == PopupMenu.back_to_menu) {
+                      Navigator.of(context).pop();
+                    }
+                    if (value == PopupMenu.send_email) {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return EmailOptionPopup();
+                          }).then((value) => print(value));
+                    }
                   },
                   child: Ink(
                     height: 35,
@@ -465,12 +470,16 @@ class _DrawerPageState extends State<DrawerPage> {
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem(
+                        value: PopupMenu.back_to_menu,
+                        child: Text('Főmenübe'),
+                      ),
+                      PopupMenuItem(
                         value: PopupMenu.send_email,
-                        child: Text('Send in e-mail'),
+                        child: Text('Küldés e-mailben'),
                       ),
                       PopupMenuItem(
                         value: PopupMenu.save_file,
-                        child: Text('Save file'),
+                        child: Text('Mentés fájlként'),
                       ),
                     ];
                   },

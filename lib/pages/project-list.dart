@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/components/add-new-project.dart';
 import 'package:gamr/components/project-list-item.dart';
-import 'package:gamr/database/projects.dart';
-import 'package:gamr/method/project-method.dart';
+import 'package:gamr/models/database/projects.dart';
+import 'package:gamr/services/database-service.dart';
 
 class ProjectList extends StatefulWidget {
   ProjectList({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class _ProjectListState extends State<ProjectList> {
   List<Project> listProjects = [];
 
   Future<void> getProjectList() async {
-    final box = DB().getAllProject();
+    final box = DBService().getAllProject();
     setState(() {
       listProjects = box;
     });

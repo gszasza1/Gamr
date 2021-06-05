@@ -2,10 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:gamr/config/config.dart';
-import 'package:gamr/dot-list.dart';
 import 'package:gamr/config/options.dart';
-import 'package:gamr/point.dart';
-
+import 'package:gamr/models/drawer/dot-list.dart';
+import 'package:gamr/models/drawer/point.dart';
 class OpenPainter extends CustomPainter {
   OpenPainter({
     required this.options,

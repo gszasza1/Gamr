@@ -1,4 +1,5 @@
-import 'package:gamr/point.dart';
+
+import 'package:gamr/models/drawer/point.dart';
 
 List<Dot> testDots = [
   Dot.dzParameter(50, 50, 50),

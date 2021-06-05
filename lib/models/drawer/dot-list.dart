@@ -1,8 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:gamr/database/points.dart';
-import 'package:gamr/point.dart';
+import 'package:gamr/models/database/points.dart';
+import 'package:gamr/models/drawer/point.dart';
 
 class DotList {
   List<Dot> allDots = [];
@@ -137,8 +137,7 @@ class DotList {
   void addMultipleDots(List<Dot> dots) {
     allDots.addAll(dots);
     this._sort();
-    calculateAverageY();
-    calculateDegree();
+    this.calculateMetadata();
   }
 
   void clear() {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/database/projects.dart';
+import 'package:gamr/models/database/projects.dart';
 
 class ProjectListItem extends StatelessWidget {
   const ProjectListItem({Key? key, required this.project}) : super(key: key);
@@ -32,11 +32,12 @@ class ProjectListItem extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                    child: Text(
-                  project.creation.toString(),
-                  textAlign: TextAlign.start,
-                  overflow: TextOverflow.ellipsis,
-                )),
+                  child: Text(
+                    project.creation.toString(),
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ],
             ),
           ],

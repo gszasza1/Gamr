@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/point.dart';
+import 'package:gamr/models/drawer/point.dart';
 
 Widget buildPopupDialog(BuildContext context, Function save, Dot dot) {
   return EditPopup(
@@ -25,7 +25,7 @@ class EditPopupState extends State<EditPopup> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Edit'),
+      title: const Text('Változtatás'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +65,7 @@ class EditPopupState extends State<EditPopup> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Close'),
+          child: const Text('Bezár'),
         ),
         TextButton(
           onPressed: () {
@@ -79,7 +79,7 @@ class EditPopupState extends State<EditPopup> {
             );
             Navigator.of(context).pop();
           },
-          child: const Text('Save'),
+          child: const Text('Mentés'),
         ),
       ],
     );

@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:gamr/database/points.dart';
+import 'package:gamr/models/database/points.dart';
+
 
 class Dot extends Offset {
   /// Only for data points. Not for draw points

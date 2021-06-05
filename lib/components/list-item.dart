@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/point.dart';
+import 'package:gamr/models/drawer/point.dart';
 
 class DotListItem extends StatelessWidget {
   const DotListItem(
@@ -45,7 +45,7 @@ class DotListItem extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.remove),
-                tooltip: 'Delete',
+                tooltip: 'Törlés',
                 onPressed: () {
                   callback();
                 },
