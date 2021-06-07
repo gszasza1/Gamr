@@ -17,6 +17,7 @@ class DBService {
   DBService._internal();
   init() async {
     Directory dir = await getApplicationDocumentsDirectory();
+    print(dir.path + '/objectbox');
     store = Store(getObjectBoxModel(), directory: dir.path + '/objectbox');
   }
 
@@ -86,6 +87,24 @@ class DBService {
       return project.points.toList();
     } else {
       return [];
+    }
+  }
+
+  Future<void> importProject(String projectName, List<DBPoint> dots) async {
+    var projects = store.box<Project>();
+    var projectId = projects.put(Project(projectName));
+    dots.forEach((element) {
+      this.addDot(projectId, element);
+    });
+  }
+
+  Future<String> getProjectName(int projectId) async {
+    var projects = store.box<Project>();
+    var project = projects.get(projectId);
+    if (project != null) {
+      return project.name;
+    } else {
+      return "Nincs találat";
     }
   }
 }

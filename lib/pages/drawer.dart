@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/edit-popup.dart';
-import 'package:gamr/components/email-options-popup.dart';
 import 'package:gamr/components/list-item.dart';
+import 'package:gamr/components/save-file-options.dart';
+import 'package:gamr/constant/email-menu.dart';
 import 'package:gamr/constant/popup-menu.dart';
 import 'package:gamr/custom-painter.dart';
 import 'package:gamr/config/options.dart';
 import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/dot-list.dart';
 import 'package:gamr/models/drawer/point.dart';
+import 'package:gamr/services/csv-service.dart';
 import 'package:gamr/services/database-service.dart';
+import 'package:gamr/services/json-service.dart';
+import 'package:gamr/services/txt-service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerPage extends StatefulWidget {
@@ -30,7 +34,7 @@ class _DrawerPageState extends State<DrawerPage> {
   TextEditingController yCoordRText = TextEditingController(text: '');
   TextEditingController zCoordRText = TextEditingController(text: '');
   GamrOptions options = GamrOptions();
-
+  late final String projectName;
   Future getInitialPref() async {
     prefs = await SharedPreferences.getInstance();
     options.showCoords = prefs.getBool("showCoords") ?? true;
@@ -46,6 +50,7 @@ class _DrawerPageState extends State<DrawerPage> {
     super.initState();
     //  dotList.addMultipleDots(testDots);
     this.initializeDots();
+    this.initializeProjectName();
     this.getInitialPref();
   }
 
@@ -53,6 +58,10 @@ class _DrawerPageState extends State<DrawerPage> {
   void dispose() {
     super.dispose();
     this.dotList.clear();
+  }
+
+  Future<void> initializeProjectName() async {
+    this.projectName = await DBService().getProjectName(widget.projectId);
   }
 
   Future<void> initializeDots() async {
@@ -448,11 +457,34 @@ class _DrawerPageState extends State<DrawerPage> {
                       Navigator.of(context).pop();
                     }
                     if (value == PopupMenu.send_email) {
+                      Navigator.pushNamed(
+                        context,
+                        '/project/${widget.projectId}/email',
+                      );
+                    }
+                    if (value == PopupMenu.save_file) {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return EmailOptionPopup();
-                          }).then((value) => print(value));
+                            return SaveFilePopup();
+                          }).then((value) {
+                        if (value == EmailMenu.as_json) {
+                          JsonService().createJsonfromDots(
+                              projectName: projectName,
+                              dots: this.dotList.allDots);
+                        }
+
+                        if (value == EmailMenu.as_csv) {
+                          CSVService().createCSVfromDots(
+                              projectName: projectName,
+                              dots: this.dotList.allDots);
+                        }
+                        if (value == EmailMenu.as_txt) {
+                          TxtService().createTxtfromDots(
+                              projectName: projectName,
+                              dots: this.dotList.allDots);
+                        }
+                      });
                     }
                   },
                   child: Ink(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/constant/email-menu.dart';
 
-class EmailOptionPopup extends StatelessWidget {
-  const EmailOptionPopup({Key? key}) : super(key: key);
+class SaveFilePopup extends StatelessWidget {
+  const SaveFilePopup({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,17 +29,11 @@ class EmailOptionPopup extends StatelessWidget {
               Navigator.pop(context, EmailMenu.as_txt);
             },
           ),
-          ListTile(
-            title: Text('Szövegként'),
-            onTap: () {
-              Navigator.pop(context, EmailMenu.as_text);
-            },
-          ),
         ],
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context), 
+          onPressed: () => Navigator.pop(context),
           child: Text('Bezárás'),
         ),
       ],

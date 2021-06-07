@@ -39,7 +39,7 @@ class AddNewProjectPopupState extends State<AddNewProjectPopup> {
         ),
         TextButton(
           onPressed: () async {
-             DBService().addProject(nameController.text);
+            DBService().addProject(nameController.text);
             widget.refreshList();
             Navigator.of(context).pop();
           },

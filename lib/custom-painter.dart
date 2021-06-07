@@ -128,6 +128,7 @@ class OpenPainter extends CustomPainter {
           ..paint(canvas, averageYDot);
         canvas.drawLine(averageYDot, Dot(size.width, this.dotList.averageDrawY),
             paintPurple);
+           
       }
 
       //Draw selected dot
