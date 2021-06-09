@@ -65,7 +65,7 @@ class CSVService {
       return CSVDot.fromStringList(element);
     }).toList();
     final dbPoints = mappedDots.map((element) {
-      return DBPoint.fromCSVDot(element);
+      return DBPoint.fromBasePoint(element);
     }).toList();
     return dbPoints;
   }

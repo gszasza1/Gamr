@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/point.dart';
 import 'package:gamr/models/service/json-dot.dart';
 import 'package:path_provider/path_provider.dart';
@@ -49,5 +50,17 @@ class JsonService {
     final File file = File(fileName);
     await file.writeAsString(jsonTags);
     return file.path.toString();
+  }
+
+  Future<List<DBPoint>> createDotsFromJson(File readFile) async {
+    var fields = json.decode(await readFile.readAsString());
+
+    final List<JsonDot> mappedDots = List<JsonDot>.from(fields.map((element) {
+      return JsonDot.fromMap(Map<String, double>.from(element));
+    }).toList());
+    final dbPoints = mappedDots.map((element) {
+      return DBPoint.fromBasePoint(element);
+    }).toList();
+    return dbPoints;
   }
 }

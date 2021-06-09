@@ -1,6 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
+import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/point.dart';
 import 'package:gamr/models/service/text-dot.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,5 +48,19 @@ class TxtService {
     final File file = File(fileName);
     await file.writeAsString(data);
     return file.path.toString();
+  }
+
+  Future<List<DBPoint>> createDotsFromTxt(File readFile) async {
+    var fields = (await readFile.readAsString()).split("\n");
+    fields.removeWhere((element) => element.length < 3);
+    var listFields = fields.map((e) => e.split(" ").toList()).toList();
+
+    final mappedDots = listFields.map((element) {
+      return TextDot.fromStringList(element);
+    }).toList();
+    final dbPoints = mappedDots.map((element) {
+      return DBPoint.fromBasePoint(element);
+    }).toList();
+    return dbPoints;
   }
 }

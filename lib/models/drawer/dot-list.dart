@@ -37,7 +37,10 @@ class DotList {
   }
 
   List<DBPoint> dotsToDBPoint() {
-    return this.allDots.map((e) => DBPoint(x: e.x, y: e.y, z: e.z)).toList();
+    return this
+        .allDots
+        .map((e) => DBPoint(x: e.x, y: e.y, z: e.z, name: e.name))
+        .toList();
   }
 
   double getScale() {

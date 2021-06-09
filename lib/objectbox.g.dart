@@ -4,70 +4,75 @@
 
 import 'dart:typed_data';
 
-import 'package:gamr/models/database/points.dart';
-import 'package:gamr/models/database/projects.dart';
 import 'package:objectbox/flatbuffers/flat_buffers.dart' as fb;
 import 'package:objectbox/internal.dart'; // generated code can access "internal" functionality
 import 'package:objectbox/objectbox.dart';
 
+import 'models/database/points.dart';
+import 'models/database/projects.dart';
 
 export 'package:objectbox/objectbox.dart'; // so that callers only have to import this file
 
 final _entities = <ModelEntity>[
   ModelEntity(
-      id: const IdUid(1, 4136957437846576549),
+      id: const IdUid(1, 2616335250161436945),
       name: 'DBPoint',
-      lastPropertyId: const IdUid(5, 3278607172607892396),
+      lastPropertyId: const IdUid(6, 4445900996410743654),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 1067544788414303802),
+            id: const IdUid(1, 4671260849957617246),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 3363874536346283117),
+            id: const IdUid(2, 9180502074334386597),
             name: 'x',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 3949985196985255128),
+            id: const IdUid(3, 7624336343299356896),
             name: 'y',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(4, 1719482328191721788),
+            id: const IdUid(4, 6731745563611635568),
             name: 'z',
             type: 8,
             flags: 0),
         ModelProperty(
-            id: const IdUid(5, 3278607172607892396),
+            id: const IdUid(5, 5473818131308570653),
+            name: 'name',
+            type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(6, 4445900996410743654),
             name: 'projectId',
             type: 11,
             flags: 520,
-            indexId: const IdUid(1, 1419993489597941641),
+            indexId: const IdUid(1, 6480092581063713950),
             relationTarget: 'Project')
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
   ModelEntity(
-      id: const IdUid(2, 4241614082196419649),
+      id: const IdUid(2, 7787463398407208069),
       name: 'Project',
-      lastPropertyId: const IdUid(3, 1230589630562623126),
+      lastPropertyId: const IdUid(3, 8744909655619673092),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
-            id: const IdUid(1, 2599455200409677421),
+            id: const IdUid(1, 6163662803193877868),
             name: 'id',
             type: 6,
             flags: 1),
         ModelProperty(
-            id: const IdUid(2, 8914761188223913680),
+            id: const IdUid(2, 7314087577693876432),
             name: 'name',
             type: 9,
             flags: 0),
         ModelProperty(
-            id: const IdUid(3, 1230589630562623126),
+            id: const IdUid(3, 8744909655619673092),
             name: 'creation',
             type: 10,
             flags: 0)
@@ -82,8 +87,8 @@ final _entities = <ModelEntity>[
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
-      lastEntityId: const IdUid(2, 4241614082196419649),
-      lastIndexId: const IdUid(1, 1419993489597941641),
+      lastEntityId: const IdUid(2, 7787463398407208069),
+      lastIndexId: const IdUid(1, 6480092581063713950),
       lastRelationId: const IdUid(0, 0),
       lastSequenceId: const IdUid(0, 0),
       retiredEntityUids: const [],
@@ -104,12 +109,14 @@ ModelDefinition getObjectBoxModel() {
           object.id = id;
         },
         objectToFB: (DBPoint object, fb.Builder fbb) {
-          fbb.startTable(6);
+          final nameOffset = fbb.writeString(object.name);
+          fbb.startTable(7);
           fbb.addInt64(0, object.id);
           fbb.addFloat64(1, object.x);
           fbb.addFloat64(2, object.y);
           fbb.addFloat64(3, object.z);
-          fbb.addInt64(4, object.project.targetId);
+          fbb.addOffset(4, nameOffset);
+          fbb.addInt64(5, object.project.targetId);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -120,10 +127,12 @@ ModelDefinition getObjectBoxModel() {
           final object = DBPoint(
               x: const fb.Float64Reader().vTableGet(buffer, rootOffset, 6, 0),
               y: const fb.Float64Reader().vTableGet(buffer, rootOffset, 8, 0),
-              z: const fb.Float64Reader().vTableGet(buffer, rootOffset, 10, 0))
-            ..id = const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+              z: const fb.Float64Reader().vTableGet(buffer, rootOffset, 10, 0),
+              name:
+                  const fb.StringReader().vTableGet(buffer, rootOffset, 12, ''),
+              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
           object.project.targetId =
-              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
           object.project.attach(store);
           return object;
         }),
@@ -132,7 +141,7 @@ ModelDefinition getObjectBoxModel() {
         toOneRelations: (Project object) => [],
         toManyRelations: (Project object) => {
               RelInfo<DBPoint>.toOneBacklink(
-                      5, object.id, (DBPoint srcObject) => srcObject.project):
+                      6, object.id, (DBPoint srcObject) => srcObject.project):
                   object.points
             },
         getId: (Project object) => object.id,
@@ -161,7 +170,7 @@ ModelDefinition getObjectBoxModel() {
               object.points,
               store,
               RelInfo<DBPoint>.toOneBacklink(
-                  5, object.id, (DBPoint srcObject) => srcObject.project),
+                  6, object.id, (DBPoint srcObject) => srcObject.project),
               store.box<Project>());
           return object;
         })
@@ -184,9 +193,12 @@ class DBPoint_ {
   /// see [DBPoint.z]
   static final z = QueryDoubleProperty<DBPoint>(_entities[0].properties[3]);
 
+  /// see [DBPoint.name]
+  static final name = QueryStringProperty<DBPoint>(_entities[0].properties[4]);
+
   /// see [DBPoint.project]
   static final project =
-      QueryRelationProperty<DBPoint, Project>(_entities[0].properties[4]);
+      QueryRelationProperty<DBPoint, Project>(_entities[0].properties[5]);
 }
 
 /// [Project] entity fields to define ObjectBox queries.

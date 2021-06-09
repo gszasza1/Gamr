@@ -12,6 +12,8 @@ import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/database/projects.dart';
 import 'package:gamr/services/csv-service.dart';
 import 'package:gamr/services/database-service.dart';
+import 'package:gamr/services/json-service.dart';
+import 'package:gamr/services/txt-service.dart';
 
 class ProjectList extends StatefulWidget {
   ProjectList({Key? key}) : super(key: key);
@@ -23,17 +25,17 @@ class ProjectList extends StatefulWidget {
 class _ProjectListState extends State<ProjectList> {
   List<Project> listProjects = [];
 
+  @override
+  void initState() {
+    super.initState();
+    getProjectList();
+  }
+
   Future<void> getProjectList() async {
     final box = DBService().getAllProject();
     setState(() {
       listProjects = box;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getProjectList();
   }
 
   @override
@@ -76,8 +78,14 @@ class _ProjectListState extends State<ProjectList> {
                       File readFile = File(file.path!);
                       fields = await CSVService().createDotsFromCSV(readFile);
                     }
-                    if (file.extension == "txt") {}
-                    if (file.extension == "json") {}
+                    if (file.extension == "txt" && file.path != null) {
+                      File readFile = File(file.path!);
+                      fields = await TxtService().createDotsFromTxt(readFile);
+                    }
+                    if (file.extension == "json") {
+                      File readFile = File(file.path!);
+                      fields = await JsonService().createDotsFromJson(readFile);
+                    }
 
                     if (fields != null) {
                       showDialog(

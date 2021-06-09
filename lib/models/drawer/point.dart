@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:gamr/models/database/points.dart';
 
-
 class Dot extends Offset {
   /// Only for data points. Not for draw points
   int id = 0;
@@ -11,24 +10,32 @@ class Dot extends Offset {
   double z = 0;
   double x = 0;
   double y = 0;
+  String name = "";
   String axis = "XY";
 
-  Dot(double dx, double dy, {int? id}) : super(dx, dy) {
+  Dot(double dx, double dy, {int? id, String? name}) : super(dx, dy) {
     x = dx;
     y = dy;
     if (id != null) {
       this.id = id;
     }
+    if (name != null) {
+      this.name = name;
+    }
   }
-  Dot.dzParameter(double dx, double dy, this.z, {int? id}) : super(dx, dy) {
+  Dot.dzParameter(double dx, double dy, this.z, {int? id, String? name})
+      : super(dx, dy) {
     x = dx;
     y = dy;
     if (id != null) {
       this.id = id;
+    }
+    if (name != null) {
+      this.name = name;
     }
   }
   DBPoint toDbPoint() {
-    return DBPoint(x: x, y: y, z: z, id: id);
+    return DBPoint(x: x, y: y, z: z, id: id, name: name);
   }
 
   updateCoord(Dot dot) {

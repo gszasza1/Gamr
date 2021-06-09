@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/components/details-popup.dart';
-import 'package:gamr/components/edit-popup.dart';
+import 'package:gamr/components/add-edit-popup.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/components/save-file-options.dart';
 import 'package:gamr/constant/email-menu.dart';
@@ -67,24 +67,25 @@ class _DrawerPageState extends State<DrawerPage> {
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
     final transformedDots =
-        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id)).toList();
+        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name)).toList();
     setState(() {
       dotList.addMultipleDots(transformedDots);
     });
   }
 
-  Future<void> addPoint() async {
-    var parsedX = double.tryParse(xCoordRText.text) ?? 0;
-    var parsedY = double.tryParse(yCoordRText.text) ?? 0;
-    var parsedZ = double.tryParse(zCoordRText.text) ?? 0;
+  Future<void> addPoint(Dot dot) async {
     if (!dotList.allDots.any((element) =>
-        element.x == parsedX && element.y == parsedY && element.z == parsedZ)) {
-      var newId = await DBService().addDot(
-          widget.projectId, DBPoint(x: parsedX, y: parsedY, z: parsedZ));
-      dotList.addDot(Dot.dzParameter(parsedX, parsedY, parsedZ, id: newId));
-      xCoordRText.clear();
-      yCoordRText.clear();
-      zCoordRText.clear();
+        element.x == dot.x && element.y == dot.y && element.z == dot.z)) {
+      var newId = await DBService().addDot(widget.projectId,
+          DBPoint(x: dot.x, y: dot.y, z: dot.z, name: dot.name));
+      dotList.addDot(
+          Dot.dzParameter(dot.x, dot.y, dot.z, id: newId, name: dot.name));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Létezik ilyen pont"),
+        ),
+      );
     }
   }
 
@@ -110,6 +111,28 @@ class _DrawerPageState extends State<DrawerPage> {
         }
       },
       child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          backgroundColor: Colors.blue,
+          onPressed: () {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddEditPopup(
+                      save: (e) {
+                        this.addPoint(e);
+                      },
+                      dot: Dot.dzParameter(0, 0, 0),
+                      options: this
+                          .dotList
+                          .allDots
+                          .map((e) => e.name)
+                          .toSet()
+                          .toList(),
+                      isEdit: false);
+                });
+          },
+        ),
         drawer: Drawer(
           child: ListView(
             // Important: Remove any padding from the ListView.
@@ -338,7 +361,7 @@ class _DrawerPageState extends State<DrawerPage> {
                             child: SingleChildScrollView(
                               child: SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.2,
+                                    MediaQuery.of(context).size.height * 0.3,
                                 child: ListView(
                                   shrinkWrap: true,
                                   children: dotList.allDots
@@ -364,7 +387,14 @@ class _DrawerPageState extends State<DrawerPage> {
                                                 context: context,
                                                 builder:
                                                     (BuildContext context) {
-                                                  return EditPopup(
+                                                  return AddEditPopup(
+                                                    isEdit: true,
+                                                    options: this
+                                                        .dotList
+                                                        .allDots
+                                                        .map((e) => e.name)
+                                                        .toSet()
+                                                        .toList(),
                                                     dot: value,
                                                     save: (x) => {
                                                       setState(() {
@@ -392,55 +422,6 @@ class _DrawerPageState extends State<DrawerPage> {
                           ),
                         ],
                       ),
-                      Container(
-                        margin: EdgeInsets.all(5),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: xCoordRText,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'X',
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: yCoordRText,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Y'),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: zCoordRText,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Z'),
-                              ),
-                            ),
-                            TextButton(
-                              child: Text("Új"),
-                              onPressed: () => {
-                                setState(() {
-                                  this.addPoint();
-                                })
-                              },
-                            )
-                          ],
-                        ),
-                      )
                     ],
                   ),
                 ),

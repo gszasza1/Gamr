@@ -38,7 +38,7 @@ class _SendEmailPageState extends State<SendEmailPage> {
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
     final transformedDots =
-        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id)).toList();
+        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name)).toList();
     setState(() {
       allDots.addAll(transformedDots);
     });

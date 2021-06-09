@@ -15,42 +15,61 @@ class DotListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Container(
-          child: Text(
-            (index + 1).toString(),
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          margin: const EdgeInsets.only(
-            right: 10,
-          ),
-        ),
-        Container(
-          child: Text(value.x.toStringAsFixed(2)),
-          margin: const EdgeInsets.only(
-            right: 10,
+        Flexible(
+          flex: 0,
+          child: Container(
+            child: Text(
+              (index + 1).toString(),
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
           ),
         ),
-        Container(
-          child: Text(value.y.toStringAsFixed(2)),
-          margin: const EdgeInsets.only(
-            right: 10,
-          ),
-        ),
-        Text(value.z.toStringAsFixed(2)),
-        Expanded(
+        Flexible(
+          fit: FlexFit.tight,
           flex: 1,
-          child: Flex(
-            direction: Axis.horizontal,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.remove),
-                tooltip: 'Törlés',
-                onPressed: () {
-                  callback();
-                },
-              ),
-            ],
+          child: Container(
+            child: Text(value.x.toStringAsFixed(4)),
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
+          ),
+        ),
+        Flexible(
+          fit: FlexFit.tight,
+          flex: 1,
+          child: Container(
+            child: Text(value.y.toStringAsFixed(4)),
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
+          ),
+        ),
+        Flexible(
+          fit: FlexFit.tight,
+          flex: 1,
+          child: Container(
+            child: Text(value.z.toStringAsFixed(4)),
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
+          ),
+        ),
+        Flexible(
+          fit: FlexFit.tight,
+          flex: 1,
+          child: Text(value.name),
+        ),
+        Flexible(
+          flex: 0,
+          child: IconButton(
+            icon: const Icon(Icons.remove),
+            tooltip: 'Törlés',
+            onPressed: () {
+              callback();
+            },
           ),
         ),
       ],
