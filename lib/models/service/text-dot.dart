@@ -15,25 +15,25 @@ class TextDot extends BaseDot {
   }
 
   static TextDot fromStringList(List<String> dot) {
-    if (dot.length != 4) {
+    if (dot.length != 5) {
       throw UnsupportedError("Nem megfelelő TXT fájl");
     }
     return TextDot(
-      x: double.parse(dot[0]),
-      y: double.parse(dot[1]),
-      z: double.parse(dot[2]),
-      name: dot[3],
+      x: double.parse(dot[1]),
+      y: double.parse(dot[2]),
+      z: double.parse(dot[3]),
+      name: dot[4],
     );
   }
 
-  String toStringCoord() {
-    return "$x $y $z";
+  String toStringCoord(int index) {
+    return "$index $x $y $z $name";
   }
 
   static String listToString(List<TextDot> totalTextDot) {
     String data = "";
-    totalTextDot.forEach((element) {
-      data += element.toStringCoord() + "\n";
+    totalTextDot.asMap().forEach((index, element) {
+      data += element.toStringCoord(index+1) + "\n";
     });
     return data;
   }

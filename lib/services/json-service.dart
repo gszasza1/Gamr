@@ -45,7 +45,13 @@ class JsonService {
         .replaceAll(".", "");
     final fileName = this.basePath + '/${projectName}_$creationDate.json';
     final data = JsonDot.generateJSONContentFromDots(dots);
-    String jsonTags = jsonEncode(data);
+    
+    var generatedData = [];
+    for (var i = 0; i < data.length; i++) {
+      generatedData.add(data[i].toJson(i));
+    }
+
+    String jsonTags = jsonEncode(generatedData);
     print(fileName);
     final File file = File(fileName);
     await file.writeAsString(jsonTags);
@@ -56,7 +62,7 @@ class JsonService {
     var fields = json.decode(await readFile.readAsString());
 
     final List<JsonDot> mappedDots = List<JsonDot>.from(fields.map((element) {
-      return JsonDot.fromMap(Map<String, double>.from(element));
+      return JsonDot.fromMap(Map<String, dynamic>.from(element));
     }).toList());
     final dbPoints = mappedDots.map((element) {
       return DBPoint.fromBasePoint(element);

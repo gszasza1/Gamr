@@ -11,33 +11,33 @@ class CSVDot extends BaseDot {
       : super(x: x, y: y, z: z, id: id, name: name);
 
   static CSVDot fromStringList(List<String> dot) {
-    if (dot.length != 3) {
+    if (dot.length != 5) {
       throw UnsupportedError("Nem megfelelő CSV fájl");
     }
     return CSVDot(
-      x: double.parse(dot[0]),
-      y: double.parse(dot[1]),
-      z: double.parse(dot[2]),
-      name: dot[3],
+      x: double.parse(dot[1]),
+      y: double.parse(dot[2]),
+      z: double.parse(dot[3]),
+      name: dot[4],
     );
   }
 
   @override
   factory CSVDot.fromDot(Dot dot) {
-    return CSVDot(x: dot.x, y: dot.y, z: dot.z, id: dot.id,name: dot.name);
+    return CSVDot(x: dot.x, y: dot.y, z: dot.z, id: dot.id, name: dot.name);
   }
 
-  List<String> toCSVList() {
-    return [x.toString(), y.toString(), z.toString()];
+  List<String> toCSVList(int index) {
+    return [index.toString(), x.toString(), y.toString(), z.toString(), name];
   }
 
   static List<List<String>> generateCSVContent(List<CSVDot> totalCsvDot) {
     List<List<String>> data = [
-      ["X", "Y", "Z"],
+      ["Index", "X", "Y", "Z", "Név"],
     ];
-    totalCsvDot.forEach((element) {
-      data.add(element.toCSVList());
-    });
+    totalCsvDot
+        .asMap()
+        .forEach((index, value) => data.add(value.toCSVList(index + 1)));
     return data;
   }
 

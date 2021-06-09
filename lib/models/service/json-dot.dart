@@ -15,7 +15,7 @@ class JsonDot extends BaseDot {
   }
 
   static JsonDot fromMap(Map<String, dynamic> dot) {
-    if (dot.length != 4 ||
+    if (dot.length != 5 ||
         dot["x"] == null ||
         dot["y"] == null ||
         dot["name"] == null ||
@@ -31,9 +31,11 @@ class JsonDot extends BaseDot {
     return data;
   }
 
-  Map toJson() => {
+  Map toJson(int index) => {
+        'index':index+1,
         'x': x,
         'y': y,
         'z': z,
+        'name':name
       };
 }

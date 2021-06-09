@@ -74,33 +74,43 @@ class _ProjectListState extends State<ProjectList> {
                   if (result != null && result.files.single.path != null) {
                     var file = result.files.first;
                     List<DBPoint>? fields;
-                    if (file.extension == "csv" && file.path != null) {
-                      File readFile = File(file.path!);
-                      fields = await CSVService().createDotsFromCSV(readFile);
-                    }
-                    if (file.extension == "txt" && file.path != null) {
-                      File readFile = File(file.path!);
-                      fields = await TxtService().createDotsFromTxt(readFile);
-                    }
-                    if (file.extension == "json") {
-                      File readFile = File(file.path!);
-                      fields = await JsonService().createDotsFromJson(readFile);
-                    }
+                    try {
+                      if (file.extension == "csv" && file.path != null) {
+                        File readFile = File(file.path!);
+                        fields = await CSVService().createDotsFromCSV(readFile);
+                      }
+                      if (file.extension == "txt" && file.path != null) {
+                        File readFile = File(file.path!);
+                        fields = await TxtService().createDotsFromTxt(readFile);
+                      }
+                      if (file.extension == "json") {
+                        File readFile = File(file.path!);
+                        fields =
+                            await JsonService().createDotsFromJson(readFile);
+                      }
 
-                    if (fields != null) {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ImportPopup(
-                              projectName: file.name,
-                              dotList: fields!,
-                            );
-                          }).then((value) async {
-                        if (value.runtimeType == String) {
-                          await DBService().importProject(value, fields!);
-                          await this.getProjectList();
-                        }
-                      });
+                      if (fields != null) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return ImportPopup(
+                                projectName: file.name,
+                                dotList: fields!,
+                              );
+                            }).then((value) async {
+                          if (value.runtimeType == String) {
+                            await DBService().importProject(value, fields!);
+                            await this.getProjectList();
+                          }
+                        });
+                      }
+                    } catch (e) {
+                      print(e);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Sikertelen beolvasás. Baj van vaze?"),
+                        ),
+                      );
                     }
                   } else {
                     // User canceled the picker
