@@ -5,6 +5,7 @@ import 'package:gamr/config/config.dart';
 import 'package:gamr/config/options.dart';
 import 'package:gamr/models/drawer/dot-list.dart';
 import 'package:gamr/models/drawer/point.dart';
+
 class OpenPainter extends CustomPainter {
   OpenPainter({
     required this.options,
@@ -93,7 +94,8 @@ class OpenPainter extends CustomPainter {
               size,
               dotList.allDots[i].coordsToString(
                   showNumber: options.showNumber ? i + 1 : null,
-                  showCoord: this.options.showCoords,threeCoord: true))
+                  showCoord: this.options.showCoords,
+                  threeCoord: true))
             ..paint(canvas, dotList.drawAbleDots[i]);
         }
 
@@ -116,7 +118,7 @@ class OpenPainter extends CustomPainter {
             paintOrange);
       }
 
-      // Show average Y height on X axis
+      /// Show average Y height on X axis
       if (this.options.showMedian) {
         var paintPurple = Paint()
           ..color = Config.colorPurple
@@ -128,10 +130,18 @@ class OpenPainter extends CustomPainter {
           ..paint(canvas, averageYDot);
         canvas.drawLine(averageYDot, Dot(size.width, this.dotList.averageDrawY),
             paintPurple);
-           
       }
 
-      //Draw selected dot
+      /// Draw distance dot
+      if (this.options.show2Ddistance) {
+        this.dotList.distances.forEach((element) {
+          createNewText(size, element.distance.toStringAsFixed(5),
+              color: Config.colorDarkPurple)
+            ..paint(canvas, element);
+        });
+      }
+
+      /// Draw selected dot
       if (this.selectedPoint.length > 1) {
         createNewText(
             size, this.selectedPoint[1].coordsToString(threeCoord: true),

@@ -43,6 +43,8 @@ class _DrawerPageState extends State<DrawerPage> {
     options.showMedian = prefs.getBool("showMedian") ?? true;
     options.showTotalDegree = prefs.getBool("showTotalDegree") ?? true;
     options.showNumber = prefs.getBool("showNumber") ?? true;
+    options.show2Ddistance = prefs.getBool("show2Ddistance") ?? true;
+    options.show3Ddistance = prefs.getBool("show3Ddistance") ?? true;
   }
 
   @override
@@ -66,8 +68,9 @@ class _DrawerPageState extends State<DrawerPage> {
 
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
-    final transformedDots =
-        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name)).toList();
+    final transformedDots = dbDotList
+        .map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name))
+        .toList();
     setState(() {
       dotList.addMultipleDots(transformedDots);
     });
@@ -167,6 +170,26 @@ class _DrawerPageState extends State<DrawerPage> {
                   setState(() {
                     prefs.setBool("onlyPoints", !options.onlyPoints);
                     options.onlyPoints = !options.onlyPoints;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Hossz mutatása (2D)"),
+                value: options.show2Ddistance,
+                onChanged: (bool? value) {
+                  setState(() {
+                    prefs.setBool("show2Ddistance", !options.show2Ddistance);
+                    options.show2Ddistance = !options.show2Ddistance;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Hossz mutatása (3D)"),
+                value: options.show3Ddistance,
+                onChanged: (bool? value) {
+                  setState(() {
+                    prefs.setBool("show3Ddistance", !options.show3Ddistance);
+                    options.show3Ddistance = !options.show3Ddistance;
                   });
                 },
               ),
