@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/models/database/projects.dart';
-import 'package:gamr/models/drawer/point.dart';
 import 'package:gamr/services/database-service.dart';
 
 class RenameProject extends StatefulWidget {

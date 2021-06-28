@@ -10,8 +10,9 @@ class Details {
   final double averageY;
   final int totalDots;
   final double averageAngle;
+  final double totalDistance;
 
-  Details(this.averageY, this.totalDots, this.averageAngle);
+  Details(this.averageY, this.totalDots, this.averageAngle, this.totalDistance);
 }
 
 class DetailsPopup extends StatelessWidget {
@@ -36,6 +37,10 @@ class DetailsPopup extends StatelessWidget {
           Row(children: [
             Expanded(child: Text("Teljes meredekség: ")),
             Text(details.averageAngle.toStringAsFixed(3) + " °")
+          ]),
+          Row(children: [
+            Expanded(child: Text("Teljes 2D hossz: ")),
+            Text(details.totalDistance.toStringAsFixed(3) + " m")
           ]),
         ],
       ),

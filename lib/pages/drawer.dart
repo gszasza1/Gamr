@@ -370,7 +370,12 @@ class _DrawerPageState extends State<DrawerPage> {
                                       details: Details(
                                           this.dotList.averageY,
                                           this.dotList.allDots.length,
-                                          this.dotList.totalDegree),
+                                          this.dotList.totalDegree,
+                                          this
+                                              .dotList
+                                              .distances
+                                              .map((x) => x.distance)
+                                              .reduce((a, b) => a + b)),
                                     );
                                   });
                             },
