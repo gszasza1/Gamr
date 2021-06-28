@@ -47,6 +47,9 @@ class Dot extends Offset {
   double distanceFromDot(Dot dot) {
     return sqrt(distanceFromDotPow(dot));
   }
+  double distanceFromDot3D(Dot dot) {
+    return sqrt(distanceFromDotPow3D(dot));
+  }
 
   @override
   double get dx {
@@ -75,11 +78,24 @@ class Dot extends Offset {
     var b = this.dy - dot.dy;
     return a * a + b * b;
   }
+  double distanceFromDotPow3D(Dot dot) {
+   var a = this.x - dot.x;
+    var b = this.y - dot.y;
+    var c = this.z - dot.z;
+    return a * a + b * b + c * c;
+  }
 
   static double distanceBetweenDots(Dot dot1, Dot dot2) {
     var a = dot1.dx - dot2.dx;
     var b = dot1.dy - dot2.dy;
     return sqrt(a * a + b * b);
+  }
+
+  static double distanceBetween3DDots(Dot dot1, Dot dot2) {
+    var a = dot1.x - dot2.x;
+    var b = dot1.y - dot2.y;
+    var c = dot1.z - dot2.z;
+    return sqrt(a * a + b * b + c * c);
   }
 
   String coordsToString(
