@@ -142,11 +142,19 @@ class _ProjectListState extends State<ProjectList> {
                     itemCount: listProjects.length,
                     itemBuilder: (ctx, idx) {
                       // List Item
-                      return ProjectListItem(project: listProjects[idx]);
+                      return ProjectListItem(
+                        project: listProjects[idx],
+                        delete: (id) => this.deleteProject(id),
+                      );
                     }),
               )
             : Center(child: CircularProgressIndicator()),
       ),
     );
+  }
+
+  Future deleteProject(id) async {
+    await DBService().deleteProject(id);
+    await this.getProjectList();
   }
 }
