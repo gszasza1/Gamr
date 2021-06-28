@@ -40,7 +40,7 @@ class DBService {
     return box.getAll();
   }
 
-  updateProject(int key, Project pr) {
+  updateProject(Project pr) {
     var box = store.box<Project>();
     box.put(pr);
   }

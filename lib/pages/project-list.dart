@@ -1,7 +1,5 @@
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:csv/csv.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gamr/components/add-new-project.dart';
@@ -143,8 +141,10 @@ class _ProjectListState extends State<ProjectList> {
                     itemBuilder: (ctx, idx) {
                       // List Item
                       return ProjectListItem(
+                        refresh: () {
+                          this.getProjectList();
+                        },
                         project: listProjects[idx],
-                        delete: (id) => this.deleteProject(id),
                       );
                     }),
               )
@@ -153,8 +153,4 @@ class _ProjectListState extends State<ProjectList> {
     );
   }
 
-  Future deleteProject(id) async {
-    await DBService().deleteProject(id);
-    await this.getProjectList();
-  }
 }

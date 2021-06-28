@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/components/rename-project.dart';
 import 'package:gamr/models/database/projects.dart';
 import 'package:gamr/services/database-service.dart';
 
 class ProjectListItem extends StatelessWidget {
-  const ProjectListItem({Key? key, required this.project, required this.delete}) : super(key: key);
+  const ProjectListItem(
+      {Key? key,
+      required this.project,
+      required this.refresh})
+      : super(key: key);
   final Project project;
-  final Function delete;
+  final Function refresh;
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -14,6 +19,9 @@ class ProjectListItem extends StatelessWidget {
           context,
           '/project/${project.id}',
         );
+      },
+      onLongPress: () {
+        this.renameProject(context);
       },
       child: Container(
         padding:
@@ -61,4 +69,18 @@ class ProjectListItem extends StatelessWidget {
     );
   }
 
+  void renameProject(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return RenameProject(project: this.project);
+        }).then((value) async {
+      await this.refresh();
+    });
+  }
+
+  Future<void> delete(int id) async {
+    await DBService().deleteProject(id);
+    await this.refresh();
+  }
 }
