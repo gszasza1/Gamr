@@ -30,7 +30,7 @@ class DotList {
   double offsetY = 0;
 
   double movableScale = 0;
-  double scale = 5;
+  double scale = 10;
 
   double movableOffsetX = 0;
   double movableOffsetY = 0;
@@ -204,7 +204,7 @@ class DotList {
   void reset() {
     this.sliderX = 10;
     this.sliderY = 10;
-    this.scale = 5;
+    this.scale = 10;
 
     if (this.drawAbleDots.length > 0) {
       this.calculateInitialOffset();

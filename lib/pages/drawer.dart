@@ -74,7 +74,15 @@ class _DrawerPageState extends State<DrawerPage> {
         .toList();
     setState(() {
       dotList.addMultipleDots(transformedDots);
+      this.resetPosition();
     });
+  }
+
+  resetPosition() {
+    this.dotList.reset();
+    this.initMove = null;
+    localpositon = null;
+    this.dotList.setNewFixOffset();
   }
 
   Future<void> addPoint(Dot dot) async {
@@ -146,10 +154,7 @@ class _DrawerPageState extends State<DrawerPage> {
                 title: Text('Pozíciók visszaállítása'),
                 onTap: () {
                   setState(() {
-                    this.dotList.reset();
-                    this.initMove = null;
-                    localpositon = null;
-                    this.dotList.setNewFixOffset();
+                    this.resetPosition();
                   });
                   Navigator.pop(context);
                 },
@@ -229,7 +234,8 @@ class _DrawerPageState extends State<DrawerPage> {
                 value: options.showTotalDegree,
                 onChanged: (bool? value) {
                   setState(() {
-                    prefs.setBool("showHeightVariation", !options.showHeightVariation);
+                    prefs.setBool(
+                        "showHeightVariation", !options.showHeightVariation);
                     options.showHeightVariation = !options.showHeightVariation;
                   });
                 },
