@@ -140,11 +140,21 @@ class OpenPainter extends CustomPainter {
             ..paint(canvas, element);
         });
       }
+
       /// Draw distance dot 3D
       if (this.options.show3Ddistance) {
         this.dotList.distances3D.forEach((element) {
           createNewText(size, element.distance.toStringAsFixed(5),
               color: Config.colorDarkPurple)
+            ..paint(canvas, element);
+        });
+      }
+
+      /// HeightVariation
+      if (this.options.showHeightVariation) {
+        this.dotList.zHeightVariationList.forEach((element) {
+          createNewText(size, element.distance.toStringAsFixed(5),
+              color: Config.colorBlack)
             ..paint(canvas, element);
         });
       }

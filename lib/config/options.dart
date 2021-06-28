@@ -7,4 +7,5 @@ class GamrOptions {
   bool showNumber = true;
   bool show2Ddistance = false;
   bool show3Ddistance = false;
+  bool showHeightVariation = false;
 }

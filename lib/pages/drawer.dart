@@ -45,6 +45,7 @@ class _DrawerPageState extends State<DrawerPage> {
     options.showNumber = prefs.getBool("showNumber") ?? true;
     options.show2Ddistance = prefs.getBool("show2Ddistance") ?? true;
     options.show3Ddistance = prefs.getBool("show3Ddistance") ?? true;
+    options.showHeightVariation = prefs.getBool("show3Ddistance") ?? true;
   }
 
   @override
@@ -220,6 +221,16 @@ class _DrawerPageState extends State<DrawerPage> {
                   setState(() {
                     prefs.setBool("showTotalDegree", !options.showTotalDegree);
                     options.showTotalDegree = !options.showTotalDegree;
+                  });
+                },
+              ),
+              CheckboxListTile(
+                title: const Text("Z magasság különbség"),
+                value: options.showTotalDegree,
+                onChanged: (bool? value) {
+                  setState(() {
+                    prefs.setBool("showHeightVariation", !options.showHeightVariation);
+                    options.showHeightVariation = !options.showHeightVariation;
                   });
                 },
               ),
