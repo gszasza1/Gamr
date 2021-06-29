@@ -30,6 +30,7 @@ class AddEditPopup extends StatefulWidget {
 class AddEditPopupState extends State<AddEditPopup> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController name = TextEditingController(text: '');
+  TextEditingController rank = TextEditingController(text: '');
   TextEditingController xCoordRText = TextEditingController(text: '');
   TextEditingController yCoordRText = TextEditingController(text: '');
   TextEditingController zCoordRText = TextEditingController(text: '');
@@ -62,28 +63,28 @@ class AddEditPopupState extends State<AddEditPopup> {
                     FocusNode fieldFocusNode,
                     VoidCallback onFieldSubmitted) {
                   return Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Ki kell tölteni';
-                          }
-                          return null;
-                        },
-                        keyboardType: TextInputType.text,
-                        onChanged: (e) {
-                          name.text = e;
-                        },
-                        focusNode: fieldFocusNode,
-                        controller: fieldTextEditingController
-                          ..text = widget.dot.name.toString(),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: "pl.: Aszfalt",
-                          labelText: 'Név',
-                        ),
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Ki kell tölteni';
+                        }
+                        return null;
+                      },
+                      keyboardType: TextInputType.text,
+                      onChanged: (e) {
+                        name.text = e;
+                      },
+                      focusNode: fieldFocusNode,
+                      controller: fieldTextEditingController
+                        ..text = widget.dot.name.toString(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: "pl.: Aszfalt",
+                        labelText: 'Név',
                       ),
-                      );
+                    ),
+                  );
                 },
                 optionsViewBuilder: (BuildContext context,
                     AutocompleteOnSelected<String> onSelected,
@@ -139,6 +140,16 @@ class AddEditPopupState extends State<AddEditPopup> {
                 margin: const EdgeInsets.only(bottom: 10),
                 child: TextFormField(
                   keyboardType: TextInputType.number,
+                  controller: rank..text = widget.dot.rank.toString(),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'Sorszám',
+                  ),
+                )),
+            Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
                   controller: xCoordRText..text = widget.dot.x.toString(),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -175,15 +186,13 @@ class AddEditPopupState extends State<AddEditPopup> {
         ),
         TextButton(
           onPressed: () {
-            widget.save(
-              Dot.dzParameter(
+            widget.save(Dot.dzParameter(
                 double.tryParse(xCoordRText.text) ?? widget.dot.x,
                 double.tryParse(yCoordRText.text) ?? widget.dot.y,
                 double.tryParse(zCoordRText.text) ?? widget.dot.z,
                 name: name.text,
                 id: widget.dot.id,
-              ),
-            );
+                rank: int.tryParse(rank.text) ?? 0));
             Navigator.of(context).pop();
           },
           child: const Text('Mentés'),

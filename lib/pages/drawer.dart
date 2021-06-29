@@ -70,7 +70,7 @@ class _DrawerPageState extends State<DrawerPage> {
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
     final transformedDots = dbDotList
-        .map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name))
+        .map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name,rank: e.rank))
         .toList();
     setState(() {
       dotList.addMultipleDots(transformedDots);
@@ -88,8 +88,10 @@ class _DrawerPageState extends State<DrawerPage> {
   Future<void> addPoint(Dot dot) async {
     if (!dotList.allDots.any((element) =>
         element.x == dot.x && element.y == dot.y && element.z == dot.z)) {
-      var newId = await DBService().addDot(widget.projectId,
-          DBPoint(x: dot.x, y: dot.y, z: dot.z, name: dot.name));
+      var newId = await DBService().addDot(
+          widget.projectId,
+          DBPoint(
+              x: dot.x, y: dot.y, z: dot.z, name: dot.name, rank: dot.rank));
       dotList.addDot(
           Dot.dzParameter(dot.x, dot.y, dot.z, id: newId, name: dot.name));
     } else {
@@ -455,7 +457,6 @@ class _DrawerPageState extends State<DrawerPage> {
                                                 this.deleteDot(value);
                                               });
                                             },
-                                            index: idx,
                                             value: value,
                                             key: Key(idx.toString()),
                                           )),

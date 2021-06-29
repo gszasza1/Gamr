@@ -5,6 +5,7 @@ import 'package:objectbox/objectbox.dart';
 @Entity()
 class DBPoint {
   int id = 0;
+  int rank = 0;
   double x = 0;
 
   double y = 0;
@@ -18,12 +19,14 @@ class DBPoint {
       required this.y,
       required this.z,
       required this.name,
+      required this.rank,
       int? id}) {
     if (id != null) {
       this.id = id;
     }
   }
   static DBPoint fromBasePoint(BaseDot dot) {
-    return DBPoint(x: dot.x, y: dot.y, z: dot.z, name: dot.name);
+    return DBPoint(
+        x: dot.x, y: dot.y, z: dot.z, name: dot.name, rank: dot.rank);
   }
 }

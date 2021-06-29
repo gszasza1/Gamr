@@ -5,11 +5,9 @@ class DotListItem extends StatelessWidget {
   const DotListItem(
       {required Key key,
       required this.callback,
-      required this.index,
       required this.value})
       : super(key: key);
   final Dot value;
-  final int index;
   final Function callback;
   @override
   Widget build(BuildContext context) {
@@ -19,7 +17,7 @@ class DotListItem extends StatelessWidget {
           flex: 0,
           child: Container(
             child: Text(
-              (index + 1).toString(),
+              (value.rank).toString(),
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             margin: const EdgeInsets.only(

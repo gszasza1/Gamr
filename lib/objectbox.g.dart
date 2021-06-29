@@ -17,7 +17,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(1, 2616335250161436945),
       name: 'DBPoint',
-      lastPropertyId: const IdUid(6, 4445900996410743654),
+      lastPropertyId: const IdUid(7, 3861221559089906472),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -51,7 +51,12 @@ final _entities = <ModelEntity>[
             type: 11,
             flags: 520,
             indexId: const IdUid(1, 6480092581063713950),
-            relationTarget: 'Project')
+            relationTarget: 'Project'),
+        ModelProperty(
+            id: const IdUid(7, 3861221559089906472),
+            name: 'rank',
+            type: 6,
+            flags: 0)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[]),
@@ -110,13 +115,14 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (DBPoint object, fb.Builder fbb) {
           final nameOffset = fbb.writeString(object.name);
-          fbb.startTable(7);
+          fbb.startTable(8);
           fbb.addInt64(0, object.id);
           fbb.addFloat64(1, object.x);
           fbb.addFloat64(2, object.y);
           fbb.addFloat64(3, object.z);
           fbb.addOffset(4, nameOffset);
           fbb.addInt64(5, object.project.targetId);
+          fbb.addInt64(6, object.rank);
           fbb.finish(fbb.endTable());
           return object.id;
         },
@@ -130,6 +136,7 @@ ModelDefinition getObjectBoxModel() {
               z: const fb.Float64Reader().vTableGet(buffer, rootOffset, 10, 0),
               name:
                   const fb.StringReader().vTableGet(buffer, rootOffset, 12, ''),
+              rank: const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
               id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
           object.project.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0);
@@ -199,6 +206,9 @@ class DBPoint_ {
   /// see [DBPoint.project]
   static final project =
       QueryRelationProperty<DBPoint, Project>(_entities[0].properties[5]);
+
+  /// see [DBPoint.rank]
+  static final rank = QueryIntegerProperty<DBPoint>(_entities[0].properties[6]);
 }
 
 /// [Project] entity fields to define ObjectBox queries.

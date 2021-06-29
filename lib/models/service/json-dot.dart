@@ -7,11 +7,18 @@ class JsonDot extends BaseDot {
       required double y,
       required double z,
       required String name,
+      required int rank,
       int? id})
-      : super(x: x, y: y, z: z, id: id, name: name);
+      : super(x: x, y: y, z: z, id: id, name: name, rank: rank);
   @override
   factory JsonDot.fromDot(Dot dot) {
-    return JsonDot(x: dot.x, y: dot.y, z: dot.z, id: dot.id, name: dot.name);
+    return JsonDot(
+        x: dot.x,
+        y: dot.y,
+        z: dot.z,
+        id: dot.id,
+        name: dot.name,
+        rank: dot.rank);
   }
 
   static JsonDot fromMap(Map<String, dynamic> dot) {
@@ -23,7 +30,11 @@ class JsonDot extends BaseDot {
       throw UnsupportedError("Nem megfelelő JSON fájl");
     }
     return JsonDot(
-        x: dot["x"]!, y: dot["y"]!, z: dot["z"]!, name: dot["name"]!);
+        rank: dot["rank"]!,
+        x: dot["x"]!,
+        y: dot["y"]!,
+        z: dot["z"]!,
+        name: dot["name"]!);
   }
 
   static List<JsonDot> generateJSONContentFromDots(List<Dot> dot) {
@@ -31,11 +42,5 @@ class JsonDot extends BaseDot {
     return data;
   }
 
-  Map toJson(int index) => {
-        'index':index+1,
-        'x': x,
-        'y': y,
-        'z': z,
-        'name':name
-      };
+  Map toJson() => {'rank': rank, 'x': x, 'y': y, 'z': z, 'name': name};
 }

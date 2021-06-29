@@ -8,6 +8,7 @@ class Dot extends Offset {
   int id = 0;
 
   double z = 0;
+  int rank = 0;
   double x = 0;
   double y = 0;
   String name = "";
@@ -23,7 +24,8 @@ class Dot extends Offset {
       this.name = name;
     }
   }
-  Dot.dzParameter(double dx, double dy, this.z, {int? id, String? name})
+  Dot.dzParameter(double dx, double dy, this.z,
+      {int? id, String? name, int? rank})
       : super(dx, dy) {
     x = dx;
     y = dy;
@@ -33,9 +35,12 @@ class Dot extends Offset {
     if (name != null) {
       this.name = name;
     }
+    if (rank != null) {
+      this.rank = rank;
+    }
   }
   DBPoint toDbPoint() {
-    return DBPoint(x: x, y: y, z: z, id: id, name: name);
+    return DBPoint(x: x, y: y, z: z, id: id, name: name, rank: rank);
   }
 
   updateCoord(Dot dot) {
@@ -47,6 +52,7 @@ class Dot extends Offset {
   double distanceFromDot(Dot dot) {
     return sqrt(distanceFromDotPow(dot));
   }
+
   double distanceFromDot3D(Dot dot) {
     return sqrt(distanceFromDotPow3D(dot));
   }
@@ -78,8 +84,9 @@ class Dot extends Offset {
     var b = this.dy - dot.dy;
     return a * a + b * b;
   }
+
   double distanceFromDotPow3D(Dot dot) {
-   var a = this.x - dot.x;
+    var a = this.x - dot.x;
     var b = this.y - dot.y;
     var c = this.z - dot.z;
     return a * a + b * b + c * c;

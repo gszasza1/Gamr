@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:2616335250161436945",
-      "lastPropertyId": "6:4445900996410743654",
+      "lastPropertyId": "7:3861221559089906472",
       "name": "DBPoint",
       "properties": [
         {
@@ -41,6 +41,11 @@
           "flags": 520,
           "indexId": "1:6480092581063713950",
           "relationTarget": "Project"
+        },
+        {
+          "id": "7:3861221559089906472",
+          "name": "rank",
+          "type": 6
         }
       ],
       "relations": []

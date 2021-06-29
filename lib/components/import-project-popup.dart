@@ -50,7 +50,7 @@ class _ImportPopupState extends State<ImportPopup> {
                         children: [
                           Expanded(
                             child: Container(
-                              child: Text(e.x.toStringAsFixed(4)),
+                              child: Text(e.rank.toString()),
                               margin: const EdgeInsets.only(
                                 right: 10,
                               ),
@@ -58,13 +58,21 @@ class _ImportPopupState extends State<ImportPopup> {
                           ),
                           Expanded(
                             child: Container(
-                              child: Text(e.y.toStringAsFixed(4)),
+                              child: Text(e.x.toStringAsFixed(3)),
                               margin: const EdgeInsets.only(
                                 right: 10,
                               ),
                             ),
                           ),
-                          Expanded(child: Text(e.z.toStringAsFixed(4))),
+                          Expanded(
+                            child: Container(
+                              child: Text(e.y.toStringAsFixed(3)),
+                              margin: const EdgeInsets.only(
+                                right: 10,
+                              ),
+                            ),
+                          ),
+                          Expanded(child: Text(e.z.toStringAsFixed(3))),
                         ],
                       ))
                   .toList(),

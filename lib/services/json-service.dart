@@ -45,12 +45,8 @@ class JsonService {
         .replaceAll(".", "");
     final fileName = this.basePath + '/${projectName}_$creationDate.json';
     final data = JsonDot.generateJSONContentFromDots(dots);
-    
-    var generatedData = [];
-    for (var i = 0; i < data.length; i++) {
-      generatedData.add(data[i].toJson(i));
-    }
 
+    var generatedData = data.map((element) => element.toJson()).toList();
     String jsonTags = jsonEncode(generatedData);
     print(fileName);
     final File file = File(fileName);

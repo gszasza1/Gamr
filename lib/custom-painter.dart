@@ -93,7 +93,7 @@ class OpenPainter extends CustomPainter {
           createNewText(
               size,
               dotList.allDots[i].coordsToString(
-                  showNumber: options.showNumber ? i + 1 : null,
+                  showNumber: options.showNumber ? dotList.allDots[i].rank : null,
                   showCoord: this.options.showCoords,
                   threeCoord: true))
             ..paint(canvas, dotList.drawAbleDots[i]);

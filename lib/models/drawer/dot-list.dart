@@ -54,7 +54,7 @@ class DotList {
   List<DBPoint> dotsToDBPoint() {
     return this
         .allDots
-        .map((e) => DBPoint(x: e.x, y: e.y, z: e.z, name: e.name))
+        .map((e) => DBPoint(x: e.x, y: e.y, z: e.z, name: e.name,rank:e.rank))
         .toList();
   }
 

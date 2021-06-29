@@ -7,11 +7,18 @@ class TextDot extends BaseDot {
       required double y,
       required double z,
       required String name,
+      required int rank,
       int? id})
-      : super(x: x, y: y, z: z, id: id, name: name);
+      : super(x: x, y: y, z: z, id: id, name: name, rank: rank);
   @override
   factory TextDot.fromDot(Dot dot) {
-    return TextDot(x: dot.x, y: dot.y, z: dot.z, id: dot.id, name: dot.name);
+    return TextDot(
+        x: dot.x,
+        y: dot.y,
+        z: dot.z,
+        id: dot.id,
+        name: dot.name,
+        rank: dot.rank);
   }
 
   static TextDot fromStringList(List<String> dot) {
@@ -19,6 +26,7 @@ class TextDot extends BaseDot {
       throw UnsupportedError("Nem megfelelő TXT fájl");
     }
     return TextDot(
+      rank: int.tryParse(dot[0]) ?? 0,
       x: double.parse(dot[1]),
       y: double.parse(dot[2]),
       z: double.parse(dot[3]),
@@ -33,7 +41,7 @@ class TextDot extends BaseDot {
   static String listToString(List<TextDot> totalTextDot) {
     String data = "";
     totalTextDot.asMap().forEach((index, element) {
-      data += element.toStringCoord(index+1) + "\n";
+      data += element.toStringCoord(index + 1) + "\n";
     });
     return data;
   }
