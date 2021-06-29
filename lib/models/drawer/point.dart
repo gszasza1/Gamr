@@ -44,6 +44,8 @@ class Dot extends Offset {
   }
 
   updateCoord(Dot dot) {
+    name = dot.name;
+    rank = dot.rank;
     x = dot.x;
     y = dot.y;
     z = dot.z;

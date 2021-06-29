@@ -49,6 +49,8 @@ class DBService {
     var box = store.box<DBPoint>();
     var dbPoint = box.get(point.id);
     if (dbPoint != null) {
+      dbPoint.name = point.name;
+      dbPoint.rank = point.rank;
       dbPoint.x = point.x;
       dbPoint.y = point.y;
       dbPoint.z = point.z;
