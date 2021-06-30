@@ -3,6 +3,7 @@ import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/components/save-file-options.dart';
+import 'package:gamr/components/set-divider-distance-popup.dart';
 import 'package:gamr/constant/email-menu.dart';
 import 'package:gamr/constant/popup-menu.dart';
 import 'package:gamr/custom-painter.dart';
@@ -35,6 +36,7 @@ class _DrawerPageState extends State<DrawerPage> {
   TextEditingController zCoordRText = TextEditingController(text: '');
   GamrOptions options = GamrOptions();
   late final String projectName;
+
   Future getInitialPref() async {
     prefs = await SharedPreferences.getInstance();
     options.showCoords = prefs.getBool("showCoords") ?? true;
@@ -70,7 +72,8 @@ class _DrawerPageState extends State<DrawerPage> {
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
     final transformedDots = dbDotList
-        .map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name,rank: e.rank))
+        .map((e) => Dot.dzParameter(e.x, e.y, e.z,
+            id: e.id, name: e.name, rank: e.rank))
         .toList();
     setState(() {
       dotList.addMultipleDots(transformedDots);
@@ -302,18 +305,34 @@ class _DrawerPageState extends State<DrawerPage> {
                       onTapUp: (x) => {
                         setState(() {
                           localpositon = Dot.offsetToDot(x.localPosition);
+                          if (localpositon != null) {
+                            if (!options.twoDotMode) {
+                              this
+                                  .dotList
+                                  .calculateOnDrawPointList(localpositon!);
+                            } else {
+                              this.dotList.nearestDotToSelected(localpositon!);
+                            }
+                          }
                         })
                       },
                       onScaleEnd: (x) => {
                         setState(() {
                           initMove = null;
+                          this.dotList.isCanvasMoving = false;
                           this.dotList.setNewFixOffset();
+                          if (this.dotList.twoDotMode.dividerDistance != null) {
+                            this.dotList.setDividerBetweenSelectedPoints2D();
+                          }
                         })
                       },
                       onScaleStart: (x) => {
                         setState(() {
+                          this.dotList.isCanvasMoving = true;
+                          this.dotList.twoDotMode.resetPoints();
                           localpositon = null;
                           initMove = x.localFocalPoint;
+                          this.dotList.resetSelectedPoint();
                         })
                       },
                       onScaleUpdate: (x) => {
@@ -474,7 +493,7 @@ class _DrawerPageState extends State<DrawerPage> {
               ],
             ),
             Positioned.fill(
-              top: 10,
+              top: 20,
               right: 10,
               child: Align(
                 alignment: Alignment.topRight,
@@ -545,6 +564,74 @@ class _DrawerPageState extends State<DrawerPage> {
                 ),
               ),
             ),
+            Positioned.fill(
+              top: 80,
+              right: 10,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      options.twoDotMode = !options.twoDotMode;
+                    });
+                  },
+                  child: Ink(
+                    height: 35,
+                    width: 35,
+                    decoration: ShapeDecoration(
+                      color: options.twoDotMode
+                          ? Colors.deepOrange
+                          : Colors.lightBlue,
+                      shape: CircleBorder(),
+                    ),
+                    child: const Icon(
+                      Icons.horizontal_distribute,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (this.dotList.twoDotMode.isFull)
+              Positioned.fill(
+                top: 130,
+                right: 10,
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DividerDistancePopup(
+                                distance:
+                                    this.dotList.twoDotMode.dividerDistance ??
+                                        0,
+                                save: (e) {
+                                  this
+                                      .dotList
+                                      .setDividerDistance(double.parse(e));
+                                  this
+                                      .dotList
+                                      .setDividerBetweenSelectedPoints2D();
+                                });
+                          });
+                    },
+                    child: Ink(
+                      height: 35,
+                      width: 35,
+                      decoration: ShapeDecoration(
+                        color: Colors.lightBlue,
+                        shape: CircleBorder(),
+                      ),
+                      child: const Icon(
+                        Icons.open_in_full,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

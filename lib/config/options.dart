@@ -8,4 +8,6 @@ class GamrOptions {
   bool show2Ddistance = false;
   bool show3Ddistance = false;
   bool showHeightVariation = false;
+
+  bool twoDotMode = false;
 }

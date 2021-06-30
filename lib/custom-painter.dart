@@ -12,17 +12,10 @@ class OpenPainter extends CustomPainter {
     required Dot? paramPoint,
     required this.dotList,
     required this.axis,
-  }) {
-    if (this.dotList.drawAbleDots.length > 1 && paramPoint != null) {
-      selectedPoint = this.dotList.calculateOnDrawPointList(paramPoint);
-    } else {
-      selectedPoint = [];
-    }
-  }
+  }) {}
 
   final GamrOptions options;
   final String axis;
-  late List<Dot> selectedPoint;
   final DotList dotList;
 
   @override
@@ -93,7 +86,8 @@ class OpenPainter extends CustomPainter {
           createNewText(
               size,
               dotList.allDots[i].coordsToString(
-                  showNumber: options.showNumber ? dotList.allDots[i].rank : null,
+                  showNumber:
+                      options.showNumber ? dotList.allDots[i].rank : null,
                   showCoord: this.options.showCoords,
                   threeCoord: true))
             ..paint(canvas, dotList.drawAbleDots[i]);
@@ -160,19 +154,61 @@ class OpenPainter extends CustomPainter {
       }
 
       /// Draw selected dot
-      if (this.selectedPoint.length > 1) {
-        createNewText(
-            size, this.selectedPoint[1].coordsToString(threeCoord: true),
+      if (this.dotList.selectedPoint.length > 1) {
+        createNewText(size,
+            this.dotList.selectedPoint[1].coordsToString(threeCoord: true),
             color: Config.colorRed)
-          ..paint(canvas, this.selectedPoint[0]);
-        canvas.drawPoints(
-            PointMode.lines, this.selectedPoint[0].createXDots(), paintRed);
+          ..paint(canvas, this.dotList.selectedPoint[0]);
+        canvas.drawPoints(PointMode.lines,
+            this.dotList.selectedPoint[0].createXDots(), paintRed);
 
         if (this.options.showYAxis) {
           var onYAxis =
-              Dot(this.selectedPoint[0].dx, this.dotList.getYOffset());
+              Dot(this.dotList.selectedPoint[0].dx, this.dotList.getYOffset());
           canvas.drawPoints(PointMode.lines, onYAxis.createXDots(), paintRed);
-          canvas.drawLine(this.selectedPoint[0], onYAxis, paintRed);
+          canvas.drawLine(this.dotList.selectedPoint[0], onYAxis, paintRed);
+        }
+      }
+
+      /// SelectedPoints (round)
+      var paintCircularPurple = Paint()
+        ..color = Config.colorDarkPurple
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2;
+
+      this.dotList.twoDotMode.selectedDotIndexes.forEach((element) {
+        canvas.drawCircle(
+            this.dotList.drawAbleDots[element], 10, paintCircularPurple);
+      });
+
+      /// Összekötni ha 2 pont ki van választva
+      if (this.dotList.twoDotMode.selectedDotIndexes.length == 2) {
+        canvas.drawLine(
+            this
+                .dotList
+                .drawAbleDots[this.dotList.twoDotMode.selectedDotIndexes[0]],
+            this
+                .dotList
+                .drawAbleDots[this.dotList.twoDotMode.selectedDotIndexes[1]],
+            paintCircularPurple);
+
+        /// Felosztás
+        final drawSelectedDots = this.dotList.twoDotMode.drawDistanceDots;
+        for (var i = 0; i < drawSelectedDots.length; i++) {
+          canvas.drawPoints(
+              PointMode.lines, drawSelectedDots[i].createXDots(), paintRed);
+          //Felosztás szövege
+          if (this.options.showCoords) {
+            createNewText(
+                size,
+                this
+                    .dotList
+                    .twoDotMode
+                    .distanceDots[i]
+                    .coordsToString(threeCoord: true),
+                color: Config.colorRed)
+              ..paint(canvas, drawSelectedDots[i]);
+          }
         }
       }
     }
