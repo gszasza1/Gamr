@@ -21,6 +21,12 @@ class _ImportPopupState extends State<ImportPopup> {
   }
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Importálás'),

@@ -18,6 +18,12 @@ class AddNewProjectPopup extends StatefulWidget {
 
 class AddNewProjectPopupState extends State<AddNewProjectPopup> {
   TextEditingController nameController = TextEditingController(text: '');
+  
+  void dispose() {
+    nameController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

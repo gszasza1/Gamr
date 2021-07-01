@@ -40,6 +40,7 @@ class AddEditPopupState extends State<AddEditPopup> {
     xCoordRText.dispose();
     yCoordRText.dispose();
     zCoordRText.dispose();
+    rank.dispose();
     super.dispose();
   }
 
