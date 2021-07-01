@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamr/components/add-distance-points.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
+import 'package:gamr/components/general-info-dots.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/components/save-file-options.dart';
 import 'package:gamr/components/set-divider-distance-popup.dart';
@@ -324,6 +325,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   setState(() {
                     currentAxis = value ?? "XZ";
                     this.dotList.updateMainAxis(currentAxis);
+                    this.resetPosition();
                   });
                 },
               ),
@@ -335,6 +337,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   setState(() {
                     currentAxis = value ?? "YZ";
                     this.dotList.updateMainAxis(currentAxis);
+                    this.resetPosition();
                   });
                 },
               ),
@@ -346,6 +349,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   setState(() {
                     currentAxis = value ?? "XY";
                     this.dotList.updateMainAxis(currentAxis);
+                    this.resetPosition();
                   });
                 },
               ),
@@ -516,6 +520,46 @@ class _DrawerPageState extends State<DrawerPage> {
                           ),
                           child: const Icon(
                             Icons.open_in_full,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (this.dotList.twoDotMode.isFull)
+                  Positioned(
+                    top: 180,
+                    right: 10,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return GeneralInformationDots(
+                                  degreeBeteenDots:
+                                      this.dotList.twoDotMode.degreeBeteenDots,
+                                  distance2D:
+                                      this.dotList.twoDotMode.distance2D,
+                                  distance3D:
+                                      this.dotList.twoDotMode.distance3D,
+                                  zHeightVariationBetweenDots: this
+                                      .dotList
+                                      .twoDotMode
+                                      .zHeightVariationBetweenDots,
+                                );
+                              });
+                        },
+                        child: Ink(
+                          height: 35,
+                          width: 35,
+                          decoration: ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: const Icon(
+                            Icons.info,
                             color: Colors.white,
                           ),
                         ),

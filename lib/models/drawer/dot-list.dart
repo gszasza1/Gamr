@@ -354,7 +354,7 @@ class DotList {
         dotIndex = i;
       }
     }
-    this.twoDotMode.setDot(dotIndex);
+    this.twoDotMode.setDot(dotIndex, this.allDots[dotIndex]);
   }
 
   setDividerDistance(double distance) {
