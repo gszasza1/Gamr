@@ -355,6 +355,9 @@ class DotList {
       }
     }
     this.twoDotMode.setDot(dotIndex, this.allDots[dotIndex]);
+    if(this.twoDotMode.isFull){
+      this.setDividerBetweenSelectedPoints2D();
+    }
   }
 
   setDividerDistance(double distance) {
