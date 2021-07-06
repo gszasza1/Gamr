@@ -43,13 +43,14 @@ class _DrawerPageState extends State<DrawerPage> {
     prefs = await SharedPreferences.getInstance();
     options.showCoords = prefs.getBool("showCoords") ?? true;
     options.onlyPoints = prefs.getBool("onlyPoints") ?? false;
-    options.showYAxis = prefs.getBool("showYAxis") ?? true;
-    options.showMedian = prefs.getBool("showMedian") ?? true;
-    options.showTotalDegree = prefs.getBool("showTotalDegree") ?? true;
-    options.showNumber = prefs.getBool("showNumber") ?? true;
-    options.show2Ddistance = prefs.getBool("show2Ddistance") ?? true;
-    options.show3Ddistance = prefs.getBool("show3Ddistance") ?? true;
-    options.showHeightVariation = prefs.getBool("show3Ddistance") ?? true;
+    options.showYAxis = prefs.getBool("showYAxis") ?? false;
+    options.showMedian = prefs.getBool("showMedian") ?? false;
+    options.showTotalDegree = prefs.getBool("showTotalDegree") ?? false;
+    options.showNumber = prefs.getBool("showNumber") ?? false;
+    options.show2Ddistance = prefs.getBool("show2Ddistance") ?? false;
+    options.show3Ddistance = prefs.getBool("show3Ddistance") ?? false;
+    options.showHeightVariation = prefs.getBool("show3Ddistance") ?? false;
+    options.areaMode = prefs.getBool("areaMode") ?? false;
   }
 
   @override
@@ -65,6 +66,9 @@ class _DrawerPageState extends State<DrawerPage> {
   void dispose() {
     super.dispose();
     this.dotList.clear();
+    xCoordRText.dispose();
+    yCoordRText.dispose();
+    zCoordRText.dispose();
   }
 
   Future<void> initializeProjectName() async {
@@ -123,10 +127,12 @@ class _DrawerPageState extends State<DrawerPage> {
     setState(() {
       localpositon = Dot.offsetToDot(x.localPosition);
       if (localpositon != null) {
-        if (!options.twoDotMode) {
-          this.dotList.calculateOnDrawPointList(localpositon!);
+        if (options.twoDotMode) {
+          this.dotList.selectDotForDivider(localpositon!);
+        } else if (options.areaMode) {
+          this.dotList.selectDotForAreaCalculation(localpositon!);
         } else {
-          this.dotList.nearestDotToSelected(localpositon!);
+          this.dotList.calculateOnDrawPointList(localpositon!);
         }
       }
     });
@@ -140,6 +146,7 @@ class _DrawerPageState extends State<DrawerPage> {
       if (this.dotList.twoDotMode.dividerDistance != null) {
         this.dotList.setDividerBetweenSelectedPoints2D();
       }
+      this.dotList.refreshDrawArea();
     });
   }
 
@@ -147,6 +154,7 @@ class _DrawerPageState extends State<DrawerPage> {
     setState(() {
       this.dotList.isCanvasMoving = true;
       this.dotList.twoDotMode.resetPoints();
+      this.dotList.areaMode.resetDrawable();
       localpositon = null;
       initMove = x.localFocalPoint;
       this.dotList.resetSelectedPoint();
@@ -465,6 +473,14 @@ class _DrawerPageState extends State<DrawerPage> {
                       onTap: () {
                         setState(() {
                           options.twoDotMode = !options.twoDotMode;
+                          prefs.setBool("twoDotMode", options.twoDotMode);
+                          if (options.areaMode) {
+                            options.areaMode = false;
+                            prefs.setBool("areaMode", options.areaMode);
+                          }
+                          if (!options.twoDotMode) {
+                            this.dotList.twoDotMode.reset();
+                          }
                         });
                       },
                       child: Ink(
@@ -526,6 +542,38 @@ class _DrawerPageState extends State<DrawerPage> {
                       ),
                     ),
                   ),
+                if (!options.twoDotMode)
+                  Positioned(
+                    top: 130,
+                    right: 10,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            options.areaMode = !options.areaMode;
+                            prefs.setBool("areaMode", options.areaMode);
+                            if (!options.areaMode) {
+                              this.dotList.areaMode.reset();
+                              options.twoDotMode = false;
+                              prefs.setBool("twoDotMode", options.twoDotMode);
+                            }
+                          });
+                        },
+                        child: Ink(
+                          height: 35,
+                          width: 35,
+                          decoration: ShapeDecoration(
+                            color: options.areaMode
+                                ? Colors.deepOrange
+                                : Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: Icon(Icons.crop_square, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
                 if (this.dotList.twoDotMode.isFull)
                   Positioned(
                     top: 180,
@@ -566,7 +614,8 @@ class _DrawerPageState extends State<DrawerPage> {
                       ),
                     ),
                   ),
-                if (this.dotList.twoDotMode.dividerDistance != null &&
+                if (this.dotList.twoDotMode.isFull &&
+                    this.dotList.twoDotMode.dividerDistance != null &&
                     this.dotList.twoDotMode.dividerDistance! > 0)
                   Positioned(
                     bottom: 20,

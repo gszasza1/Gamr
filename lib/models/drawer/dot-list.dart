@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:gamr/models/database/points.dart';
+import 'package:gamr/models/drawer/area-mode.dart';
 import 'package:gamr/models/drawer/distance.dart';
 import 'package:gamr/models/drawer/point.dart';
 import 'package:gamr/models/drawer/two-dot-mode.dart';
@@ -25,6 +26,7 @@ class DotList {
   List<Dot> selectedPoint = [];
 
   TwoDotMode twoDotMode = TwoDotMode();
+  AreaMode areaMode = AreaMode();
 
   bool isCanvasMoving = false;
 
@@ -343,7 +345,7 @@ class DotList {
     this.selectedPoint = [];
   }
 
-  nearestDotToSelected(Dot selectedPoint) {
+  int nearestDotToSelected(Dot selectedPoint) {
     double minDistance = this.drawAbleDots[0].distanceFromDot(selectedPoint);
     int dotIndex = 0;
     for (var i = 0; i < this.drawAbleDots.length; i++) {
@@ -354,8 +356,27 @@ class DotList {
         dotIndex = i;
       }
     }
+    return dotIndex;
+  }
+
+  selectDotForAreaCalculation(Dot selectedPoint) {
+    final dotIndex = this.nearestDotToSelected(selectedPoint);
+    this.areaMode.addDotIndex(dotIndex);
+    this.areaMode.addDot(this.allDots[dotIndex], this.drawAbleDots[dotIndex]);
+    this.areaMode.calculateArea();
+  }
+
+  refreshDrawArea() {
+    this.areaMode.resetDrawable();
+    this.areaMode.dotIndexes.forEach((element) {
+      this.areaMode.addDot(this.allDots[element], this.drawAbleDots[element]);
+    });
+  }
+
+  selectDotForDivider(Dot selectedPoint) {
+    final dotIndex = this.nearestDotToSelected(selectedPoint);
     this.twoDotMode.setDot(dotIndex, this.allDots[dotIndex]);
-    if(this.twoDotMode.isFull){
+    if (this.twoDotMode.isFull) {
       this.setDividerBetweenSelectedPoints2D();
     }
   }

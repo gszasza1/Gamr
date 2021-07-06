@@ -10,4 +10,5 @@ class GamrOptions {
   bool showHeightVariation = false;
 
   bool twoDotMode = false;
+  bool areaMode = false;
 }

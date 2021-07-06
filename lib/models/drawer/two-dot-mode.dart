@@ -47,6 +47,7 @@ class TwoDotMode {
     this.drawDistanceDots = [];
     this.distanceDots = [];
     this.selectedDots = [];
+    this.dividerDistance = null;
   }
 
   resetPoints() {
@@ -70,13 +71,13 @@ class TwoDotMode {
   }
 
   calculateDegree() {
-    var first = this.selectedDots[0];
-    var last = this.selectedDots[1];
-    var degree90 = Dot.dzParameter(last.x, last.y, first.z);
-    var a2 = degree90.distanceFromDotPow3D(last);
-    var b2 = degree90.distanceFromDotPow3D(first);
-    var c2 = first.distanceFromDotPow3D(last);
-    var degreeRadian = acos((b2 + c2 - a2) / (2 * sqrt(b2) * sqrt(c2)));
+    final first = this.selectedDots[0];
+    final last = this.selectedDots[1];
+    final degree90 = Dot.dzParameter(last.x, last.y, first.z);
+    final a2 = degree90.distanceFromDotPow3D(last);
+    final b2 = degree90.distanceFromDotPow3D(first);
+    final c2 = first.distanceFromDotPow3D(last);
+    final degreeRadian = acos((b2 + c2 - a2) / (2 * sqrt(b2) * sqrt(c2)));
     this.degreeBeteenDots = degreeRadian * 180 / pi;
   }
 }

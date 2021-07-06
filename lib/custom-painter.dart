@@ -25,6 +25,11 @@ class OpenPainter extends CustomPainter {
       ..color = Config.colorGreen
       ..strokeWidth = 1;
 
+    var paintGreen30 = Paint()
+      ..color = Config.colorGreen30
+      ..strokeWidth = 1
+      ..style = PaintingStyle.fill;
+
     var paintRed = Paint()
       ..color = Config.colorRed
       ..strokeWidth = 2;
@@ -210,6 +215,17 @@ class OpenPainter extends CustomPainter {
               ..paint(canvas, drawSelectedDots[i]);
           }
         }
+      }
+
+      ///Area caluclation
+      final areaDots = this.dotList.areaMode.selectedDrawDots;
+      areaDots.forEach((element) {
+        canvas.drawCircle(element, 5, paintGreen);
+      });
+      if (areaDots.length > 2) {
+        Path path = Path();
+        path.addPolygon(areaDots, true);
+        canvas.drawPath(path, paintGreen30);
       }
     }
   }
