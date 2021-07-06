@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class GeneralInformationDots extends StatefulWidget {
+class GeneralInformationDots extends StatelessWidget {
   const GeneralInformationDots(
       {Key? key,
       required this.degreeBeteenDots,
@@ -12,11 +12,6 @@ class GeneralInformationDots extends StatefulWidget {
   final double distance2D;
   final double degreeBeteenDots;
   final double zHeightVariationBetweenDots;
-  @override
-  GeneralInformationDotsState createState() => GeneralInformationDotsState();
-}
-
-class GeneralInformationDotsState extends State<GeneralInformationDots> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -34,7 +29,7 @@ class GeneralInformationDotsState extends State<GeneralInformationDots> {
           ),
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(widget.distance2D.toStringAsFixed(4) + " m")),
+              child: Text(distance2D.toStringAsFixed(4) + " m")),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Magasság különbség",
@@ -42,9 +37,8 @@ class GeneralInformationDotsState extends State<GeneralInformationDots> {
           ),
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(
-                  widget.zHeightVariationBetweenDots.toStringAsFixed(4) +
-                      " m")),
+              child:
+                  Text(zHeightVariationBetweenDots.toStringAsFixed(4) + " m")),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Távolság (3D)",
@@ -54,13 +48,13 @@ class GeneralInformationDotsState extends State<GeneralInformationDots> {
           ),
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(widget.distance3D.toStringAsFixed(4) + " m")),
+              child: Text(distance3D.toStringAsFixed(4) + " m")),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Teljes meredekség",
                 style: TextStyle(fontStyle: FontStyle.italic)),
           ),
-          Text(widget.degreeBeteenDots.toStringAsFixed(4) + " °"),
+          Text(degreeBeteenDots.toStringAsFixed(4) + " °"),
         ],
       ),
       actions: <Widget>[

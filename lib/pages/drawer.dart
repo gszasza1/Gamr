@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/components/add-distance-points.dart';
+import 'package:gamr/components/area-details-popup.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
 import 'package:gamr/components/general-info-dots.dart';
@@ -570,6 +571,40 @@ class _DrawerPageState extends State<DrawerPage> {
                             shape: CircleBorder(),
                           ),
                           child: Icon(Icons.crop_square, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                if (!options.twoDotMode &&
+                    this.dotList.areaMode.calculatedArea != null)
+                  Positioned(
+                    top: 180,
+                    right: 10,
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AreaDetailsPopup(
+                                    totalArea:
+                                        this.dotList.areaMode.calculatedArea!,
+                                    totalDots: this
+                                        .dotList
+                                        .areaMode
+                                        .dotIndexes
+                                        .length);
+                              });
+                        },
+                        child: Ink(
+                          height: 35,
+                          width: 35,
+                          decoration: ShapeDecoration(
+                            color: Colors.lightBlue,
+                            shape: CircleBorder(),
+                          ),
+                          child: Icon(Icons.info, color: Colors.white),
                         ),
                       ),
                     ),

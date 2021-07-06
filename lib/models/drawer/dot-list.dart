@@ -244,8 +244,8 @@ class DotList {
       this.movableScale = (scale - 1);
       this.movableOffsetX = offsetX;
       this.movableOffsetY = offsetY;
-      recalculateDrawable();
-      generateNewDistances(true);
+      this.recalculateDrawable();
+      this.generateNewDistances(true);
     }
     return;
   }
@@ -258,8 +258,9 @@ class DotList {
       this.sliderY = sliderY;
     }
 
-    recalculateDrawable();
-    generateNewDistances(true);
+    this.recalculateDrawable();
+    this.generateNewDistances(true);
+    this.refreshDrawArea();
 
     this.setDividerBetweenSelectedPoints2D();
   }
