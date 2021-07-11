@@ -93,6 +93,12 @@ class _DrawerPageState extends State<DrawerPage> {
     this.initMove = null;
     localpositon = null;
     this.dotList.setNewFixOffset();
+    if (options.twoDotMode) {
+      this.dotList.generateNewDistances(false);
+    }
+    if (options.areaMode) {
+      this.dotList.refreshDrawArea();
+    }
   }
 
   Future<void> addPoint(Dot dot) async {
@@ -774,36 +780,37 @@ class _DrawerPageState extends State<DrawerPage> {
                                     ),
                                   ),
                                   child: InkWell(
-                                      onTap: () {
-                                        showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AddEditPopup(
-                                                isEdit: true,
-                                                options: this
-                                                    .dotList
-                                                    .allDots
-                                                    .map((e) => e.name)
-                                                    .toSet()
-                                                    .toList(),
-                                                dot: value,
-                                                save: (x) => {
-                                                  setState(() {
-                                                    this.updateDot(x);
-                                                  })
-                                                },
-                                              );
-                                            });
-                                      },
-                                      child: DotListItem(
-                                        callback: () {
-                                          setState(() {
-                                            this.deleteDot(value);
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AddEditPopup(
+                                              isEdit: true,
+                                              options: this
+                                                  .dotList
+                                                  .allDots
+                                                  .map((e) => e.name)
+                                                  .toSet()
+                                                  .toList(),
+                                              dot: value,
+                                              save: (x) => {
+                                                setState(() {
+                                                  this.updateDot(x);
+                                                })
+                                              },
+                                            );
                                           });
-                                        },
-                                        value: value,
-                                        key: Key(idx.toString()),
-                                      )),
+                                    },
+                                    child: DotListItem(
+                                      callback: () {
+                                        setState(() {
+                                          this.deleteDot(value);
+                                        });
+                                      },
+                                      value: value,
+                                      key: Key(idx.toString()),
+                                    ),
+                                  ),
                                 );
                               }).toList(),
                             ),
