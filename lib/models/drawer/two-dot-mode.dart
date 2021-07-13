@@ -42,6 +42,10 @@ class TwoDotMode {
     return this.selectedDotIndexes.length == 2;
   }
 
+  get havePoint {
+    return this.selectedDots.length != 0;
+  }
+
   reset() {
     this.selectedDotIndexes = [];
     this.drawDistanceDots = [];

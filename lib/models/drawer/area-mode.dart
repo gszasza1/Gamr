@@ -15,6 +15,10 @@ class AreaMode {
     this.selectedDrawDots.add(selectedDrawDot);
   }
 
+  get havePoint {
+    return !(selectedDots.length == 0 && dotIndexes.length == 0);
+  }
+
   reset() {
     this.selectedDots = [];
     this.selectedDrawDots = [];

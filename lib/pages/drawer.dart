@@ -5,6 +5,7 @@ import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
 import 'package:gamr/components/general-info-dots.dart';
 import 'package:gamr/components/list-item.dart';
+import 'package:gamr/components/positioned-icon.dart';
 import 'package:gamr/components/save-file-options.dart';
 import 'package:gamr/components/set-divider-distance-popup.dart';
 import 'package:gamr/constant/email-menu.dart';
@@ -471,222 +472,125 @@ class _DrawerPageState extends State<DrawerPage> {
                     ),
                   ),
                 ),
-                Positioned(
+                PositionedIcon(
+                  icon: Icons.horizontal_distribute,
                   top: 80,
                   right: 10,
-                  child: Align(
-                    alignment: Alignment.topRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          options.twoDotMode = !options.twoDotMode;
-                          prefs.setBool("twoDotMode", options.twoDotMode);
-                          if (options.areaMode) {
-                            options.areaMode = false;
-                            prefs.setBool("areaMode", options.areaMode);
-                          }
-                          if (!options.twoDotMode) {
-                            this.dotList.twoDotMode.reset();
-                          }
-                        });
-                      },
-                      child: Ink(
-                        height: 35,
-                        width: 35,
-                        decoration: ShapeDecoration(
-                          color: options.twoDotMode
-                              ? Colors.deepOrange
-                              : Colors.lightBlue,
-                          shape: CircleBorder(),
-                        ),
-                        child: const Icon(
-                          Icons.horizontal_distribute,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
+                  color:
+                      options.twoDotMode ? Colors.deepOrange : Colors.lightBlue,
+                  onTap: () {
+                    setState(() {
+                      options.twoDotMode = !options.twoDotMode;
+                      prefs.setBool("twoDotMode", options.twoDotMode);
+                      options.areaMode = false;
+                      prefs.setBool("areaMode", options.areaMode);
+                      if (this.dotList.areaMode.havePoint) {
+                        this.dotList.areaMode.reset();
+                      }
+                      if (!options.twoDotMode) {
+                        this.dotList.twoDotMode.reset();
+                      }
+                    });
+                  },
                 ),
-                if (this.dotList.twoDotMode.isFull)
-                  Positioned(
-                    top: 130,
-                    right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return DividerDistancePopup(
-                                    distance: this
-                                            .dotList
-                                            .twoDotMode
-                                            .dividerDistance ??
-                                        0,
-                                    save: (e) {
-                                      this
-                                          .dotList
-                                          .setDividerDistance(double.parse(e));
-                                      this
-                                          .dotList
-                                          .setDividerBetweenSelectedPoints2D();
-                                    });
-                              });
-                        },
-                        child: Ink(
-                          height: 35,
-                          width: 35,
-                          decoration: ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: const Icon(
-                            Icons.open_in_full,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                if (!options.twoDotMode)
-                  Positioned(
-                    top: 130,
-                    right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            options.areaMode = !options.areaMode;
-                            prefs.setBool("areaMode", options.areaMode);
-                            if (!options.areaMode) {
-                              this.dotList.areaMode.reset();
-                              options.twoDotMode = false;
-                              prefs.setBool("twoDotMode", options.twoDotMode);
-                            }
-                          });
-                        },
-                        child: Ink(
-                          height: 35,
-                          width: 35,
-                          decoration: ShapeDecoration(
-                            color: options.areaMode
-                                ? Colors.deepOrange
-                                : Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: Icon(Icons.crop_square, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
+                PositionedIcon(
+                  icon: Icons.crop_square,
+                  top: 130,
+                  right: 10,
+                  color:
+                      options.areaMode ? Colors.deepOrange : Colors.lightBlue,
+                  onTap: () {
+                    setState(() {
+                      options.twoDotMode = false;
+                      prefs.setBool("twoDotMode", options.twoDotMode);
+                      options.areaMode = !options.areaMode;
+                      prefs.setBool("areaMode", options.areaMode);
+                      if (this.dotList.twoDotMode.havePoint) {
+                        this.dotList.twoDotMode.reset();
+                      }
+                    });
+                  },
+                ),
                 if (!options.twoDotMode &&
                     this.dotList.areaMode.calculatedArea != null)
-                  Positioned(
-                    top: 180,
+                  PositionedIcon(
+                    icon: Icons.info,
+                    bottom: 20,
                     right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AreaDetailsPopup(
-                                    totalArea:
-                                        this.dotList.areaMode.calculatedArea!,
-                                    totalDots: this
-                                        .dotList
-                                        .areaMode
-                                        .dotIndexes
-                                        .length);
-                              });
-                        },
-                        child: Ink(
-                          height: 35,
-                          width: 35,
-                          decoration: ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: Icon(Icons.info, color: Colors.white),
-                        ),
-                      ),
-                    ),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AreaDetailsPopup(
+                                totalArea:
+                                    this.dotList.areaMode.calculatedArea!,
+                                totalDots:
+                                    this.dotList.areaMode.dotIndexes.length);
+                          });
+                    },
                   ),
                 if (this.dotList.twoDotMode.isFull)
-                  Positioned(
-                    top: 180,
+                  PositionedIcon(
+                    icon: Icons.info,
+                    bottom: 20,
                     right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return GeneralInformationDots(
-                                  degreeBeteenDots:
-                                      this.dotList.twoDotMode.degreeBeteenDots,
-                                  distance2D:
-                                      this.dotList.twoDotMode.distance2D,
-                                  distance3D:
-                                      this.dotList.twoDotMode.distance3D,
-                                  zHeightVariationBetweenDots: this
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return GeneralInformationDots(
+                              degreeBeteenDots:
+                                  this.dotList.twoDotMode.degreeBeteenDots,
+                              distance2D: this.dotList.twoDotMode.distance2D,
+                              distance3D: this.dotList.twoDotMode.distance3D,
+                              zHeightVariationBetweenDots: this
+                                  .dotList
+                                  .twoDotMode
+                                  .zHeightVariationBetweenDots,
+                            );
+                          });
+                    },
+                  ),
+                if (this.dotList.twoDotMode.isFull)
+                  PositionedIcon(
+                    icon: Icons.open_in_full,
+                    bottom: 20,
+                    right: 55,
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return DividerDistancePopup(
+                                distance:
+                                    this.dotList.twoDotMode.dividerDistance ??
+                                        0,
+                                save: (e) {
+                                  this
                                       .dotList
-                                      .twoDotMode
-                                      .zHeightVariationBetweenDots,
-                                );
-                              });
-                        },
-                        child: Ink(
-                          height: 35,
-                          width: 35,
-                          decoration: ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: const Icon(
-                            Icons.info,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                                      .setDividerDistance(double.parse(e));
+                                  this
+                                      .dotList
+                                      .setDividerBetweenSelectedPoints2D();
+                                });
+                          });
+                    },
                   ),
                 if (this.dotList.twoDotMode.isFull &&
                     this.dotList.twoDotMode.dividerDistance != null &&
                     this.dotList.twoDotMode.dividerDistance! > 0)
-                  Positioned(
+                  PositionedIcon(
+                    icon: Icons.add_box,
                     bottom: 20,
-                    right: 10,
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AddDistancePoints();
-                              }).then((value) => {
-                                if (value == true) {addDistanceDots()}
-                              });
-                        },
-                        child: Ink(
-                          height: 35,
-                          width: 35,
-                          decoration: ShapeDecoration(
-                            color: Colors.lightBlue,
-                            shape: CircleBorder(),
-                          ),
-                          child: const Icon(
-                            Icons.add_box,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
+                    right: 100,
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AddDistancePoints();
+                          }).then((value) => {
+                            if (value == true) {addDistanceDots()}
+                          });
+                    },
                   ),
               ]),
             ),
