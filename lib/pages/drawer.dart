@@ -3,7 +3,7 @@ import 'package:gamr/components/add-distance-points.dart';
 import 'package:gamr/components/area-details-popup.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
-import 'package:gamr/components/general-info-dots.dart';
+import 'package:gamr/components/two-mode-info-dots.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/components/positioned-icon.dart';
 import 'package:gamr/components/save-file-options.dart';
@@ -529,16 +529,34 @@ class _DrawerPageState extends State<DrawerPage> {
                           });
                     },
                   ),
+                if (options.twoDotMode)
+                  PositionedIcon(
+                    icon: Icons.adjust,
+                    bottom: 20,
+                    right: 10,
+                    color: this.dotList.twoDotMode.continueMode
+                        ? Colors.deepOrange
+                        : Colors.lightBlue,
+                    onTap: () {
+                      setState(() {
+                        this.dotList.twoDotMode.continueMode =
+                            !this.dotList.twoDotMode.continueMode;
+                        this.dotList.setDividerBetweenSelectedPoints2D();
+                      });
+                    },
+                  ),
                 if (this.dotList.twoDotMode.isFull)
                   PositionedIcon(
                     icon: Icons.info,
                     bottom: 20,
-                    right: 10,
+                    right: 55,
                     onTap: () {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
                             return GeneralInformationDots(
+                              zHeightDegree:
+                                  this.dotList.twoDotMode.zHeightDegree,
                               degreeBeteenDots:
                                   this.dotList.twoDotMode.degreeBeteenDots,
                               distance2D: this.dotList.twoDotMode.distance2D,
@@ -555,7 +573,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   PositionedIcon(
                     icon: Icons.open_in_full,
                     bottom: 20,
-                    right: 55,
+                    right: 100,
                     onTap: () {
                       showDialog(
                           context: context,
@@ -581,7 +599,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   PositionedIcon(
                     icon: Icons.add_box,
                     bottom: 20,
-                    right: 100,
+                    right: 145,
                     onTap: () {
                       showDialog(
                           context: context,

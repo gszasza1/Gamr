@@ -15,7 +15,14 @@ class TwoDotMode {
   double distance3D = 0;
   double distance2D = 0;
   double degreeBeteenDots = 0;
+
+  //m
   double zHeightVariationBetweenDots = 0;
+
+  //100 méteren 1 centi -> 1%
+  double zHeightDegree = 0;
+
+  bool continueMode = false;
 
   setDot(int index, Dot dot) {
     if (this.selectedDotIndexes.length < 2) {
@@ -27,6 +34,7 @@ class TwoDotMode {
           this.calculate3DDistance();
           this.calculateZHeightVariation();
           this.calculateDegree();
+          this.calculateZHeightDegree();
         }
       }
       return;
@@ -67,6 +75,11 @@ class TwoDotMode {
   calculate3DDistance() {
     this.distance3D =
         (this.selectedDots[0].distanceFromDot3D(this.selectedDots[1])).abs();
+  }
+
+  calculateZHeightDegree() {
+    this.zHeightDegree = zHeightVariationBetweenDots / distance2D * 100 * 100;
+    this.zHeightDegree = tan(this.degreeBeteenDots * pi / 180) * 100;
   }
 
   calculateZHeightVariation() {

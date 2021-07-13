@@ -262,7 +262,9 @@ class DotList {
     this.generateNewDistances(true);
     this.refreshDrawArea();
 
-    this.setDividerBetweenSelectedPoints2D();
+    if (this.twoDotMode.isFull) {
+      this.setDividerBetweenSelectedPoints2D();
+    }
   }
 
   void updateMainAxis(String value) {
@@ -419,17 +421,21 @@ class DotList {
         this.twoDotMode.resetPoints();
 
         for (var i = 0; i < possibleDividing; i++) {
-          final createdDrawDistanceDot = Dot(
-              firstDrawDot.dx + drawVector[0] * ((i + 1) / divider),
-              firstDrawDot.dy + drawVector[1] * ((i + 1) / divider));
+          if (!this.twoDotMode.continueMode && i > 0) {
+            break;
+          } else {
+            final createdDrawDistanceDot = Dot(
+                firstDrawDot.dx + drawVector[0] * ((i + 1) / divider),
+                firstDrawDot.dy + drawVector[1] * ((i + 1) / divider));
 
-          final createdDistanceDot = Dot.dzParameter(
-              firstDot.x + dotVector[0] * ((i + 1) / divider),
-              firstDot.y + dotVector[1] * ((i + 1) / divider),
-              firstDot.z + dotVector[2] * ((i + 1) / divider));
+            final createdDistanceDot = Dot.dzParameter(
+                firstDot.x + dotVector[0] * ((i + 1) / divider),
+                firstDot.y + dotVector[1] * ((i + 1) / divider),
+                firstDot.z + dotVector[2] * ((i + 1) / divider));
 
-          this.twoDotMode.drawDistanceDots.add(createdDrawDistanceDot);
-          this.twoDotMode.distanceDots.add(createdDistanceDot);
+            this.twoDotMode.drawDistanceDots.add(createdDrawDistanceDot);
+            this.twoDotMode.distanceDots.add(createdDistanceDot);
+          }
         }
       } else {
         return;

@@ -5,6 +5,7 @@ class GeneralInformationDots extends StatelessWidget {
       {Key? key,
       required this.degreeBeteenDots,
       required this.zHeightVariationBetweenDots,
+      required this.zHeightDegree,
       required this.distance3D,
       required this.distance2D})
       : super(key: key);
@@ -12,6 +13,7 @@ class GeneralInformationDots extends StatelessWidget {
   final double distance2D;
   final double degreeBeteenDots;
   final double zHeightVariationBetweenDots;
+  final double zHeightDegree;
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -38,7 +40,7 @@ class GeneralInformationDots extends StatelessWidget {
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
               child:
-                  Text(zHeightVariationBetweenDots.toStringAsFixed(4) + " m")),
+                  Text((zHeightVariationBetweenDots*100).toStringAsFixed(2) + " cm")),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Távolság (3D)",
@@ -49,6 +51,16 @@ class GeneralInformationDots extends StatelessWidget {
           Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
               child: Text(distance3D.toStringAsFixed(4) + " m")),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+            child: Text("1 m-en meredekség",
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                )),
+          ),
+          Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Text(zHeightDegree.toStringAsFixed(4) + " %")),
           Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Teljes meredekség",
