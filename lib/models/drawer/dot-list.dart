@@ -277,30 +277,82 @@ class DotList {
     calculateMetadata();
   }
 
-  void calculateOnDrawPointList(Dot point) {
-    Dot min = this.drawAbleDots[0];
-    Dot max = this.drawAbleDots[this.drawAbleDots.length - 1];
-    if (this.drawAbleDots.length > 1 &&
-        point.dx >= min.dx &&
-        point.dx <= max.x) {
-      int minIndex = 0;
+  void calculateOnDrawPointList(Dot selectedPoint) {
+    const int circleRadius = 10;
+    double? minDistance;
+    Dot? currentDrawableDot;
+    Dot? currentDot;
+    //http://csharphelper.com/blog/2014/09/determine-where-a-line-intersects-a-circle-in-c/
+    for (var i = 0; i < this.drawAbleDots.length - 1; i++) {
+      final point2 = this.drawAbleDots[i + 1];
+      final point1 = this.drawAbleDots[i];
 
-      /// Get points what the dot betwwen
-      this.drawAbleDots.asMap().forEach((i, x) {
-        if (x.dx > min.dx && x.dx < point.dx) {
-          min = x;
-          minIndex = i;
-        } else if (x.dx < max.dx && x.dx > point.dx) {
-          max = x;
+      final dx = point2.x - point1.x;
+      final dy = point2.y - point1.y;
+
+      final A = dx * dx + dy * dy;
+      final B = 2 *
+          (dx * (point1.x - selectedPoint.x) +
+              dy * (point1.y - selectedPoint.y));
+      final C = (point1.x - selectedPoint.x) * (point1.x - selectedPoint.x) +
+          (point1.y - selectedPoint.y) * (point1.y - selectedPoint.y) -
+          circleRadius * circleRadius;
+
+      final det = B * B - 4 * A * C;
+      if (A > 0.000001 && det > 0) {
+        var t = (-B + sqrt(det)) / (2 * A);
+        Dot intersection1 = Dot(point1.x + t * dx, point1.y + t * dy);
+        t = (-B - sqrt(det)) / (2 * A);
+        Dot intersection2 = Dot(point1.x + t * dx, point1.y + t * dy);
+        Dot finalDot = Dot((intersection1.x + intersection2.x) / 2,
+            (intersection1.y + intersection2.y) / 2);
+        final calculatedDistance = finalDot.distanceFromDot(selectedPoint);
+        final betweenXCoordinates = point1.x < point2.x
+            ? finalDot.x > point1.x && finalDot.x < point2.x
+            : finalDot.x > point2.x && finalDot.x < point1.x;
+        final betweenYCoordinates = point1.y < point2.y
+            ? finalDot.y > point1.y && finalDot.y < point2.y
+            : finalDot.y > point2.y && finalDot.y < point1.y;
+        if ((minDistance == null || calculatedDistance < minDistance) &&
+            betweenXCoordinates &&
+            betweenYCoordinates) {
+          minDistance = calculatedDistance;
+          currentDrawableDot = finalDot;
+          final tempVecX = point2.x - finalDot.x;
+
+          final firstDot = this.allDots[i];
+          final secondDot = this.allDots[i + 1];
+          final dotVector = [
+            secondDot.x - firstDot.x,
+            secondDot.y - firstDot.y,
+            secondDot.z - firstDot.z,
+          ];
+          final proportion = tempVecX / dx;
+          currentDot = Dot.dzParameter(
+              firstDot.x + dotVector[0] * proportion,
+              firstDot.y + dotVector[1] * proportion,
+              firstDot.z + dotVector[2] * proportion);
         }
-      });
-
-      var result = Dot.getYProportion3Dots(min, relative: point, absolute: max);
-      var pointToCanvas = Dot(point.x, result);
-      var divider = Dot.getVectorRelativeProportion(max,
-          relative: pointToCanvas, absolute: min);
-      var pointToShow = pointOnLineBetweenDots(minIndex, divider);
-      this.selectedPoint = [pointToCanvas, pointToShow];
+      } else if (A > 0.000001 && det == 0) {
+        final t = -B / (2 * A);
+        Dot intersection1 = Dot(point1.dx + t * dx, point1.dx + t * dy);
+        final point1Distance = intersection1.distanceFromDot(point1);
+        final point2Distance = intersection1.distanceFromDot(point2);
+        if (minDistance == null ||
+            (point1Distance < point2Distance && point1Distance < minDistance)) {
+          currentDrawableDot = point1;
+          minDistance = point1Distance;
+          currentDot = this.allDots[i];
+        }
+        if ((point1Distance > point2Distance && point2Distance < minDistance)) {
+          currentDrawableDot = point2;
+          minDistance = point2Distance;
+          currentDot = this.allDots[i + 1];
+        }
+      }
+    }
+    if (currentDot != null) {
+      this.selectedPoint = [currentDrawableDot!, currentDot];
     } else {
       this.selectedPoint = [];
     }
