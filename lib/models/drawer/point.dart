@@ -24,6 +24,12 @@ class Dot extends Offset {
       this.name = name;
     }
   }
+
+  Dot.fromOffset(Offset offset) : super(offset.dx, offset.dy) {
+    x = offset.dx;
+    y = offset.dy;
+  }
+
   Dot.dzParameter(double dx, double dy, this.z,
       {int? id, String? name, int? rank})
       : super(dx, dy) {

@@ -3,6 +3,7 @@ import 'package:gamr/components/add-distance-points.dart';
 import 'package:gamr/components/area-details-popup.dart';
 import 'package:gamr/components/details-popup.dart';
 import 'package:gamr/components/add-edit-popup.dart';
+import 'package:gamr/components/dot-info.dart';
 import 'package:gamr/components/two-mode-info-dots.dart';
 import 'package:gamr/components/list-item.dart';
 import 'package:gamr/components/positioned-icon.dart';
@@ -144,6 +145,17 @@ class _DrawerPageState extends State<DrawerPage> {
         }
       }
     });
+  }
+
+  onLongPressStart(LongPressStartDetails x) {
+    final selectedDotIndex =
+        this.dotList.nearestDotToSelected(Dot.fromOffset(x.localPosition));
+
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return DotInfo(selectedDot: this.dotList.allDots[selectedDotIndex]);
+        });
   }
 
   onScaleEnd(ScaleEndDetails x) {
@@ -379,6 +391,9 @@ class _DrawerPageState extends State<DrawerPage> {
               flex: 1,
               child: Stack(children: [
                 GestureDetector(
+                  onLongPressStart: (x) {
+                    onLongPressStart(x);
+                  },
                   onTapUp: (x) {
                     onTapUp(x);
                   },
@@ -505,6 +520,9 @@ class _DrawerPageState extends State<DrawerPage> {
                       prefs.setBool("twoDotMode", options.twoDotMode);
                       options.areaMode = !options.areaMode;
                       prefs.setBool("areaMode", options.areaMode);
+                      if (!options.areaMode) {
+                        this.dotList.areaMode.reset();
+                      }
                       if (this.dotList.twoDotMode.havePoint) {
                         this.dotList.twoDotMode.reset();
                       }
