@@ -1,5 +1,5 @@
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/base-dot.dart';
+import 'package:gamr/models/service/base_dot.dart';
 
 class CSVDot extends BaseDot {
   CSVDot(
@@ -40,7 +40,7 @@ class CSVDot extends BaseDot {
   }
 
   static List<List<String>> generateCSVContent(List<CSVDot> totalCsvDot) {
-    List<List<String>> data = [
+    final List<List<String>> data = [
       ["Rank", "X", "Y", "Z", "Név"],
     ];
     totalCsvDot
@@ -48,7 +48,7 @@ class CSVDot extends BaseDot {
     return data;
   }
 
-  static generateCSVContentFromDots(List<Dot> totalDots) {
+  static List<List<String>> generateCSVContentFromDots(List<Dot> totalDots) {
     final data = totalDots.map((e) => CSVDot.fromDot(e)).toList();
     return CSVDot.generateCSVContent(data);
   }

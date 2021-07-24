@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/constant/email-menu.dart';
+import 'package:gamr/constant/email_menu.dart';
 
 class SaveFilePopup extends StatelessWidget {
   const SaveFilePopup({Key? key}) : super(key: key);
@@ -12,21 +12,21 @@ class SaveFilePopup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ListTile(
-            title: Text('Fájlként (*.CSV)'),
+            title: const Text('Fájlként (*.CSV)'),
             onTap: () {
-              Navigator.pop(context, EmailMenu.as_csv);
+              Navigator.pop(context, EmailMenu.asCsv);
             },
           ),
           ListTile(
-            title: Text('Fájlként (*.JSON)'),
+            title: const Text('Fájlként (*.JSON)'),
             onTap: () {
-              Navigator.pop(context, EmailMenu.as_json);
+              Navigator.pop(context, EmailMenu.asJson);
             },
           ),
           ListTile(
-            title: Text('Fájlként (*.TXT)'),
+            title: const Text('Fájlként (*.TXT)'),
             onTap: () {
-              Navigator.pop(context, EmailMenu.as_txt);
+              Navigator.pop(context, EmailMenu.asTxt);
             },
           ),
         ],
@@ -34,7 +34,7 @@ class SaveFilePopup extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text('Bezárás'),
+          child: const Text('Bezárás'),
         ),
       ],
     );

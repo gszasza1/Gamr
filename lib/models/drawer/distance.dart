@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class Distance extends Offset {
 
+  @override
   double distance;
   bool isBottomShow;
   

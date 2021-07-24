@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/json-dot.dart';
+import 'package:gamr/models/service/json_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class JsonService {
@@ -20,18 +20,18 @@ class JsonService {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {
-        this.basePath = dir.path + "/json";
+        basePath = "${dir.path}/json";
       } else {
         isSaveableDevice = false;
       }
     } else if (Platform.isIOS) {
-      Directory dir = await getApplicationDocumentsDirectory();
-      this.basePath = dir.path + "/json";
+      final Directory dir = await getApplicationDocumentsDirectory();
+      basePath = "${dir.path}/json";
     }
 
     final checkPathExistence = await Directory(basePath).exists();
     if (!checkPathExistence) {
-      await new Directory(basePath).create();
+      await Directory(basePath).create();
     }
   }
 
@@ -43,22 +43,22 @@ class JsonService {
         .replaceAll(RegExp(r' '), '_')
         .replaceAll(RegExp(r'-'), '_')
         .replaceAll(".", "");
-    final fileName = this.basePath + '/${projectName}_$creationDate.json';
+    final fileName = '$basePath${'/${projectName}_$creationDate.json'}';
     final data = JsonDot.generateJSONContentFromDots(dots);
 
-    var generatedData = data.map((element) => element.toJson()).toList();
-    String jsonTags = jsonEncode(generatedData);
-    print(fileName);
+    final generatedData = data.map((element) => element.toJson()).toList();
+    final String jsonTags = jsonEncode(generatedData);
     final File file = File(fileName);
     await file.writeAsString(jsonTags);
     return file.path.toString();
   }
 
   Future<List<DBPoint>> createDotsFromJson(File readFile) async {
-    var fields = json.decode(await readFile.readAsString());
+    final List<Map<String, String>> fields = json
+        .decode(await readFile.readAsString()) as List<Map<String, String>>;
 
     final List<JsonDot> mappedDots = List<JsonDot>.from(fields.map((element) {
-      return JsonDot.fromMap(Map<String, dynamic>.from(element));
+      return JsonDot.fromMap(Map<String, String>.from(element));
     }).toList());
     final dbPoints = mappedDots.map((element) {
       return DBPoint.fromBasePoint(element);

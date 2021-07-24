@@ -14,7 +14,7 @@ class AreaDetailsPopup extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Összes pont",
@@ -22,16 +22,16 @@ class AreaDetailsPopup extends StatelessWidget {
             ),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(this.totalDots.toString())),
-          Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Text(totalDots.toString())),
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Lefedett terület",
               style: TextStyle(fontStyle: FontStyle.italic),
             ),
           ),
-          Text(this.totalArea.toStringAsFixed(4) + " m\u00B2"),
+          Text("${totalArea.toStringAsFixed(4)} m\u00B2"),
         ],
       ),
       actions: <Widget>[

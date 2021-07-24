@@ -16,19 +16,19 @@ class DBService {
 
   DBService._internal();
   init() async {
-    Directory dir = await getApplicationDocumentsDirectory();
+    final Directory dir = await getApplicationDocumentsDirectory();
     print(dir.path + '/objectbox');
     store = Store(getObjectBoxModel(), directory: dir.path + '/objectbox');
   }
 
   void addProject(String name) {
-    var box = store.box<Project>();
+    final box = store.box<Project>();
     box.put(Project(name));
   }
 
   deleteProject(int key) async {
-    var points = store.box<DBPoint>();
-    var projects = store.box<Project>();
+    final points = store.box<DBPoint>();
+    final projects = store.box<Project>();
     final query = points.query(DBPoint_.project.equals(key)).build();
     final removableDots = query.find();
     points.removeMany(removableDots.map((e) => e.id).toList());
@@ -36,18 +36,18 @@ class DBService {
   }
 
   List<Project> getAllProject() {
-    var box = store.box<Project>();
+    final box = store.box<Project>();
     return box.getAll();
   }
 
   updateProject(Project pr) {
-    var box = store.box<Project>();
+    final box = store.box<Project>();
     box.put(pr);
   }
 
   updateDot(Dot point) async {
-    var box = store.box<DBPoint>();
-    var dbPoint = box.get(point.id);
+    final box = store.box<DBPoint>();
+    final dbPoint = box.get(point.id);
     if (dbPoint != null) {
       dbPoint.name = point.name;
       dbPoint.rank = point.rank;
@@ -59,9 +59,9 @@ class DBService {
   }
 
   deleteDot(int projectId, int dotKey) async {
-    var box = store.box<DBPoint>();
-    var projects = store.box<Project>();
-    var project = projects.get(projectId);
+    final box = store.box<DBPoint>();
+    final projects = store.box<Project>();
+    final project = projects.get(projectId);
     if (project != null) {
       final dot = box.get(dotKey);
       project.points.remove(dot);
@@ -70,11 +70,11 @@ class DBService {
   }
 
   Future<int> addDot(int projectId, DBPoint point) async {
-    var box = store.box<DBPoint>();
+    final box = store.box<DBPoint>();
 
-    var newId = box.put(point);
-    var projects = store.box<Project>();
-    var project = projects.get(projectId);
+    final newId = box.put(point);
+    final projects = store.box<Project>();
+    final project = projects.get(projectId);
     if (project != null) {
       project.points.add(point);
       projects.put(project);
@@ -83,8 +83,8 @@ class DBService {
   }
 
   Future<List<DBPoint>> getProjectDots(int projectId) async {
-    var projects = store.box<Project>();
-    var project = projects.get(projectId);
+    final projects = store.box<Project>();
+    final project = projects.get(projectId);
     if (project != null) {
       return project.points.toList();
     } else {
@@ -93,16 +93,16 @@ class DBService {
   }
 
   Future<void> importProject(String projectName, List<DBPoint> dots) async {
-    var projects = store.box<Project>();
-    var projectId = projects.put(Project(projectName));
+    final projects = store.box<Project>();
+    final projectId = projects.put(Project(projectName));
     dots.forEach((element) {
-      this.addDot(projectId, element);
+      addDot(projectId, element);
     });
   }
 
   Future<String> getProjectName(int projectId) async {
-    var projects = store.box<Project>();
-    var project = projects.get(projectId);
+    final projects = store.box<Project>();
+    final project = projects.get(projectId);
     if (project != null) {
       return project.name;
     } else {

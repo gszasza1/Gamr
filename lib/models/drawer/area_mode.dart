@@ -7,33 +7,33 @@ class AreaMode {
   double? calculatedArea;
 
   addDotIndex(int index) {
-    this.dotIndexes.add(index);
+    dotIndexes.add(index);
   }
 
   addDot(Dot selectedDot, Dot selectedDrawDot) {
-    this.selectedDots.add(selectedDot);
-    this.selectedDrawDots.add(selectedDrawDot);
+    selectedDots.add(selectedDot);
+    selectedDrawDots.add(selectedDrawDot);
   }
 
-  get havePoint {
-    return !(selectedDots.length == 0 && dotIndexes.length == 0);
+  bool get havePoint {
+    return !(selectedDots.isEmpty && dotIndexes.isEmpty);
   }
 
   reset() {
-    this.selectedDots = [];
-    this.selectedDrawDots = [];
-    this.dotIndexes = [];
-    this.calculatedArea = null;
+    selectedDots = [];
+    selectedDrawDots = [];
+    dotIndexes = [];
+    calculatedArea = null;
   }
 
   resetDrawable() {
-    this.selectedDrawDots = [];
+    selectedDrawDots = [];
   }
 
   calculateArea() {
     double area = 0;
     int j = selectedDots.length - 1;
-    int n = selectedDots.length;
+    final int n = selectedDots.length;
     for (var i = 0; i < n; i++) {
       area += (selectedDots[j].dx + selectedDots[i].dx) *
           (selectedDots[j].dy - selectedDots[i].dy);

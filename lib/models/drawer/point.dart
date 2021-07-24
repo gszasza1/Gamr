@@ -68,55 +68,55 @@ class Dot extends Offset {
   @override
   double get dx {
     if (axis == "XY") {
-      return this.x;
+      return x;
     } else if (axis == "XZ") {
-      return this.x;
+      return x;
     } else {
-      return this.y;
+      return y;
     }
   }
 
   @override
   double get dy {
     if (axis == "XY") {
-      return this.y;
+      return y;
     } else if (axis == "XZ") {
-      return this.z;
+      return z;
     } else {
-      return this.z;
+      return z;
     }
   }
 
   double distanceFromDotPow(Dot dot) {
-    var a = this.dx - dot.dx;
-    var b = this.dy - dot.dy;
+    final a = dx - dot.dx;
+    final b = dy - dot.dy;
     return a * a + b * b;
   }
 
   double distanceFromDotPow3D(Dot dot) {
-    var a = this.x - dot.x;
-    var b = this.y - dot.y;
-    var c = this.z - dot.z;
+    final a = x - dot.x;
+    final b = y - dot.y;
+    final c = z - dot.z;
     return a * a + b * b + c * c;
   }
 
   static double distanceBetweenDots(Dot dot1, Dot dot2) {
-    var a = dot1.dx - dot2.dx;
-    var b = dot1.dy - dot2.dy;
+    final a = dot1.dx - dot2.dx;
+    final b = dot1.dy - dot2.dy;
     return sqrt(a * a + b * b);
   }
 
   static double distanceBetween3DDots(Dot dot1, Dot dot2) {
-    var a = dot1.x - dot2.x;
-    var b = dot1.y - dot2.y;
-    var c = dot1.z - dot2.z;
+    final a = dot1.x - dot2.x;
+    final b = dot1.y - dot2.y;
+    final c = dot1.z - dot2.z;
     return sqrt(a * a + b * b + c * c);
   }
 
   String coordsToString(
       {int? showNumber, bool showCoord = true, bool threeCoord = false}) {
     if (showNumber != null && showCoord) {
-      return showNumber.toString() + " " + _createLocalCoords(threeCoord);
+      return "$showNumber ${_createLocalCoords(threeCoord)}";
     } else if (showNumber != null) {
       return showNumber.toString();
     } else if (showCoord) {
@@ -128,42 +128,33 @@ class Dot extends Offset {
 
   String _createLocalCoords(bool threeCoord) {
     if (threeCoord) {
-      return " X: " +
-          this.x.toStringAsFixed(2) +
-          "\n Y: " +
-          this.y.toStringAsFixed(2) +
-          "\n Z: " +
-          this.z.toStringAsFixed(2);
+      return " X: ${x.toStringAsFixed(2)}\n Y: ${y.toStringAsFixed(2)}\n Z: ${z.toStringAsFixed(2)}";
     } else {
-      return "(" +
-          this.dx.toStringAsFixed(2) +
-          ", " +
-          this.dy.toStringAsFixed(2) +
-          ")";
+      return "(${dx.toStringAsFixed(2)}, ${dy.toStringAsFixed(2)})";
     }
   }
 
-  static coordsParamToString(double x, double y,
+  static String coordsParamToString(double x, double y,
       {int? showNumber, bool showCoord = true}) {
-    var coord = "(" + x.toStringAsFixed(2) + ", " + y.toStringAsFixed(2) + ")";
+    final coord = "(${x.toStringAsFixed(2)}, ${y.toStringAsFixed(2)})";
     return showNumber != null
-        ? showNumber.toString() + " " + coord
+        ? "$showNumber $coord"
         : showCoord
             ? coord
             : showNumber.toString();
   }
 
   List<Dot> createXDots() {
-    List<Dot> newPoints = [];
-    newPoints.add(Dot(this.dx + 3, this.dy + 3));
-    newPoints.add(Dot(this.dx - 3, this.dy - 3));
-    newPoints.add(Dot(this.dx + 3, this.dy - 3));
-    newPoints.add(Dot(this.dx - 3, this.dy + 3));
+    final List<Dot> newPoints = [];
+    newPoints.add(Dot(dx + 3, dy + 3));
+    newPoints.add(Dot(dx - 3, dy - 3));
+    newPoints.add(Dot(dx + 3, dy - 3));
+    newPoints.add(Dot(dx - 3, dy + 3));
     return newPoints;
   }
 
   Dot movePointBy(Dot vector) {
-    return Dot(this.dx + vector.dx, this.dy + vector.dy);
+    return Dot(dx + vector.dx, dy + vector.dy);
   }
 
   static Dot getVectorRelativeProportion(Dot common,

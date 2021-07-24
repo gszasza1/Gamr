@@ -1,5 +1,5 @@
 import 'package:gamr/models/database/projects.dart';
-import 'package:gamr/models/service/base-dot.dart';
+import 'package:gamr/models/service/base_dot.dart';
 import 'package:objectbox/objectbox.dart';
 
 @Entity()

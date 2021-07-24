@@ -16,48 +16,44 @@ class DotListItem extends StatelessWidget {
         Flexible(
           flex: 0,
           child: Container(
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
             child: Text(
               (value.rank).toString(),
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            margin: const EdgeInsets.only(
-              right: 10,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
         Flexible(
           fit: FlexFit.tight,
-          flex: 1,
           child: Container(
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
             child: Text(value.x.toStringAsFixed(4)),
-            margin: const EdgeInsets.only(
-              right: 10,
-            ),
           ),
         ),
         Flexible(
           fit: FlexFit.tight,
-          flex: 1,
           child: Container(
+            margin: const EdgeInsets.only(
+              right: 10,
+            ),
             child: Text(value.y.toStringAsFixed(4)),
-            margin: const EdgeInsets.only(
-              right: 10,
-            ),
           ),
         ),
         Flexible(
           fit: FlexFit.tight,
-          flex: 1,
           child: Container(
-            child: Text(value.z.toStringAsFixed(4)),
             margin: const EdgeInsets.only(
               right: 10,
             ),
+            child: Text(value.z.toStringAsFixed(4)),
           ),
         ),
         Flexible(
           fit: FlexFit.tight,
-          flex: 1,
           child: Text(value.name),
         ),
         Flexible(

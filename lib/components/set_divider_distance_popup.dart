@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/models/database/projects.dart';
-import 'package:gamr/services/database-service.dart';
 
-class RenameProject extends StatefulWidget {
-  final Project project;
-  const RenameProject({
+class DividerDistancePopup extends StatefulWidget {
+  final double distance;
+  final void Function(String distance) save;
+  const DividerDistancePopup({
     Key? key,
-    required this.project,
+    required this.distance,
+    required this.save,
   }) : super(key: key);
   @override
-  RenameProjectState createState() => RenameProjectState();
+  DividerDistancePopupState createState() => DividerDistancePopupState();
 }
 
-class RenameProjectState extends State<RenameProject> {
+class DividerDistancePopupState extends State<DividerDistancePopup> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController name = TextEditingController(text: '');
+  TextEditingController distance = TextEditingController(text: '');
 
+  @override
   void dispose() {
-    name.dispose();
+    distance.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Projekt átnevezése"),
+      title: const Text("Határoló távolság"),
       content: Form(
         key: _formKey,
         child: Column(
@@ -32,11 +33,14 @@ class RenameProjectState extends State<RenameProject> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
-              keyboardType: TextInputType.text,
-              controller: name..text = widget.project.name,
-              decoration: InputDecoration(
+              keyboardType: TextInputType.number,
+              controller: distance
+                ..text = widget.distance > 0
+                    ? widget.distance.toStringAsFixed(5)
+                    : '',
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Z',
+                labelText: 'Távolság',
               ),
             ),
           ],
@@ -51,8 +55,7 @@ class RenameProjectState extends State<RenameProject> {
         ),
         TextButton(
           onPressed: () {
-            DBService().updateProject(
-                widget.project..name = this.name.text);
+            widget.save(distance.value.text);
             Navigator.of(context).pop();
           },
           child: const Text('Mentés'),

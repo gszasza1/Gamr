@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
 
-Widget buildDetailsPopup(BuildContext context, Details details) {
-  return DetailsPopup(
-    details: details,
-  );
-}
-
 class Details {
   final double averageY;
   final int totalDots;
@@ -27,20 +21,21 @@ class DetailsPopup extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
+            // ignore: prefer_const_constructors
             Expanded(child: Text("Összes pont: ")),
             Text(details.totalDots.toString())
           ]),
           Row(children: [
-            Expanded(child: Text("Átlagos magasság: ")),
+            const Expanded(child: Text("Átlagos magasság: ")),
             Text(details.averageY.toStringAsFixed(5))
           ]),
           Row(children: [
-            Expanded(child: Text("Teljes meredekség: ")),
-            Text(details.averageAngle.toStringAsFixed(3) + " °")
+            const Expanded(child: Text("Teljes meredekség: ")),
+            Text("${details.averageAngle.toStringAsFixed(3)} °")
           ]),
           Row(children: [
-            Expanded(child: Text("Teljes 2D hossz: ")),
-            Text(details.totalDistance.toStringAsFixed(3) + " m")
+            const Expanded(child: Text("Teljes 2D hossz: ")),
+            Text("${details.totalDistance.toStringAsFixed(3)} m")
           ]),
         ],
       ),

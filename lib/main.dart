@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/pages/drawer.dart';
-import 'package:gamr/pages/project-list.dart';
-import 'package:gamr/services/csv-service.dart';
-import 'package:gamr/services/database-service.dart';
-import 'package:gamr/services/json-service.dart';
-import 'package:gamr/services/txt-service.dart';
+import 'package:gamr/pages/project_list.dart';
+import 'package:gamr/services/csv_service.dart';
+import 'package:gamr/services/database_service.dart';
+import 'package:gamr/services/json_service.dart';
+import 'package:gamr/services/txt_service.dart';
 
-import 'pages/send-email.dart';
+import 'pages/send_email.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

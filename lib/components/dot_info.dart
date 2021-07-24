@@ -12,7 +12,7 @@ class DotInfo extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Rank",
@@ -20,10 +20,10 @@ class DotInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Text(selectedDot.rank.toString()),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "X",
@@ -31,10 +31,10 @@ class DotInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Text(selectedDot.x.toStringAsFixed(4)),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Y",
@@ -42,10 +42,10 @@ class DotInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Text(selectedDot.y.toStringAsFixed(4)),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Z",
@@ -53,10 +53,10 @@ class DotInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Text(selectedDot.z.toStringAsFixed(4)),
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Név",
@@ -64,7 +64,7 @@ class DotInfo extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
             child: Text(selectedDot.name),
           ),
         ],

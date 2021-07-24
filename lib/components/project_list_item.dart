@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/components/rename-project.dart';
+import 'package:gamr/components/rename_project.dart';
 import 'package:gamr/models/database/projects.dart';
-import 'package:gamr/services/database-service.dart';
+import 'package:gamr/services/database_service.dart';
 
 class ProjectListItem extends StatelessWidget {
   const ProjectListItem(
@@ -21,14 +21,14 @@ class ProjectListItem extends StatelessWidget {
         );
       },
       onLongPress: () {
-        this.renameProject(context);
+        renameProject(context);
       },
       child: Container(
         padding:
             const EdgeInsets.only(bottom: 20, left: 10, right: 10, top: 20),
         decoration: const BoxDecoration(
           border: Border(
-            bottom: BorderSide(color: Color(0xfffff3f3f3)),
+            bottom: BorderSide(color: Color(0xfff3f3f3)),
           ),
         ),
         child: Row(
@@ -60,7 +60,7 @@ class ProjectListItem extends StatelessWidget {
               icon: const Icon(Icons.delete),
               tooltip: 'Projekt törlése',
               onPressed: () {
-                this.delete(project.id);
+                delete(project.id);
               },
             ),
           ],
@@ -73,14 +73,14 @@ class ProjectListItem extends StatelessWidget {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return RenameProject(project: this.project);
+          return RenameProject(project: project);
         }).then((value) async {
-      await this.refresh();
+      await refresh();
     });
   }
 
   Future<void> delete(int id) async {
     await DBService().deleteProject(id);
-    await this.refresh();
+    await refresh();
   }
 }

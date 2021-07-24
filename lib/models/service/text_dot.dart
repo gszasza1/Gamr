@@ -1,5 +1,5 @@
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/base-dot.dart';
+import 'package:gamr/models/service/base_dot.dart';
 
 class TextDot extends BaseDot {
   TextDot(
@@ -41,12 +41,12 @@ class TextDot extends BaseDot {
   static String listToString(List<TextDot> totalTextDot) {
     String data = "";
     totalTextDot.asMap().forEach((index, element) {
-      data += element.toStringCoord(index + 1) + "\n";
+      data += "${element.toStringCoord(index + 1)}\n";
     });
     return data;
   }
 
-  static generateStringFromDots(List<Dot> totalDots) {
+  static String generateStringFromDots(List<Dot> totalDots) {
     final data = totalDots.map((e) => TextDot.fromDot(e)).toList();
     return TextDot.listToString(data);
   }

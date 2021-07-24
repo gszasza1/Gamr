@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gamr/services/database-service.dart';
-
-Widget buildPopupDialog(BuildContext context, Function refreshList) {
-  return AddNewProjectPopup(
-    refreshList: refreshList,
-  );
-}
+import 'package:gamr/services/database_service.dart';
 
 class AddNewProjectPopup extends StatefulWidget {
   final Function refreshList;
@@ -19,6 +13,7 @@ class AddNewProjectPopup extends StatefulWidget {
 class AddNewProjectPopupState extends State<AddNewProjectPopup> {
   TextEditingController nameController = TextEditingController(text: '');
   
+  @override
   void dispose() {
     nameController.dispose();
     super.dispose();
@@ -31,7 +26,7 @@ class AddNewProjectPopupState extends State<AddNewProjectPopup> {
       content: TextFormField(
         keyboardType: TextInputType.text,
         controller: nameController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: OutlineInputBorder(),
           labelText: 'Név',
         ),

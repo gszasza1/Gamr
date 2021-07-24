@@ -1,18 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gamr/models/drawer/point.dart';
 
-Widget buildPopupDialog(BuildContext context, Function save, Dot dot,
-    List<String> options, bool isEdit) {
-  return AddEditPopup(
-    dot: dot,
-    options: options,
-    save: save,
-    isEdit: isEdit,
-  );
-}
-
 class AddEditPopup extends StatefulWidget {
-  final Function save;
+  final void Function(Dot dot) save;
   final Dot dot;
   final bool isEdit;
   final List<String> options;
@@ -35,6 +25,7 @@ class AddEditPopupState extends State<AddEditPopup> {
   TextEditingController yCoordRText = TextEditingController(text: '');
   TextEditingController zCoordRText = TextEditingController(text: '');
 
+  @override
   void dispose() {
     name.dispose();
     xCoordRText.dispose();
@@ -55,7 +46,7 @@ class AddEditPopupState extends State<AddEditPopup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             ConstrainedBox(
-              constraints: new BoxConstraints(
+              constraints: const BoxConstraints(
                 maxHeight: 70,
               ),
               child: RawAutocomplete(
@@ -79,7 +70,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                       focusNode: fieldFocusNode,
                       controller: fieldTextEditingController
                         ..text = widget.dot.name.toString(),
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: "pl.: Aszfalt",
                         labelText: 'Név',
@@ -94,7 +85,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                     alignment: Alignment.topLeft,
                     child: Material(
                       child: ConstrainedBox(
-                        constraints: new BoxConstraints(
+                        constraints: BoxConstraints(
                           minHeight: 50,
                           minWidth: MediaQuery.of(context).size.width * 0.5,
                           maxHeight: (65 * options.length > 260
@@ -104,7 +95,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                           maxWidth: MediaQuery.of(context).size.width * 0.5,
                         ),
                         child: ListView.builder(
-                          padding: EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10.0),
                           itemCount: options.length,
                           itemBuilder: (BuildContext context, int index) {
                             final option = options.elementAt(index);
@@ -142,7 +133,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   controller: rank..text = widget.dot.rank.toString(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Sorszám',
                   ),
@@ -152,7 +143,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   controller: xCoordRText..text = widget.dot.x.toString(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'X',
                   ),
@@ -162,7 +153,7 @@ class AddEditPopupState extends State<AddEditPopup> {
                 child: TextFormField(
                   keyboardType: TextInputType.number,
                   controller: yCoordRText..text = widget.dot.y.toString(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Y',
                   ),
@@ -170,7 +161,7 @@ class AddEditPopupState extends State<AddEditPopup> {
             TextFormField(
               keyboardType: TextInputType.number,
               controller: zCoordRText..text = widget.dot.z.toString(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Z',
               ),

@@ -22,7 +22,7 @@ class GeneralInformationDots extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text(
               "Vetített távolság (2D)",
@@ -30,18 +30,19 @@ class GeneralInformationDots extends StatelessWidget {
             ),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(distance2D.toStringAsFixed(4) + " m")),
-          Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Text("${distance2D.toStringAsFixed(4)} m")),
+          const Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Magasság különbség",
                 style: TextStyle(fontStyle: FontStyle.italic)),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
               child:
-                  Text((zHeightVariationBetweenDots*100).toStringAsFixed(2) + " cm")),
-          Padding(
+                  Text("${(zHeightVariationBetweenDots*100).toStringAsFixed(2)} cm")),
+          // ignore: prefer_const_constructors
+         const  Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Távolság (3D)",
                 style: TextStyle(
@@ -49,9 +50,10 @@ class GeneralInformationDots extends StatelessWidget {
                 )),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(distance3D.toStringAsFixed(4) + " m")),
-          Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Text("${distance3D.toStringAsFixed(4)} m")),
+          // ignore: prefer_const_constructors
+         const  Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("1 m-en meredekség",
                 style: TextStyle(
@@ -59,14 +61,14 @@ class GeneralInformationDots extends StatelessWidget {
                 )),
           ),
           Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
-              child: Text(zHeightDegree.toStringAsFixed(4) + " %")),
-          Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+              child: Text("${zHeightDegree.toStringAsFixed(4)} %")),
+         const  Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             child: Text("Teljes meredekség",
                 style: TextStyle(fontStyle: FontStyle.italic)),
           ),
-          Text(degreeBeteenDots.toStringAsFixed(4) + " °"),
+          Text("${degreeBeteenDots.toStringAsFixed(4)} °"),
         ],
       ),
       actions: <Widget>[

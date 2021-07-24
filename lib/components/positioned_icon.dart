@@ -26,19 +26,19 @@ class PositionedIcon extends StatelessWidget {
         alignment: Alignment.topRight,
         child: GestureDetector(
           onTap: () {
-            if (this.onTap != null) {
-              this.onTap!();
+            if (onTap != null) {
+              onTap!();
             }
           },
           child: Ink(
             height: 35,
             width: 35,
             decoration: ShapeDecoration(
-              color: color != null ? color : Colors.lightBlue,
-              shape: CircleBorder(),
+              color: color ?? Colors.lightBlue,
+              shape: const CircleBorder(),
             ),
             child: Icon(
-              this.icon,
+              icon,
               color: Colors.white,
             ),
           ),

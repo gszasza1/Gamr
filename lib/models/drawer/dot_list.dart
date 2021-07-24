@@ -2,10 +2,10 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:gamr/models/database/points.dart';
-import 'package:gamr/models/drawer/area-mode.dart';
+import 'package:gamr/models/drawer/area_mode.dart';
 import 'package:gamr/models/drawer/distance.dart';
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/drawer/two-dot-mode.dart';
+import 'package:gamr/models/drawer/two_dot_mode.dart';
 
 class DotList {
   /// List containing real dots
@@ -49,30 +49,29 @@ class DotList {
 
   void setNewFixOffset() {
     final scale = getScale();
-    this.offsetX -= movableOffsetX / (sliderX / 10 * scale);
-    this.offsetY -= movableOffsetY / (sliderX / 10 * scale);
+    offsetX -= movableOffsetX / (sliderX / 10 * scale);
+    offsetY -= movableOffsetY / (sliderX / 10 * scale);
     this.scale += movableScale;
-    this.movableOffsetX = 0;
-    this.movableOffsetY = 0;
+    movableOffsetX = 0;
+    movableOffsetY = 0;
   }
 
   double getXOffset() {
-    return this.offsetX - this.movableOffsetX;
+    return offsetX - movableOffsetX;
   }
 
   List<DBPoint> dotsToDBPoint() {
-    return this
-        .allDots
+    return allDots
         .map((e) => DBPoint(x: e.x, y: e.y, z: e.z, name: e.name, rank: e.rank))
         .toList();
   }
 
   double getScale() {
-    return pow(1.4, this.scale + this.movableScale).toDouble();
+    return pow(1.4, scale + movableScale).toDouble();
   }
 
   double getYOffset() {
-    return this.offsetY - this.movableOffsetY;
+    return offsetY - movableOffsetY;
   }
 
   void addDot(Dot point) {
@@ -85,69 +84,69 @@ class DotList {
     recalculateDrawable();
     calculateDegree();
     generateNewDistances(false);
-    if (drawAbleDots.length < 3 && drawAbleDots.length > 0) {
-      this.calculateInitialOffset();
+    if (drawAbleDots.length < 3 && drawAbleDots.isNotEmpty) {
+      calculateInitialOffset();
     }
   }
 
   void calculateInitialOffset() {
-    if (allDots.length > 0) {
-      this.offsetY = allDots[0].dy + 5;
-      this.offsetX = -allDots[0].dx + 5;
+    if (allDots.isNotEmpty) {
+      offsetY = allDots[0].dy + 5;
+      offsetX = -allDots[0].dx + 5;
       recalculateDrawable();
     }
   }
 
   void recalculateDrawable() {
-    if (this.allDots.length > 0) {
+    if (allDots.isNotEmpty) {
       final scale = getScale();
-      this.drawAbleDots = allDots
+      drawAbleDots = allDots
           .map((x) => Dot(
-              (x.dx + this.offsetX) * sliderX / 10 * scale - movableOffsetX,
-              (-x.dy + this.offsetY) * sliderY / 10 * scale - movableOffsetY))
+              (x.dx + offsetX) * sliderX / 10 * scale - movableOffsetX,
+              (-x.dy + offsetY) * sliderY / 10 * scale - movableOffsetY))
           .toList();
     }
     calculateAverageDrawY();
   }
 
   void generateNewDistances(bool useDistance) {
-    List<Distance> temp = [];
-    List<Distance> temp3D = [];
+    final List<Distance> temp = [];
+    final List<Distance> temp3D = [];
     for (var i = 0; i < allDots.length - 1; i++) {
       double distance = 0;
       double distance3D = 0;
-      if (!useDistance || this.distances.length == 0) {
+      if (!useDistance || distances.isEmpty) {
         distance = allDots[i].distanceFromDot(allDots[i + 1]);
         distance3D = allDots[i].distanceFromDot3D(allDots[i + 1]);
       } else {
-        distance = this.distances[i].distance;
-        distance3D = this.distances3D[i].distance;
+        distance = distances[i].distance;
+        distance3D = distances3D[i].distance;
       }
-      var dx = (this.drawAbleDots[i].dx + this.drawAbleDots[i + 1].dx) / 2;
-      var dy = (this.drawAbleDots[i].dy + this.drawAbleDots[i + 1].dy) / 2;
-      Distance tempDist = Distance(dx, dy, distance, true);
-      Distance tempDist3D = Distance(dx, dy, distance3D, true);
+      final dx = (drawAbleDots[i].dx + drawAbleDots[i + 1].dx) / 2;
+      final dy = (drawAbleDots[i].dy + drawAbleDots[i + 1].dy) / 2;
+      final Distance tempDist = Distance(dx, dy, distance, true);
+      final Distance tempDist3D = Distance(dx, dy, distance3D, true);
       temp.add(tempDist);
       temp3D.add(tempDist3D);
     }
-    this.distances = temp;
-    this.distances3D = temp3D;
-    this.generateHeightVariationList();
+    distances = temp;
+    distances3D = temp3D;
+    generateHeightVariationList();
   }
 
   void generateHeightVariationList() {
-    List<Distance> temp = [];
+    final List<Distance> temp = [];
     for (var i = 0; i < allDots.length - 1; i++) {
       double distance = 0;
-      if (this.distances.length > 1) {
+      if (distances.length > 1) {
         distance = allDots[i].z - allDots[i + 1].z;
-        var dx = (this.drawAbleDots[i].dx + this.drawAbleDots[i + 1].dx) / 2;
-        var dy = (this.drawAbleDots[i].dy + this.drawAbleDots[i + 1].dy) / 2;
-        Distance tempDist = Distance(dx, dy + 10, distance, true);
+        final dx = (drawAbleDots[i].dx + drawAbleDots[i + 1].dx) / 2;
+        final dy = (drawAbleDots[i].dy + drawAbleDots[i + 1].dy) / 2;
+        final Distance tempDist = Distance(dx, dy + 10, distance, true);
         temp.add(tempDist);
       }
     }
-    this.zHeightVariationList = temp;
+    zHeightVariationList = temp;
   }
 
   void removeDotIndex(int index) {
@@ -185,13 +184,13 @@ class DotList {
 
   void calculateDegree() {
     if (allDots.length > 1) {
-      var first = allDots[0];
-      var last = allDots[allDots.length - 1];
-      var degree90 = Dot(last.dx, first.dy);
-      var a2plusB2 =
+      final first = allDots[0];
+      final last = allDots[allDots.length - 1];
+      final degree90 = Dot(last.dx, first.dy);
+      final a2plusB2 =
           first.distanceFromDotPow(degree90) + first.distanceFromDotPow(last);
-      var c2 = degree90.distanceFromDotPow(last);
-      var ab2x =
+      final c2 = degree90.distanceFromDotPow(last);
+      final ab2x =
           2 * first.distanceFromDot(last) * first.distanceFromDot(degree90);
       totalDegree = acos((a2plusB2 - c2) / ab2x) * 180 / pi;
     }
@@ -199,7 +198,7 @@ class DotList {
 
   void addMultipleDots(List<Dot> dots) {
     allDots.addAll(dots);
-    this.calculateMetadata();
+    calculateMetadata();
   }
 
   void clear() {
@@ -211,29 +210,29 @@ class DotList {
   }
 
   void reset() {
-    this.sliderX = 10;
-    this.sliderY = 10;
-    this.scale = 10;
+    sliderX = 10;
+    sliderY = 10;
+    scale = 10;
 
-    if (this.drawAbleDots.length > 0) {
-      this.calculateInitialOffset();
+    if (drawAbleDots.isNotEmpty) {
+      calculateInitialOffset();
     }
   }
 
   void calculateAverageY() {
-    if (this.allDots.length > 0) {
-      averageY = this.allDots.map((m) => m.dy).reduce((a, b) => a + b) /
-          this.allDots.length;
+    if (allDots.isNotEmpty) {
+      averageY = allDots.map((m) => m.dy).reduce((a, b) => a + b) /
+          allDots.length;
     } else {
       averageY = 0;
     }
   }
 
   void calculateAverageDrawY() {
-    if (this.drawAbleDots.length > 0) {
+    if (drawAbleDots.isNotEmpty) {
       averageDrawY =
-          this.drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
-              this.drawAbleDots.length;
+          drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
+              drawAbleDots.length;
     } else {
       averageDrawY = 0;
     }
@@ -241,11 +240,11 @@ class DotList {
 
   void updateOffset(double offsetX, double offsetY, double scale) {
     if (allDots.length > 1) {
-      this.movableScale = (scale - 1);
-      this.movableOffsetX = offsetX;
-      this.movableOffsetY = offsetY;
-      this.recalculateDrawable();
-      this.generateNewDistances(true);
+      movableScale = scale - 1;
+      movableOffsetX = offsetX;
+      movableOffsetY = offsetY;
+      recalculateDrawable();
+      generateNewDistances(true);
     }
     return;
   }
@@ -258,20 +257,20 @@ class DotList {
       this.sliderY = sliderY;
     }
 
-    this.recalculateDrawable();
-    this.generateNewDistances(true);
-    this.refreshDrawArea();
+    recalculateDrawable();
+    generateNewDistances(true);
+    refreshDrawArea();
 
-    if (this.twoDotMode.isFull) {
-      this.setDividerBetweenSelectedPoints2D();
+    if (twoDotMode.isFull) {
+      setDividerBetweenSelectedPoints2D();
     }
   }
 
   void updateMainAxis(String value) {
-    this.allDots.forEach((element) {
+    allDots.forEach((element) {
       element.axis = value;
     });
-    this.drawAbleDots.forEach((element) {
+    drawAbleDots.forEach((element) {
       element.axis = value;
     });
     calculateMetadata();
@@ -283,9 +282,9 @@ class DotList {
     Dot? currentDrawableDot;
     Dot? currentDot;
     //http://csharphelper.com/blog/2014/09/determine-where-a-line-intersects-a-circle-in-c/
-    for (var i = 0; i < this.drawAbleDots.length - 1; i++) {
-      final point2 = this.drawAbleDots[i + 1];
-      final point1 = this.drawAbleDots[i];
+    for (var i = 0; i < drawAbleDots.length - 1; i++) {
+      final point2 = drawAbleDots[i + 1];
+      final point1 = drawAbleDots[i];
 
       final dx = point2.x - point1.x;
       final dy = point2.y - point1.y;
@@ -301,10 +300,10 @@ class DotList {
       final det = B * B - 4 * A * C;
       if (A > 0.000001 && det > 0) {
         var t = (-B + sqrt(det)) / (2 * A);
-        Dot intersection1 = Dot(point1.x + t * dx, point1.y + t * dy);
+        final Dot intersection1 = Dot(point1.x + t * dx, point1.y + t * dy);
         t = (-B - sqrt(det)) / (2 * A);
-        Dot intersection2 = Dot(point1.x + t * dx, point1.y + t * dy);
-        Dot finalDot = Dot((intersection1.x + intersection2.x) / 2,
+        final Dot intersection2 = Dot(point1.x + t * dx, point1.y + t * dy);
+        final Dot finalDot = Dot((intersection1.x + intersection2.x) / 2,
             (intersection1.y + intersection2.y) / 2);
         final calculatedDistance = finalDot.distanceFromDot(selectedPoint);
         final betweenXCoordinates = point1.x < point2.x
@@ -320,8 +319,8 @@ class DotList {
           currentDrawableDot = finalDot;
           final tempVecX = point2.x - finalDot.x;
 
-          final firstDot = this.allDots[i];
-          final secondDot = this.allDots[i + 1];
+          final firstDot = allDots[i];
+          final secondDot = allDots[i + 1];
           final dotVector = [
             secondDot.x - firstDot.x,
             secondDot.y - firstDot.y,
@@ -335,19 +334,19 @@ class DotList {
         }
       } else if (A > 0.000001 && det == 0) {
         final t = -B / (2 * A);
-        Dot intersection1 = Dot(point1.dx + t * dx, point1.dx + t * dy);
+        final Dot intersection1 = Dot(point1.dx + t * dx, point1.dx + t * dy);
         final point1Distance = intersection1.distanceFromDot(point1);
         final point2Distance = intersection1.distanceFromDot(point2);
         if (minDistance == null ||
             (point1Distance < point2Distance && point1Distance < minDistance)) {
           currentDrawableDot = point1;
           minDistance = point1Distance;
-          currentDot = this.allDots[i];
+          currentDot = allDots[i];
         }
-        if ((point1Distance > point2Distance && point2Distance < minDistance)) {
+        if (point1Distance > point2Distance && point2Distance < minDistance) {
           currentDrawableDot = point2;
           minDistance = point2Distance;
-          currentDot = this.allDots[i + 1];
+          currentDot = allDots[i + 1];
         }
       }
     }
@@ -359,36 +358,36 @@ class DotList {
   }
 
   Dot pointOnLineBetweenDots(int minMax, Dot divider) {
-    var min = allDots[minMax];
-    var max = allDots[minMax + 1];
+    final min = allDots[minMax];
+    final max = allDots[minMax + 1];
 
     //Get coordinates aligned by drawing
-    var coordXAxisOnCanvas = -(((max.dx - min.dx) /
+    final coordXAxisOnCanvas = -(((max.dx - min.dx) /
             (divider.x.isNaN || divider.x == 0 ? 1 : divider.x)) -
         min.dx);
-    var coordYAxisOnCanvas = -(((max.dy - min.dy) /
+    final coordYAxisOnCanvas = -(((max.dy - min.dy) /
             (divider.y.isNaN || divider.y == 0 ? 1 : divider.y)) -
         min.dy);
 
     /// Calculate remaining coordinate using percentage of others
-    var total = Dot.distanceBetweenDots(min, max);
-    var rel = Dot.distanceBetweenDots(
+    final total = Dot.distanceBetweenDots(min, max);
+    final rel = Dot.distanceBetweenDots(
         min, Dot(coordXAxisOnCanvas, coordYAxisOnCanvas));
-    var div = rel / total;
+    final div = rel / total;
     if (max.axis == "XZ") {
-      var yd = min.y + (max.y - min.y) * div;
+      final yd = min.y + (max.y - min.y) * div;
       return Dot.dzParameter(coordXAxisOnCanvas, yd, coordYAxisOnCanvas);
     } else if (max.axis == "XY") {
-      var zd = min.z + (max.z - min.z) * div;
+      final zd = min.z + (max.z - min.z) * div;
       return Dot.dzParameter(coordXAxisOnCanvas, coordYAxisOnCanvas, zd);
     } else {
-      var xd = min.x + (max.x - min.x) * div;
+      final xd = min.x + (max.x - min.x) * div;
       return Dot.dzParameter(xd, coordXAxisOnCanvas, coordYAxisOnCanvas);
     }
   }
 
   List<Dot> pointsToDrawX() {
-    List<Dot> newPoints = [];
+    final List<Dot> newPoints = [];
     drawAbleDots.forEach((element) {
       newPoints.addAll(element.createXDots());
     });
@@ -397,15 +396,15 @@ class DotList {
 
   /// On active line reset selected point
   resetSelectedPoint() {
-    this.selectedPoint = [];
+    selectedPoint = [];
   }
 
   int nearestDotToSelected(Dot selectedPoint) {
-    double minDistance = this.drawAbleDots[0].distanceFromDot(selectedPoint);
+    double minDistance = drawAbleDots[0].distanceFromDot(selectedPoint);
     int dotIndex = 0;
-    for (var i = 0; i < this.drawAbleDots.length; i++) {
-      var nextCalculatedDistance =
-          this.drawAbleDots[i].distanceFromDot(selectedPoint);
+    for (var i = 0; i < drawAbleDots.length; i++) {
+      final nextCalculatedDistance =
+          drawAbleDots[i].distanceFromDot(selectedPoint);
       if (nextCalculatedDistance < minDistance) {
         minDistance = nextCalculatedDistance;
         dotIndex = i;
@@ -415,49 +414,49 @@ class DotList {
   }
 
   selectDotForAreaCalculation(Dot selectedPoint) {
-    final dotIndex = this.nearestDotToSelected(selectedPoint);
-    this.areaMode.addDotIndex(dotIndex);
-    this.areaMode.addDot(this.allDots[dotIndex], this.drawAbleDots[dotIndex]);
-    this.areaMode.calculateArea();
+    final dotIndex = nearestDotToSelected(selectedPoint);
+    areaMode.addDotIndex(dotIndex);
+    areaMode.addDot(allDots[dotIndex], drawAbleDots[dotIndex]);
+    areaMode.calculateArea();
   }
 
   refreshDrawArea() {
-    this.areaMode.resetDrawable();
-    this.areaMode.dotIndexes.forEach((element) {
-      this.areaMode.addDot(this.allDots[element], this.drawAbleDots[element]);
+    areaMode.resetDrawable();
+    areaMode.dotIndexes.forEach((element) {
+      areaMode.addDot(allDots[element], drawAbleDots[element]);
     });
   }
 
   selectDotForDivider(Dot selectedPoint) {
-    final dotIndex = this.nearestDotToSelected(selectedPoint);
-    this.twoDotMode.setDot(dotIndex, this.allDots[dotIndex]);
-    if (this.twoDotMode.isFull) {
-      this.setDividerBetweenSelectedPoints2D();
+    final dotIndex = nearestDotToSelected(selectedPoint);
+    twoDotMode.setDot(dotIndex, allDots[dotIndex]);
+    if (twoDotMode.isFull) {
+      setDividerBetweenSelectedPoints2D();
     }
   }
 
   setDividerDistance(double distance) {
     if (distance > 0) {
-      this.twoDotMode.dividerDistance = distance;
+      twoDotMode.dividerDistance = distance;
     }
   }
 
   setDividerBetweenSelectedPoints2D() {
-    if (this.twoDotMode.isFull && this.twoDotMode.dividerDistance != null) {
-      final firstIndex = this.twoDotMode.selectedDotIndexes[0];
-      final secondIndex = this.twoDotMode.selectedDotIndexes[1];
+    if (twoDotMode.isFull && twoDotMode.dividerDistance != null) {
+      final firstIndex = twoDotMode.selectedDotIndexes[0];
+      final secondIndex = twoDotMode.selectedDotIndexes[1];
 
-      final firstDot = this.allDots[firstIndex];
-      final secondDot = this.allDots[secondIndex];
+      final firstDot = allDots[firstIndex];
+      final secondDot = allDots[secondIndex];
 
-      var distanceBetweenDots = firstDot.distanceFromDot(secondDot);
+      final distanceBetweenDots = firstDot.distanceFromDot(secondDot);
 
-      final divider = distanceBetweenDots / this.twoDotMode.dividerDistance!;
-      var possibleDividing = (divider).floor();
+      final divider = distanceBetweenDots / twoDotMode.dividerDistance!;
+      final possibleDividing = divider.floor();
 
       if (possibleDividing > 0) {
-        final firstDrawDot = this.drawAbleDots[firstIndex];
-        final secondDrawDot = this.drawAbleDots[secondIndex];
+        final firstDrawDot = drawAbleDots[firstIndex];
+        final secondDrawDot = drawAbleDots[secondIndex];
 
         final drawVector = [
           secondDrawDot.dx - firstDrawDot.dx,
@@ -470,10 +469,10 @@ class DotList {
           secondDot.z - firstDot.z,
         ];
 
-        this.twoDotMode.resetPoints();
+        twoDotMode.resetPoints();
 
         for (var i = 0; i < possibleDividing; i++) {
-          if (!this.twoDotMode.continueMode && i > 0) {
+          if (!twoDotMode.continueMode && i > 0) {
             break;
           } else {
             final createdDrawDistanceDot = Dot(
@@ -485,8 +484,8 @@ class DotList {
                 firstDot.y + dotVector[1] * ((i + 1) / divider),
                 firstDot.z + dotVector[2] * ((i + 1) / divider));
 
-            this.twoDotMode.drawDistanceDots.add(createdDrawDistanceDot);
-            this.twoDotMode.distanceDots.add(createdDistanceDot);
+            twoDotMode.drawDistanceDots.add(createdDrawDistanceDot);
+            twoDotMode.distanceDots.add(createdDistanceDot);
           }
         }
       } else {

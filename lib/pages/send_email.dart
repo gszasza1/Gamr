@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:gamr/constant/email-menu.dart';
+import 'package:gamr/constant/email_menu.dart';
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/text-dot.dart';
-import 'package:gamr/services/csv-service.dart';
-import 'package:gamr/services/database-service.dart';
-import 'package:gamr/services/json-service.dart';
-import 'package:gamr/services/txt-service.dart';
+import 'package:gamr/models/service/text_dot.dart';
+import 'package:gamr/services/csv_service.dart';
+import 'package:gamr/services/database_service.dart';
+import 'package:gamr/services/json_service.dart';
+import 'package:gamr/services/txt_service.dart';
 
 class SendEmailPage extends StatefulWidget {
   final int projectId;
-  SendEmailPage({Key? key, required this.projectId}) : super(key: key);
+  const SendEmailPage({Key? key, required this.projectId}) : super(key: key);
 
   @override
   _SendEmailPageState createState() => _SendEmailPageState();
@@ -23,7 +23,7 @@ class _SendEmailPageState extends State<SendEmailPage> {
 
   List<Dot> allDots = [];
   late final String projectName;
-  EmailMenu emailOption = EmailMenu.as_csv;
+  EmailMenu emailOption = EmailMenu.asCsv;
 
   bool _validEmail(String value) {
     return RegExp(
@@ -32,13 +32,14 @@ class _SendEmailPageState extends State<SendEmailPage> {
   }
 
   Future<void> initializeProjectName() async {
-    this.projectName = await DBService().getProjectName(widget.projectId);
+    projectName = await DBService().getProjectName(widget.projectId);
   }
 
   Future<void> initializeDots() async {
     final dbDotList = await DBService().getProjectDots(widget.projectId);
-    final transformedDots =
-        dbDotList.map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name)).toList();
+    final transformedDots = dbDotList
+        .map((e) => Dot.dzParameter(e.x, e.y, e.z, id: e.id, name: e.name))
+        .toList();
     setState(() {
       allDots.addAll(transformedDots);
     });
@@ -47,35 +48,33 @@ class _SendEmailPageState extends State<SendEmailPage> {
   @override
   void initState() {
     super.initState();
-    this.initializeDots();
-    this.initializeProjectName();
+    initializeDots();
+    initializeProjectName();
   }
 
   Future<void> sendMail() async {
     String? path;
-    if (emailOption == EmailMenu.as_json) {
+    if (emailOption == EmailMenu.asJson) {
       path = await JsonService()
-          .createJsonfromDots(projectName: projectName, dots: this.allDots);
+          .createJsonfromDots(projectName: projectName, dots: allDots);
     }
 
-    if (emailOption == EmailMenu.as_csv) {
+    if (emailOption == EmailMenu.asCsv) {
       path = await CSVService()
-          .createCSVfromDots(projectName: projectName, dots: this.allDots);
+          .createCSVfromDots(projectName: projectName, dots: allDots);
     }
-    if (emailOption == EmailMenu.as_txt) {
+    if (emailOption == EmailMenu.asTxt) {
       path = await TxtService()
-          .createTxtfromDots(projectName: projectName, dots: this.allDots);
+          .createTxtfromDots(projectName: projectName, dots: allDots);
     }
-    if (emailOption == EmailMenu.as_text) {
+    if (emailOption == EmailMenu.asText) {
       messageController.text = TextDot.generateStringFromDots(allDots);
     }
-    print(path);
     final Email email = Email(
       body: messageController.text,
       subject: subjectController.text,
       recipients: [emailController.text],
       attachmentPaths: path != null ? [path] : [],
-      isHTML: false,
     );
 
     String platformResponse;
@@ -110,36 +109,36 @@ class _SendEmailPageState extends State<SendEmailPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: TextFormField(
                     keyboardType: TextInputType.emailAddress,
                     controller: emailController,
                     validator: (input) =>
-                        this._validEmail(emailController.value.text)
+                        _validEmail(emailController.value.text)
                             ? null
                             : "Írgyá rendes e-mailt vaze",
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'E-mail cím',
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(10),
                   child: TextFormField(
                     controller: subjectController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       labelText: 'Tárgy',
                     ),
                   ),
                 ),
-                if (this.emailOption != EmailMenu.as_text)
+                if (emailOption != EmailMenu.asText)
                   Container(
-                    padding: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
                     child: TextFormField(
                       controller: messageController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Üzenet',
                       ),
@@ -148,11 +147,11 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 Expanded(
                   child: RadioListTile(
                     title: const Text(".CSV"),
-                    value: EmailMenu.as_csv,
+                    value: EmailMenu.asCsv,
                     groupValue: emailOption,
                     onChanged: (EmailMenu? value) {
                       setState(() {
-                        this.emailOption = value ?? EmailMenu.as_csv;
+                        emailOption = value ?? EmailMenu.asCsv;
                       });
                     },
                   ),
@@ -160,11 +159,11 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 Expanded(
                   child: RadioListTile(
                     title: const Text(".JSON"),
-                    value: EmailMenu.as_json,
+                    value: EmailMenu.asJson,
                     groupValue: emailOption,
                     onChanged: (EmailMenu? value) {
                       setState(() {
-                        this.emailOption = value ?? EmailMenu.as_csv;
+                        emailOption = value ?? EmailMenu.asCsv;
                       });
                     },
                   ),
@@ -172,11 +171,11 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 Expanded(
                   child: RadioListTile(
                     title: const Text(".TXT"),
-                    value: EmailMenu.as_txt,
+                    value: EmailMenu.asTxt,
                     groupValue: emailOption,
                     onChanged: (EmailMenu? value) {
                       setState(() {
-                        this.emailOption = value ?? EmailMenu.as_csv;
+                        emailOption = value ?? EmailMenu.asCsv;
                       });
                     },
                   ),
@@ -184,12 +183,12 @@ class _SendEmailPageState extends State<SendEmailPage> {
                 Expanded(
                   child: RadioListTile(
                     title: const Text("Szöveg"),
-                    value: EmailMenu.as_text,
+                    value: EmailMenu.asText,
                     groupValue: emailOption,
                     onChanged: (EmailMenu? value) {
                       setState(() {
-                        this.emailOption = value ?? EmailMenu.as_csv;
-                        this.messageController.clear();
+                        emailOption = value ?? EmailMenu.asCsv;
+                        messageController.clear();
                       });
                     },
                   ),
@@ -204,15 +203,15 @@ class _SendEmailPageState extends State<SendEmailPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text("Mégse"),
+                  child: const Text("Mégse"),
                 ),
               ),
               Expanded(
                 child: TextButton(
                   onPressed: () {
-                          this.sendMail();
-                        },
-                  child: Text("Küldés"),
+                    sendMail();
+                  },
+                  child: const Text("Küldés"),
                 ),
               ),
             ],

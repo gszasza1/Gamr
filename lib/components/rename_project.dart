@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:gamr/models/database/projects.dart';
+import 'package:gamr/services/database_service.dart';
 
-class DividerDistancePopup extends StatefulWidget {
-  final double distance;
-  final Function save;
-  const DividerDistancePopup({
+class RenameProject extends StatefulWidget {
+  final Project project;
+  const RenameProject({
     Key? key,
-    required this.distance,
-    required this.save,
+    required this.project,
   }) : super(key: key);
   @override
-  DividerDistancePopupState createState() => DividerDistancePopupState();
+  RenameProjectState createState() => RenameProjectState();
 }
 
-class DividerDistancePopupState extends State<DividerDistancePopup> {
+class RenameProjectState extends State<RenameProject> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController distance = TextEditingController(text: '');
+  TextEditingController name = TextEditingController(text: '');
 
+  @override
   void dispose() {
-    distance.dispose();
+    name.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Határoló távolság"),
+      title: const Text("Projekt átnevezése"),
       content: Form(
         key: _formKey,
         child: Column(
@@ -32,14 +33,11 @@ class DividerDistancePopupState extends State<DividerDistancePopup> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             TextFormField(
-              keyboardType: TextInputType.number,
-              controller: distance
-                ..text = widget.distance > 0
-                    ? widget.distance.toStringAsFixed(5)
-                    : '',
-              decoration: InputDecoration(
+              keyboardType: TextInputType.text,
+              controller: name..text = widget.project.name,
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                labelText: 'Távolság',
+                labelText: 'Z',
               ),
             ),
           ],
@@ -54,7 +52,8 @@ class DividerDistancePopupState extends State<DividerDistancePopup> {
         ),
         TextButton(
           onPressed: () {
-            widget.save(distance.value.text);
+            DBService().updateProject(
+                widget.project..name = name.text);
             Navigator.of(context).pop();
           },
           child: const Text('Mentés'),

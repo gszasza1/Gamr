@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/text-dot.dart';
+import 'package:gamr/models/service/text_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class TxtService {
@@ -19,18 +19,18 @@ class TxtService {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {
-        this.basePath = dir.path + "/txt";
+        basePath = "${dir.path}/txt";
       } else {
         isSaveableDevice = false;
       }
     } else if (Platform.isIOS) {
-      Directory dir = await getApplicationDocumentsDirectory();
-      this.basePath = dir.path + "/txt";
+      final Directory dir = await getApplicationDocumentsDirectory();
+      basePath = "${dir.path}/txt";
     }
 
     final checkPathExistence = await Directory(basePath).exists();
     if (!checkPathExistence) {
-      await new Directory(basePath).create();
+      await Directory(basePath).create();
     }
   }
 
@@ -42,18 +42,17 @@ class TxtService {
         .replaceAll(RegExp(r' '), '_')
         .replaceAll(RegExp(r'-'), '_')
         .replaceAll(".", "");
-    final fileName = this.basePath + '/${projectName}_$creationDate.txt';
+    final fileName = '$basePath${'/${projectName}_$creationDate.txt'}';
     final data = TextDot.generateStringFromDots(dots);
-    print(fileName);
     final File file = File(fileName);
     await file.writeAsString(data);
     return file.path.toString();
   }
 
   Future<List<DBPoint>> createDotsFromTxt(File readFile) async {
-    var fields = (await readFile.readAsString()).split("\n");
+    final fields = (await readFile.readAsString()).split("\n");
     fields.removeWhere((element) => element.length < 3);
-    var listFields = fields.map((e) => e.split(" ").toList()).toList();
+    final listFields = fields.map((e) => e.split(" ").toList()).toList();
 
     final mappedDots = listFields.map((element) {
       return TextDot.fromStringList(element);

@@ -1,5 +1,5 @@
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/base-dot.dart';
+import 'package:gamr/models/service/base_dot.dart';
 
 class JsonDot extends BaseDot {
   JsonDot(
@@ -21,7 +21,7 @@ class JsonDot extends BaseDot {
         rank: dot.rank);
   }
 
-  static JsonDot fromMap(Map<String, dynamic> dot) {
+  static JsonDot fromMap(Map<String, String> dot) {
     if (dot.length != 5 ||
         dot["x"] == null ||
         dot["y"] == null ||
@@ -30,10 +30,10 @@ class JsonDot extends BaseDot {
       throw UnsupportedError("Nem megfelelő JSON fájl");
     }
     return JsonDot(
-        rank: dot["rank"]!,
-        x: dot["x"]!,
-        y: dot["y"]!,
-        z: dot["z"]!,
+        rank: int.parse(dot["rank"]!),
+        x: double.parse(dot["x"]!),
+        y: double.parse(dot["y"]!),
+        z: double.parse(dot["z"]!),
         name: dot["name"]!);
   }
 

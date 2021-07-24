@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gamr/models/database/points.dart';
 
 class ImportPopup extends StatefulWidget {
-  ImportPopup({Key? key, required this.projectName, required this.dotList})
+  const ImportPopup(
+      {Key? key, required this.projectName, required this.dotList})
       : super(key: key);
   final String projectName;
   final List<DBPoint> dotList;
@@ -30,7 +31,7 @@ class _ImportPopupState extends State<ImportPopup> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Importálás'),
-      content: Container(
+      content: SizedBox(
         height: MediaQuery.of(context).size.height * 0.95,
         width: MediaQuery.of(context).size.width * 0.95,
         child: Column(
@@ -42,7 +43,7 @@ class _ImportPopupState extends State<ImportPopup> {
               child: TextFormField(
                 keyboardType: TextInputType.text,
                 controller: controller,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Projekt név',
                 ),
@@ -56,26 +57,26 @@ class _ImportPopupState extends State<ImportPopup> {
                         children: [
                           Expanded(
                             child: Container(
+                              margin: const EdgeInsets.only(
+                                right: 10,
+                              ),
                               child: Text(e.rank.toString()),
-                              margin: const EdgeInsets.only(
-                                right: 10,
-                              ),
                             ),
                           ),
                           Expanded(
                             child: Container(
+                              margin: const EdgeInsets.only(
+                                right: 10,
+                              ),
                               child: Text(e.x.toStringAsFixed(3)),
-                              margin: const EdgeInsets.only(
-                                right: 10,
-                              ),
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              child: Text(e.y.toStringAsFixed(3)),
                               margin: const EdgeInsets.only(
                                 right: 10,
                               ),
+                              child: Text(e.y.toStringAsFixed(3)),
                             ),
                           ),
                           Expanded(child: Text(e.z.toStringAsFixed(3))),

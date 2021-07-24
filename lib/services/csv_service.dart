@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/drawer/point.dart';
-import 'package:gamr/models/service/csv-dot.dart';
+import 'package:gamr/models/service/csv_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CSVService {
@@ -20,18 +20,18 @@ class CSVService {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {
-        this.basePath = dir.path + "/csv";
+        basePath = "${dir.path}/csv";
       } else {
         isSaveableDevice = false;
       }
     } else if (Platform.isIOS) {
-      Directory dir = await getApplicationDocumentsDirectory();
-      this.basePath = dir.path + "/csv";
+      final Directory dir = await getApplicationDocumentsDirectory();
+      basePath = "${dir.path}/csv";
     }
 
     final checkPathExistence = await Directory(basePath).exists();
     if (!checkPathExistence) {
-      await new Directory(basePath).create();
+      await Directory(basePath).create();
     }
   }
 
@@ -43,10 +43,9 @@ class CSVService {
         .replaceAll(RegExp(r' '), '_')
         .replaceAll(RegExp(r'-'), '_')
         .replaceAll(".", "");
-    final fileName = this.basePath + '/${projectName}_$creationDate.csv';
+    final fileName = '$basePath${'/${projectName}_$creationDate.csv'}';
     final data = CSVDot.generateCSVContentFromDots(dots);
-    String csvData = ListToCsvConverter().convert(data);
-    print(fileName);
+    final String csvData = const ListToCsvConverter().convert(data);
     final File file = File(fileName);
     await file.writeAsString(csvData);
     return fileName;
@@ -56,7 +55,7 @@ class CSVService {
     final fields = await readFile
         .openRead()
         .transform(utf8.decoder)
-        .transform(new CsvToListConverter())
+        .transform(const CsvToListConverter())
         .map((e) => e.map((t) => t.toString()).toList())
         .toList();
 
