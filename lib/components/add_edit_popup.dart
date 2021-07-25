@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gamr/models/drawer/point.dart';
 
 class AddEditPopup extends StatefulWidget {
-  final void Function(Dot dot) save;
-  final Dot dot;
-  final bool isEdit;
-  final List<String> options;
   const AddEditPopup(
       {Key? key,
       required this.save,
@@ -13,6 +9,12 @@ class AddEditPopup extends StatefulWidget {
       required this.options,
       required this.isEdit})
       : super(key: key);
+
+  final void Function(Dot dot) save;
+  final Dot dot;
+  final bool isEdit;
+  final List<String> options;
+  
   @override
   AddEditPopupState createState() => AddEditPopupState();
 }

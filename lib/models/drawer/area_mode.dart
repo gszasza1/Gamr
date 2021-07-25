@@ -6,11 +6,11 @@ class AreaMode {
   List<int> dotIndexes = [];
   double? calculatedArea;
 
-  addDotIndex(int index) {
+  void addDotIndex(int index) {
     dotIndexes.add(index);
   }
 
-  addDot(Dot selectedDot, Dot selectedDrawDot) {
+  void addDot(Dot selectedDot, Dot selectedDrawDot) {
     selectedDots.add(selectedDot);
     selectedDrawDots.add(selectedDrawDot);
   }
@@ -19,18 +19,18 @@ class AreaMode {
     return !(selectedDots.isEmpty && dotIndexes.isEmpty);
   }
 
-  reset() {
+  void reset() {
     selectedDots = [];
     selectedDrawDots = [];
     dotIndexes = [];
     calculatedArea = null;
   }
 
-  resetDrawable() {
+  void resetDrawable() {
     selectedDrawDots = [];
   }
 
-  calculateArea() {
+  void calculateArea() {
     double area = 0;
     int j = selectedDots.length - 1;
     final int n = selectedDots.length;

@@ -21,13 +21,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ProjectList(),
+      home: const ProjectList(),
       onGenerateRoute: (settings) {
         // Handle '/'
         if (settings.name == '/') {
           return MaterialPageRoute(
               settings: const RouteSettings(name: "/"),
-              builder: (context) => ProjectList());
+              builder: (context) => const ProjectList());
         }
 
         // Handle '/project/:id'
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
               builder: (context) => SendEmailPage(projectId: id));
         }
 
-        return MaterialPageRoute(builder: (context) => ProjectList());
+        return MaterialPageRoute(builder: (context) => const ProjectList());
       },
       debugShowCheckedModeBanner: false,
     );

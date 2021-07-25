@@ -9,8 +9,8 @@ import 'package:gamr/services/json_service.dart';
 import 'package:gamr/services/txt_service.dart';
 
 class SendEmailPage extends StatefulWidget {
-  final int projectId;
   const SendEmailPage({Key? key, required this.projectId}) : super(key: key);
+  final int projectId;
 
   @override
   _SendEmailPageState createState() => _SendEmailPageState();

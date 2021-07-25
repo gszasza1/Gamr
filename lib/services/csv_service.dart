@@ -7,16 +7,17 @@ import 'package:gamr/models/service/csv_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class CSVService {
-  static final CSVService _singleton = CSVService._internal();
-  late final String basePath;
-  bool isSaveableDevice = true;
   factory CSVService() {
     return _singleton;
   }
+  CSVService._internal(); 
 
-  CSVService._internal();
+  static final CSVService _singleton = CSVService._internal();
+  late final String basePath;
+  bool isSaveableDevice = true;
+ 
 
-  init() async {
+  Future init() async {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {

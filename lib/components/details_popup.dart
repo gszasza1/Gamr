@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class Details {
+  Details(this.averageY, this.totalDots, this.averageAngle, this.totalDistance);
+
   final double averageY;
   final int totalDots;
   final double averageAngle;
   final double totalDistance;
-
-  Details(this.averageY, this.totalDots, this.averageAngle, this.totalDistance);
 }
 
 class DetailsPopup extends StatelessWidget {

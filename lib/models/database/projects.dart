@@ -3,6 +3,8 @@ import 'package:objectbox/objectbox.dart';
 
 @Entity()
 class Project {
+  Project(this.name);
+  
   int id = 0;
   String name = '';
 
@@ -12,7 +14,6 @@ class Project {
   @Backlink()
   final points = ToMany<DBPoint>();
 
-  Project(this.name);
 
   @override
   String toString() => name; // Just for print()

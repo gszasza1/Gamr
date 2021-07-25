@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gamr/components/add_new_project.dart';
 import 'package:gamr/components/import_project_popup.dart';
 import 'package:gamr/components/project_list_item.dart';
-import 'package:gamr/constant/project-list-menu.dart';
+import 'package:gamr/constant/project_list_menu.dart';
 import 'package:gamr/models/database/points.dart';
 import 'package:gamr/models/database/projects.dart';
 import 'package:gamr/services/csv_service.dart';

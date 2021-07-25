@@ -9,7 +9,6 @@ import 'package:gamr/models/drawer/point.dart';
 class OpenPainter extends CustomPainter {
   OpenPainter({
     required this.options,
-    required Dot? paramPoint,
     required this.dotList,
     required this.axis,
   });
@@ -32,6 +31,10 @@ class OpenPainter extends CustomPainter {
 
     final paintRed = Paint()
       ..color = Config.colorRed
+      ..strokeWidth = 2;
+
+    final paintBlue = Paint()
+      ..color = Config.colorBlue
       ..strokeWidth = 2;
 
     final paintBlack = Paint()
@@ -89,13 +92,13 @@ class OpenPainter extends CustomPainter {
       for (var i = 0; i < dotList.allDots.length; i++) {
         if (options.showCoords || options.showNumber) {
           createNewText(
-              size,
-              dotList.allDots[i].coordsToString(
-                  showNumber:
-                      options.showNumber ? dotList.allDots[i].rank : null,
-                  showCoord: options.showCoords,
-                  threeCoord: true))
-            .paint(canvas, dotList.drawAbleDots[i]);
+                  size,
+                  dotList.allDots[i].coordsToString(
+                      showNumber:
+                          options.showNumber ? dotList.allDots[i].rank : null,
+                      showCoord: options.showCoords,
+                      threeCoord: true))
+              .paint(canvas, dotList.drawAbleDots[i]);
         }
 
         if (!options.onlyPoints && dotList.drawAbleDots.length - 1 > i) {
@@ -105,16 +108,13 @@ class OpenPainter extends CustomPainter {
       }
 
       /// Create line between first and last point
-      if (options.showTotalDegree &&
-          dotList.drawAbleDots.length > 1) {
+      if (options.showTotalDegree && (dotList.drawAbleDots.length > 1)) {
         final paintOrange = Paint()
           ..color = Config.colorOrange
           ..strokeWidth = 2;
 
-        canvas.drawLine(
-            dotList.drawAbleDots[0],
-            dotList.drawAbleDots[dotList.drawAbleDots.length - 1],
-            paintOrange);
+        canvas.drawLine(dotList.drawAbleDots[0],
+            dotList.drawAbleDots[dotList.drawAbleDots.length - 1], paintOrange);
       }
 
       /// Show average Y height on X axis
@@ -126,17 +126,17 @@ class OpenPainter extends CustomPainter {
         final averageYDot = Dot(0, dotList.averageDrawY);
 
         createNewText(size, Dot.coordsParamToString(0, dotList.averageY))
-          .paint(canvas, averageYDot);
-        canvas.drawLine(averageYDot, Dot(size.width, dotList.averageDrawY),
-            paintPurple);
+            .paint(canvas, averageYDot);
+        canvas.drawLine(
+            averageYDot, Dot(size.width, dotList.averageDrawY), paintPurple);
       }
 
       /// Draw distance dot
       if (options.show2Ddistance) {
         dotList.distances.forEach((element) {
           createNewText(size, element.distance.toStringAsFixed(5),
-              color: Config.colorDarkPurple)
-            .paint(canvas, element);
+                  color: Config.colorDarkPurple)
+              .paint(canvas, element);
         });
       }
 
@@ -144,8 +144,8 @@ class OpenPainter extends CustomPainter {
       if (options.show3Ddistance) {
         dotList.distances3D.forEach((element) {
           createNewText(size, element.distance.toStringAsFixed(5),
-              color: Config.colorDarkPurple)
-            .paint(canvas, element);
+                  color: Config.colorDarkPurple)
+              .paint(canvas, element);
         });
       }
 
@@ -153,19 +153,19 @@ class OpenPainter extends CustomPainter {
       if (options.showHeightVariation) {
         dotList.zHeightVariationList.forEach((element) {
           createNewText(size, element.distance.toStringAsFixed(5),
-              color: Config.colorBlack)
-            .paint(canvas, element);
+                  color: Config.colorBlack)
+              .paint(canvas, element);
         });
       }
 
       /// Draw selected dot
       if (dotList.selectedPoint.length > 1) {
-        createNewText(size,
-            dotList.selectedPoint[1].coordsToString(threeCoord: true),
-            color: Config.colorRed)
-          .paint(canvas, dotList.selectedPoint[0]);
-        canvas.drawPoints(PointMode.lines,
-            dotList.selectedPoint[0].createXDots(), paintRed);
+        createNewText(
+                size, dotList.selectedPoint[1].coordsToString(threeCoord: true),
+                color: Config.colorRed)
+            .paint(canvas, dotList.selectedPoint[0]);
+        canvas.drawPoints(
+            PointMode.lines, dotList.selectedPoint[0].createXDots(), paintRed);
 
         if (options.showYAxis) {
           final onYAxis =
@@ -189,27 +189,25 @@ class OpenPainter extends CustomPainter {
       /// Összekötni ha 2 pont ki van választva
       if (dotList.twoDotMode.selectedDotIndexes.length == 2) {
         canvas.drawLine(
-            dotList
-                .drawAbleDots[dotList.twoDotMode.selectedDotIndexes[0]],
-            dotList
-                .drawAbleDots[dotList.twoDotMode.selectedDotIndexes[1]],
+            dotList.drawAbleDots[dotList.twoDotMode.selectedDotIndexes[0]],
+            dotList.drawAbleDots[dotList.twoDotMode.selectedDotIndexes[1]],
             paintCircularPurple);
 
         /// Felosztás
         final drawSelectedDots = dotList.twoDotMode.drawDistanceDots;
+        final evaulatedColor =
+            dotList.twoDotMode.isEqualDistances ? paintBlue : paintRed;
         for (var i = 0; i < drawSelectedDots.length; i++) {
-          canvas.drawPoints(
-              PointMode.lines, drawSelectedDots[i].createXDots(), paintRed);
+          canvas.drawPoints(PointMode.lines, drawSelectedDots[i].createXDots(),
+              evaulatedColor);
           //Felosztás szövege
           if (options.showCoords) {
             createNewText(
-                size,
-                dotList
-                    .twoDotMode
-                    .distanceDots[i]
-                    .coordsToString(threeCoord: true),
-                color: Config.colorRed)
-              .paint(canvas, drawSelectedDots[i]);
+                    size,
+                    dotList.twoDotMode.distanceDots[i]
+                        .coordsToString(threeCoord: true),
+                    color: Config.colorRed)
+                .paint(canvas, drawSelectedDots[i]);
           }
         }
       }

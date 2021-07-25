@@ -6,10 +6,12 @@ class TwoDotMode {
   List<int> selectedDotIndexes = [];
   List<Dot> selectedDots = [];
 
-  double? dividerDistance;
+  double? dividerMeasure;
 
   List<Dot> drawDistanceDots = [];
   List<Dot> distanceDots = [];
+
+  bool isEqualDistances = false;
 
   /// MetaData between dots
   double distance3D = 0;
@@ -59,7 +61,7 @@ class TwoDotMode {
     drawDistanceDots = [];
     distanceDots = [];
     selectedDots = [];
-    dividerDistance = null;
+    dividerMeasure = null;
   }
 
   resetPoints() {
@@ -68,13 +70,11 @@ class TwoDotMode {
   }
 
   calculate2DDistance() {
-    distance2D =
-        (selectedDots[0].distanceFromDot(selectedDots[1])).abs();
+    distance2D = (selectedDots[0].distanceFromDot(selectedDots[1])).abs();
   }
 
   calculate3DDistance() {
-    distance3D =
-        (selectedDots[0].distanceFromDot3D(selectedDots[1])).abs();
+    distance3D = (selectedDots[0].distanceFromDot3D(selectedDots[1])).abs();
   }
 
   calculateZHeightDegree() {
@@ -83,8 +83,7 @@ class TwoDotMode {
   }
 
   calculateZHeightVariation() {
-    zHeightVariationBetweenDots =
-        (selectedDots[0].z - selectedDots[1].z).abs();
+    zHeightVariationBetweenDots = (selectedDots[0].z - selectedDots[1].z).abs();
   }
 
   calculateDegree() {

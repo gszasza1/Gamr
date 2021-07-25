@@ -3,11 +3,11 @@ import 'package:gamr/models/database/projects.dart';
 import 'package:gamr/services/database_service.dart';
 
 class RenameProject extends StatefulWidget {
-  final Project project;
   const RenameProject({
     Key? key,
     required this.project,
   }) : super(key: key);
+  final Project project;
   @override
   RenameProjectState createState() => RenameProjectState();
 }

@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:gamr/services/database_service.dart';
 
 class AddNewProjectPopup extends StatefulWidget {
-  final Function refreshList;
-
   const AddNewProjectPopup({Key? key, required this.refreshList})
       : super(key: key);
+
+  final Function refreshList;
   @override
   AddNewProjectPopupState createState() => AddNewProjectPopupState();
 }
 
 class AddNewProjectPopupState extends State<AddNewProjectPopup> {
   TextEditingController nameController = TextEditingController(text: '');
-  
+
   @override
   void dispose() {
     nameController.dispose();

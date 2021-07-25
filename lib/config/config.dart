@@ -7,5 +7,7 @@ class Config {
   static const colorOrange = Color(0xffff7512);
   static const colorPurple = Color(0xffff00dd);
   static const colorDarkPurple = Color(0xffc900bb);
+  static const colorDarkerPurple = Color(0xffc90999);
+  static const colorBlue = Color(0xff000a69);
   static const colorBlack = Color(0xff000000);
 }

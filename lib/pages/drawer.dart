@@ -10,7 +10,7 @@ import 'package:gamr/components/positioned_icon.dart';
 import 'package:gamr/components/save_file_options.dart';
 import 'package:gamr/components/set_divider_distance_popup.dart';
 import 'package:gamr/constant/email_menu.dart';
-import 'package:gamr/constant/popup-menu.dart';
+import 'package:gamr/constant/popup_menu.dart';
 import 'package:gamr/custom_painter.dart';
 import 'package:gamr/config/options.dart';
 import 'package:gamr/models/database/points.dart';
@@ -23,8 +23,8 @@ import 'package:gamr/services/txt_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DrawerPage extends StatefulWidget {
-  final int projectId;
   const DrawerPage({required this.projectId});
+  final int projectId;
   @override
   _DrawerPageState createState() => _DrawerPageState();
 }
@@ -90,7 +90,7 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  resetPosition() {
+  void resetPosition() {
     dotList.reset();
     initMove = null;
     localpositon = null;
@@ -114,7 +114,7 @@ class _DrawerPageState extends State<DrawerPage> {
           id: newId, name: dot.name, rank: dot.rank));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Létezik ilyen pont"),
         ),
       );
@@ -132,7 +132,7 @@ class _DrawerPageState extends State<DrawerPage> {
     await DBService().deleteDot(widget.projectId, value.id);
   }
 
-  onTapUp(TapUpDetails x) {
+  void onTapUp(TapUpDetails x) {
     setState(() {
       localpositon = Dot.offsetToDot(x.localPosition);
       if (localpositon != null) {
@@ -147,30 +147,32 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  onLongPressStart(LongPressStartDetails x) {
-    final selectedDotIndex =
-        dotList.nearestDotToSelected(Dot.fromOffset(x.localPosition));
-
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return DotInfo(selectedDot: dotList.allDots[selectedDotIndex]);
-        });
+  void onLongPressStart(LongPressStartDetails x) {
+    final selectedPoint = Dot.fromOffset(x.localPosition);
+    final selectedDotIndex = dotList.nearestDotToSelected(selectedPoint);
+    if (dotList.drawAbleDots[selectedDotIndex].distanceFromDot(selectedPoint) <
+        10) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return DotInfo(selectedDot: dotList.allDots[selectedDotIndex]);
+          });
+    }
   }
 
-  onScaleEnd(ScaleEndDetails x) {
+  void onScaleEnd(ScaleEndDetails x) {
     setState(() {
       initMove = null;
       dotList.isCanvasMoving = false;
       dotList.setNewFixOffset();
-      if (dotList.twoDotMode.dividerDistance != null) {
-        dotList.setDividerBetweenSelectedPoints2D();
+      if (dotList.twoDotMode.dividerMeasure != null) {
+        dotList.decideDistanceMode();
       }
       dotList.refreshDrawArea();
     });
   }
 
-  onScaleStart(ScaleStartDetails x) {
+  void onScaleStart(ScaleStartDetails x) {
     setState(() {
       dotList.isCanvasMoving = true;
       dotList.twoDotMode.resetPoints();
@@ -181,7 +183,7 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  onScaleUpdate(ScaleUpdateDetails x) {
+  void onScaleUpdate(ScaleUpdateDetails x) {
     setState(() {
       if (initMove != null) {
         dotList.updateOffset(initMove!.dx - x.localFocalPoint.dx,
@@ -190,7 +192,7 @@ class _DrawerPageState extends State<DrawerPage> {
     });
   }
 
-  addDistanceDots() {
+  void addDistanceDots() {
     setState(() {
       var maxRank = 0;
       dotList.allDots.forEach((element) {
@@ -228,11 +230,8 @@ class _DrawerPageState extends State<DrawerPage> {
                         addPoint(e);
                       },
                       dot: Dot.dzParameter(0, 0, 0),
-                      options: dotList
-                          .allDots
-                          .map((e) => e.name)
-                          .toSet()
-                          .toList(),
+                      options:
+                          dotList.allDots.map((e) => e.name).toSet().toList(),
                       isEdit: false);
                 });
           },
@@ -324,7 +323,7 @@ class _DrawerPageState extends State<DrawerPage> {
               ),
               CheckboxListTile(
                 title: const Text("Z magasság különbség"),
-                value: options.showTotalDegree,
+                value: options.showHeightVariation,
                 onChanged: (bool? value) {
                   setState(() {
                     prefs.setBool(
@@ -407,10 +406,7 @@ class _DrawerPageState extends State<DrawerPage> {
                   child: CustomPaint(
                     size: Size.infinite,
                     painter: OpenPainter(
-                        options: options,
-                        dotList: dotList,
-                        axis: currentAxis,
-                        paramPoint: localpositon),
+                        options: options, dotList: dotList, axis: currentAxis),
                   ),
                 ),
                 Positioned(
@@ -538,10 +534,8 @@ class _DrawerPageState extends State<DrawerPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return AreaDetailsPopup(
-                                totalArea:
-                                    dotList.areaMode.calculatedArea!,
-                                totalDots:
-                                    dotList.areaMode.dotIndexes.length);
+                                totalArea: dotList.areaMode.calculatedArea!,
+                                totalDots: dotList.areaMode.dotIndexes.length);
                           });
                     },
                   ),
@@ -557,7 +551,7 @@ class _DrawerPageState extends State<DrawerPage> {
                       setState(() {
                         dotList.twoDotMode.continueMode =
                             !dotList.twoDotMode.continueMode;
-                        dotList.setDividerBetweenSelectedPoints2D();
+                        dotList.decideDistanceMode();
                       });
                     },
                   ),
@@ -571,15 +565,13 @@ class _DrawerPageState extends State<DrawerPage> {
                           context: context,
                           builder: (BuildContext context) {
                             return GeneralInformationDots(
-                              zHeightDegree:
-                                  dotList.twoDotMode.zHeightDegree,
+                              zHeightDegree: dotList.twoDotMode.zHeightDegree,
                               degreeBeteenDots:
                                   dotList.twoDotMode.degreeBeteenDots,
                               distance2D: dotList.twoDotMode.distance2D,
                               distance3D: dotList.twoDotMode.distance3D,
                               zHeightVariationBetweenDots: dotList
-                                  .twoDotMode
-                                  .zHeightVariationBetweenDots,
+                                  .twoDotMode.zHeightVariationBetweenDots,
                             );
                           });
                     },
@@ -595,20 +587,22 @@ class _DrawerPageState extends State<DrawerPage> {
                           builder: (BuildContext context) {
                             return DividerDistancePopup(
                                 distance:
-                                    dotList.twoDotMode.dividerDistance ??
-                                        0,
-                                save: (e) {
-                                  dotList
-                                      .setDividerDistance(double.parse(e));
-                                  dotList
-                                      .setDividerBetweenSelectedPoints2D();
+                                    dotList.twoDotMode.dividerMeasure ?? 0,
+                                isEqualDistances:
+                                    dotList.twoDotMode.isEqualDistances,
+                                save: (distance, isEqualDistances) {
+                                  dotList.twoDotMode.isEqualDistances =
+                                      isEqualDistances;
+                                  dotList.setDividerDistance(
+                                      double.parse(distance));
+                                  dotList.decideDistanceMode();
                                 });
                           });
                     },
                   ),
                 if (dotList.twoDotMode.isFull &&
-                    dotList.twoDotMode.dividerDistance != null &&
-                    dotList.twoDotMode.dividerDistance! > 0)
+                    dotList.twoDotMode.dividerMeasure != null &&
+                    dotList.twoDotMode.dividerMeasure! > 0)
                   PositionedIcon(
                     icon: Icons.add_box,
                     bottom: 20,
@@ -679,8 +673,7 @@ class _DrawerPageState extends State<DrawerPage> {
                                       dotList.averageY,
                                       dotList.allDots.length,
                                       dotList.totalDegree,
-                                      dotList
-                                          .distances
+                                      dotList.distances
                                           .map((x) => x.distance)
                                           .reduce((a, b) => a + b)),
                                 );
@@ -708,8 +701,8 @@ class _DrawerPageState extends State<DrawerPage> {
                                   ),
                                   decoration: const BoxDecoration(
                                     border: Border(
-                                      bottom: BorderSide(
-                                          color: Color(0xfffff3f3f3)),
+                                      bottom:
+                                          BorderSide(color: Color(0xfff3f3f3)),
                                     ),
                                   ),
                                   child: InkWell(
@@ -719,8 +712,7 @@ class _DrawerPageState extends State<DrawerPage> {
                                           builder: (BuildContext context) {
                                             return AddEditPopup(
                                               isEdit: true,
-                                              options: dotList
-                                                  .allDots
+                                              options: dotList.allDots
                                                   .map((e) => e.name)
                                                   .toSet()
                                                   .toList(),

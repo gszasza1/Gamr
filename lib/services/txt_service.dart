@@ -6,16 +6,16 @@ import 'package:gamr/models/service/text_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class TxtService {
-  static final TxtService _singleton = TxtService._internal();
-  late final String basePath;
-  bool isSaveableDevice = true;
   factory TxtService() {
     return _singleton;
   }
 
   TxtService._internal();
+  static final TxtService _singleton = TxtService._internal();
+  late final String basePath;
+  bool isSaveableDevice = true;
 
-  init() async {
+  Future init() async {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {

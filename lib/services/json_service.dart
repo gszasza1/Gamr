@@ -7,16 +7,16 @@ import 'package:gamr/models/service/json_dot.dart';
 import 'package:path_provider/path_provider.dart';
 
 class JsonService {
-  static final JsonService _singleton = JsonService._internal();
-  late final String basePath;
   bool isSaveableDevice = true;
   factory JsonService() {
     return _singleton;
   }
 
   JsonService._internal();
+  static final JsonService _singleton = JsonService._internal();
+  late final String basePath;
 
-  init() async {
+  Future init() async {
     if (Platform.isAndroid) {
       final dir = await getExternalStorageDirectory();
       if (dir != null) {
@@ -54,8 +54,8 @@ class JsonService {
   }
 
   Future<List<DBPoint>> createDotsFromJson(File readFile) async {
-    final List<Map<String, String>> fields = json
-        .decode(await readFile.readAsString()) as List<Map<String, String>>;
+    final List<Map<String, String>> fields =
+        json.decode(await readFile.readAsString()) as List<Map<String, String>>;
 
     final List<JsonDot> mappedDots = List<JsonDot>.from(fields.map((element) {
       return JsonDot.fromMap(Map<String, String>.from(element));

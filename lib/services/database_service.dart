@@ -8,17 +8,17 @@ import 'package:path_provider/path_provider.dart';
 //import 'package:gamr/database/projects.dart';
 
 class DBService {
-  static final DBService _singleton = DBService._internal();
-  late final Store store;
   factory DBService() {
     return _singleton;
   }
 
   DBService._internal();
-  init() async {
+
+  static final DBService _singleton = DBService._internal();
+  late final Store store;
+  Future init() async {
     final Directory dir = await getApplicationDocumentsDirectory();
-    print(dir.path + '/objectbox');
-    store = Store(getObjectBoxModel(), directory: dir.path + '/objectbox');
+    store = Store(getObjectBoxModel(), directory: '${dir.path}/objectbox');
   }
 
   void addProject(String name) {
@@ -26,7 +26,7 @@ class DBService {
     box.put(Project(name));
   }
 
-  deleteProject(int key) async {
+  Future deleteProject(int key) async {
     final points = store.box<DBPoint>();
     final projects = store.box<Project>();
     final query = points.query(DBPoint_.project.equals(key)).build();
@@ -40,12 +40,12 @@ class DBService {
     return box.getAll();
   }
 
-  updateProject(Project pr) {
+  void updateProject(Project pr) {
     final box = store.box<Project>();
     box.put(pr);
   }
 
-  updateDot(Dot point) async {
+  Future updateDot(Dot point) async {
     final box = store.box<DBPoint>();
     final dbPoint = box.get(point.id);
     if (dbPoint != null) {
@@ -58,7 +58,7 @@ class DBService {
     }
   }
 
-  deleteDot(int projectId, int dotKey) async {
+  Future deleteDot(int projectId, int dotKey) async {
     final box = store.box<DBPoint>();
     final projects = store.box<Project>();
     final project = projects.get(projectId);

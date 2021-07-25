@@ -221,8 +221,8 @@ class DotList {
 
   void calculateAverageY() {
     if (allDots.isNotEmpty) {
-      averageY = allDots.map((m) => m.dy).reduce((a, b) => a + b) /
-          allDots.length;
+      averageY =
+          allDots.map((m) => m.dy).reduce((a, b) => a + b) / allDots.length;
     } else {
       averageY = 0;
     }
@@ -230,9 +230,8 @@ class DotList {
 
   void calculateAverageDrawY() {
     if (drawAbleDots.isNotEmpty) {
-      averageDrawY =
-          drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
-              drawAbleDots.length;
+      averageDrawY = drawAbleDots.map((m) => m.dy).reduce((a, b) => a + b) /
+          drawAbleDots.length;
     } else {
       averageDrawY = 0;
     }
@@ -262,7 +261,7 @@ class DotList {
     refreshDrawArea();
 
     if (twoDotMode.isFull) {
-      setDividerBetweenSelectedPoints2D();
+      decideDistanceMode();
     }
   }
 
@@ -431,18 +430,26 @@ class DotList {
     final dotIndex = nearestDotToSelected(selectedPoint);
     twoDotMode.setDot(dotIndex, allDots[dotIndex]);
     if (twoDotMode.isFull) {
+      decideDistanceMode();
+    }
+  }
+
+  void decideDistanceMode() {
+    if (twoDotMode.isEqualDistances) {
+      setDividerInEqualDistances2D();
+    } else {
       setDividerBetweenSelectedPoints2D();
     }
   }
 
   setDividerDistance(double distance) {
     if (distance > 0) {
-      twoDotMode.dividerDistance = distance;
+      twoDotMode.dividerMeasure = distance;
     }
   }
 
   setDividerBetweenSelectedPoints2D() {
-    if (twoDotMode.isFull && twoDotMode.dividerDistance != null) {
+    if (twoDotMode.isFull && twoDotMode.dividerMeasure != null) {
       final firstIndex = twoDotMode.selectedDotIndexes[0];
       final secondIndex = twoDotMode.selectedDotIndexes[1];
 
@@ -451,7 +458,7 @@ class DotList {
 
       final distanceBetweenDots = firstDot.distanceFromDot(secondDot);
 
-      final divider = distanceBetweenDots / twoDotMode.dividerDistance!;
+      final divider = distanceBetweenDots / twoDotMode.dividerMeasure!;
       final possibleDividing = divider.floor();
 
       if (possibleDividing > 0) {
@@ -490,6 +497,55 @@ class DotList {
         }
       } else {
         return;
+      }
+    }
+  }
+
+  void setDividerInEqualDistances2D() {
+    if (twoDotMode.isFull && twoDotMode.dividerMeasure != null) {
+      final firstIndex = twoDotMode.selectedDotIndexes[0];
+      final secondIndex = twoDotMode.selectedDotIndexes[1];
+
+      final firstDot = allDots[firstIndex];
+      final secondDot = allDots[secondIndex];
+
+      final firstDrawDot = drawAbleDots[firstIndex];
+      final secondDrawDot = drawAbleDots[secondIndex];
+
+      final drawVector = [
+        secondDrawDot.dx - firstDrawDot.dx,
+        secondDrawDot.dy - firstDrawDot.dy
+      ];
+
+      final dotVector = [
+        secondDot.x - firstDot.x,
+        secondDot.y - firstDot.y,
+        secondDot.z - firstDot.z,
+      ];
+
+      twoDotMode.resetPoints();
+
+      for (var i = 0; i < twoDotMode.dividerMeasure! - 1; i++) {
+        if (!twoDotMode.continueMode && i > 0) {
+          break;
+        } else {
+          final createdDrawDistanceDot = Dot(
+              firstDrawDot.dx +
+                  drawVector[0] * ((i + 1) / twoDotMode.dividerMeasure!),
+              firstDrawDot.dy +
+                  drawVector[1] * ((i + 1) / twoDotMode.dividerMeasure!));
+
+          final createdDistanceDot = Dot.dzParameter(
+              firstDot.x +
+                  dotVector[0] * ((i + 1) / twoDotMode.dividerMeasure!),
+              firstDot.y +
+                  dotVector[1] * ((i + 1) / twoDotMode.dividerMeasure!),
+              firstDot.z +
+                  dotVector[2] * ((i + 1) / twoDotMode.dividerMeasure!));
+
+          twoDotMode.drawDistanceDots.add(createdDrawDistanceDot);
+          twoDotMode.distanceDots.add(createdDistanceDot);
+        }
       }
     }
   }
